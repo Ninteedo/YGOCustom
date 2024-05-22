@@ -1,7 +1,8 @@
 import React from "react";
-import DragonmaidMarcheb from "../cards/custom/DragonmaidMarcheb.tsx";
+import DragonmaidMarcheb, {DragonmaidMarchebNotes} from "../cards/custom/DragonmaidMarcheb.tsx";
 import DragonmaidNudyarl from "../cards/custom/DragonmaidNudyarl.tsx";
 import DragonmaidLorpar from "../cards/custom/DragonmaidLorpar.tsx";
+import {CardAndNotes} from "../components/CardAndNotes.tsx";
 
 const DragonmaidArchetype: React.FC = () => {
   return (
@@ -29,12 +30,40 @@ const DragonmaidArchetype: React.FC = () => {
       </ul>
       <h2>Changes</h2>
       <h3>New Cards</h3>
-      <DragonmaidMarcheb />
+      <CardAndNotes card={<DragonmaidMarcheb/>} notes={<DragonmaidMarchebNotes/>} />
       <h3>Revised Cards</h3>
-      <DragonmaidNudyarl />
-      <DragonmaidLorpar />
+      <CardAndNotes card={<><DragonmaidNudyarl/><DragonmaidLorpar/></>} notes={<QuickEffectBigDragonNotes/>} />
+
     </div>
   )
+}
+
+const QuickEffectBigDragonNotes = () => {
+  return (
+    <>
+      <p>
+        Both Nudyarl and Lorpar have decent discard effects, but their usefulness is sorely limited by their
+        sluggishness. With the game's recent emphasis on interacting with your opponent from the hand, particularly
+        while going second on your opponent's first turn, it makes sense to transform these cards into handtraps.
+      </p>
+      <p>
+        Nudyarl's effect to shuffle a card from the GY into the Deck is similar to D.D. Crow, and arguably even better,
+        since some cards can have effects or be accessed more easily when banished rather than being face-down in the
+        Deck.
+      </p>
+      <p>
+        Lorpar's effect prevents the targeted monster from activating its effects for the rest of the turn after it
+        resolves. This is generally worse than negating a monster's effects, since it has to be used preemptively and
+        is not useful against quick effects or effects that have already triggered, such as on-summon effects. As an
+        upside, since it affects players, it can prevent unaffected monsters from activating their effects.
+      </p>
+      <p>
+        To prevent these from being used as handtraps in every other deck, an additional restriction where the player
+        cannot activate the effects of non-Dragonmaid monsters from the hand was added. This prevents players from using
+        these cards in conjunction with other popular handtraps such as Ash Blossom or Effect Veiler.
+      </p>
+    </>
+  );
 }
 
 export default DragonmaidArchetype

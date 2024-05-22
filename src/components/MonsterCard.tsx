@@ -2,8 +2,9 @@ import '../Card.scss';
 import {ReactNode} from "react";
 import {CardArt} from "./CardArt.tsx";
 import {Link} from "react-router-dom";
+import {BaseCardProps} from "./BaseCard.tsx";
 
-interface MonsterCardProps {
+export interface MonsterCardProps extends BaseCardProps {
   id: string;
   name: string;
   level: number;
@@ -31,13 +32,14 @@ const MonsterCard: React.FC<MonsterCardProps> =
      atk,
      def
    }) => {
-    categories.unshift(type);
+    let extendedCategories = [type];
+    extendedCategories.push(...categories);
     return (
       <div className="card">
         <h3 className="card-name"><Link to={`/card/custom/${id}`}>{name}</Link></h3>
         <h4>Level {level} {attribute} Monster</h4>
         <CardArt src={art} alt={`Art for ${name}`}/>
-        <h5 className="categories">[{categories.map(category => `${category}`).join(' / ')}]</h5>
+        <h5 className="categories">[{extendedCategories.map(category => `${category}`).join(' / ')}]</h5>
         <hr/>
         <div className="effect-block">
           <p>{effectRestrictions}</p>

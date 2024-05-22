@@ -12,12 +12,14 @@ const DragonmaidLorpar: React.FC = () => {
     type: "Dragon",
     art: CardArt,
     categories: ["Effect"],
-    effectRestrictions: <>You can only use the (2) and (3) effects of this card's name once per turn.</>,
+    effectRestrictions: <>You can only use the (2) and (3) effects of this card's name once per turn.
+      You cannot activate the effects of monsters from the hand, except "Dragonmaid" monsters, the turn you activate
+      the (2) effect of this card.</>,
     effects: [
       ContinuousEffect(<>Cannot be destroyed by card effects while you control a Fusion Monster.</>),
       EffectText(
         <>
-          {EffectCondition(<>Quick Effect</>)}
+          {EffectCondition(<>(Quick Effect)</>)}
           {EffectCost(<>You can discard this card</>)}
           {EffectMain(<>target 1 face-up monster on the field; players cannot activate that target's effects on the
             field this turn.</>)}
