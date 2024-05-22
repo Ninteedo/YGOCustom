@@ -1,0 +1,58 @@
+.card {
+  h3, h4, h5, p, ol {
+    margin: 0;
+  }
+
+  h4 {
+    font-weight: normal;
+  }
+
+  h5 {
+    font-weight: bold;
+    font-size: 1em;
+  }
+
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  max-width: 600px;
+  margin: 10px auto;
+  background-color: #111;
+
+  img {
+    width: auto;
+    max-height: 200px;
+  }
+
+  .card-art {
+    cursor: pointer;
+  }
+
+  .effect-block {
+    font-size: 0.8em;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    img {
+      max-width: 90%;
+      max-height: 90%;
+    }
+  }
+
+  .statline {
+    display: flex;
+    justify-content: right;
+    margin-top: 10px;
+  }
+}

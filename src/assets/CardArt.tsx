@@ -1,0 +1,47 @@
+import React, {useEffect, useState} from "react";
+import '../Card.scss';
+
+interface CardArtProps {
+  src: string;
+  alt: string;
+}
+
+const CardArt: React.FC<CardArtProps> = ({src, alt}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  }
+
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      setIsExpanded(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isExpanded) {
+      document.addEventListener('keydown', handleKeyDown);
+    } else {
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [isExpanded]);
+
+  return (
+    <>
+      <img
+        className={`card-art ${isExpanded ? "expanded" : ""}`}
+        src={src}
+        alt={alt}
+        onClick={toggleExpand}/>
+      {isExpanded && <div className={"overlay"} onClick={toggleExpand}>
+          <img src={src} alt={alt}/>
+      </div>}
+    </>
+  )
+}
+
+export {CardArt}
