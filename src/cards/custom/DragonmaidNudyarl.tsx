@@ -1,5 +1,12 @@
 import {MonsterCard} from "../../components/MonsterCard.tsx";
-import {ContinuousEffect, EffectCondition, EffectCost, EffectMain, EffectText} from "../../components/EffectText.tsx";
+import {
+  ContinuousEffect,
+  EffectCondition,
+  EffectCost,
+  EffectMain,
+  QuickEffect,
+  TriggerEffect,
+} from "../../components/EffectText.tsx";
 
 import CardArt from "../../assets/images/Dragonmaid/DragonmaidNudyarl.webp";
 import {MonsterAttribute} from "../../components/CardEnums.ts";
@@ -18,20 +25,20 @@ const DragonmaidNudyarl: React.FC = () => {
       the (2) effect of this card.</>,
     effects: [
       ContinuousEffect(<>Cannot be destroyed by card effects while you control a Fusion Monster.</>),
-      EffectText(
+      QuickEffect(
         <>
           {EffectCondition(<>(Quick Effect)</>)}
           {EffectCost(<>You can discard this card, then target 1 monster in either GY</>)}
           {EffectMain(<>shuffle it into the Deck.</>)}
-        </>
+        </>,
       ),
-      EffectText(
+      TriggerEffect(
         <>
           {EffectCondition(<>At the end of the Battle Phase</>)}
           {EffectMain(<>You can return this card to the hand, and if you do, Special Summon 1 Level 2 "Dragonmaid"
             monster from your hand.</>)}
-        </>
-      )
+        </>,
+      ),
     ],
     atk: 2600,
     def: 1600,

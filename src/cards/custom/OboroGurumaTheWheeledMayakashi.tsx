@@ -1,5 +1,5 @@
 import {MonsterCard} from "../../components/MonsterCard.tsx";
-import {EffectCondition, EffectMain, EffectText} from "../../components/EffectText.tsx";
+import {EffectCondition, EffectMain, TriggerEffect} from "../../components/EffectText.tsx";
 
 import CardArt from "../../assets/images/Mayakashi/OboroGurumaTheWheeledMayakashi.webp";
 import {MonsterAttribute} from "../../components/CardEnums.ts";
@@ -16,12 +16,12 @@ const OboroGurumaTheWheeledMayakashi: React.FC = () => {
     effectRestrictions: <>You can only control 1 card with this name.
       You can only use the (1) and (2) effects of this card's name once per turn.</>,
     effects: [
-      EffectText(<>
+      TriggerEffect(<>
         {EffectCondition(<>If a Synchro Monster you control whose original Level is 5 is destroyed by battle
           or an opponent's card effect while this card is in the GY</>)}
         {EffectMain(<>You can banish 1 other Zombie monster from your GY, and if you do, Special Summon this card.</>)}
       </>),
-      EffectText(<>
+      TriggerEffect(<>
           {EffectCondition(<>If this card is Special Summoned from the GY</>)}
           {EffectMain(<>You can draw 2 cards, then discard 1 card, then, if that discarded card was a "Mayakashi" card
             you can apply this effect:

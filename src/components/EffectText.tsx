@@ -1,8 +1,9 @@
 import {ReactNode} from "react";
 import "../style/CardText.scss"
 import ContinuousIcon from "../assets/images/properties/Continuous.svg";
+import QuickIcon from "../assets/images/properties/Quick-Play.svg";
 
-function EffectCondition(conditionText: ReactNode) {
+export function EffectCondition(conditionText: ReactNode) {
   return (
     <>
       <span className={"effect-condition"}>{conditionText}</span>:&nbsp;
@@ -10,7 +11,7 @@ function EffectCondition(conditionText: ReactNode) {
   )
 }
 
-function EffectCost(costText: ReactNode) {
+export function EffectCost(costText: ReactNode) {
   return (
     <>
       <span className={"effect-cost"}>{costText}</span>;&nbsp;
@@ -18,13 +19,13 @@ function EffectCost(costText: ReactNode) {
   )
 }
 
-function EffectMain(effectText: ReactNode) {
+export function EffectMain(effectText: ReactNode) {
   return (
     <span className={"effect-main"}>{effectText}</span>
   )
 }
 
-function ContinuousEffect(effectText: ReactNode) {
+export function ContinuousEffect(effectText: ReactNode) {
   return (
     <>
       <img className={"inline-logo"} src={ContinuousIcon} alt={"Continuous Icon"}/>
@@ -33,10 +34,33 @@ function ContinuousEffect(effectText: ReactNode) {
   )
 }
 
-function EffectText(effectText: ReactNode) {
+export function QuickEffect(effectText: ReactNode) {
+  return (
+    <>
+      <img className={"inline-logo"} src={QuickIcon} alt={"Quick Icon"}/>
+      <span className={"quick-effect"}>{effectText}</span>
+    </>
+  )
+}
+
+export function TriggerEffect(effectText: ReactNode) {
+  return (
+    <>
+      <span className={"trigger-effect"}>{effectText}</span>
+    </>
+  );
+}
+
+export function IgnitionEffect(effectText: ReactNode) {
+  return (
+    <>
+      <span className={"ignition-effect"}>{effectText}</span>
+    </>
+  );
+}
+
+export function EffectText(effectText: ReactNode) {
   return (
     <span className={"effect"}>{effectText}</span>
   );
 }
-
-export {ContinuousEffect, EffectCondition, EffectCost, EffectMain, EffectText}

@@ -1,5 +1,12 @@
 import {MonsterCard} from "../../components/MonsterCard.tsx";
-import {ContinuousEffect, EffectCondition, EffectCost, EffectMain, EffectText} from "../../components/EffectText.tsx";
+import {
+  ContinuousEffect,
+  EffectCondition,
+  EffectCost,
+  EffectMain,
+  QuickEffect,
+  TriggerEffect,
+} from "../../components/EffectText.tsx";
 
 import CardArt from "../../assets/images/Dragonmaid/DragonmaidLorpar.webp";
 import {MonsterAttribute} from "../../components/CardEnums.ts";
@@ -18,21 +25,21 @@ const DragonmaidLorpar: React.FC = () => {
       the (2) effect of this card.</>,
     effects: [
       ContinuousEffect(<>Cannot be destroyed by card effects while you control a Fusion Monster.</>),
-      EffectText(
+      QuickEffect(
         <>
           {EffectCondition(<>(Quick Effect)</>)}
           {EffectCost(<>You can discard this card</>)}
           {EffectMain(<>target 1 face-up monster on the field; players cannot activate that target's effects on the
             field this turn.</>)}
-        </>
+        </>,
       ),
-      EffectText(
+      TriggerEffect(
         <>
           {EffectCondition(<>At the end of the Battle Phase</>)}
           {EffectMain(<>You can return this card to the hand, and if you do, Special Summon 1 Level 3 "Dragonmaid"
             monster from your hand.</>)}
-        </>
-      )
+        </>,
+      ),
     ],
     atk: 2700,
     def: 1700,

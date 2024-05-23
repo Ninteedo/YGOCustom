@@ -1,5 +1,12 @@
 import {MonsterCard} from "../../components/MonsterCard.tsx";
-import {ContinuousEffect, EffectCondition, EffectCost, EffectMain, EffectText} from "../../components/EffectText.tsx";
+import {
+  ContinuousEffect,
+  EffectCondition,
+  EffectCost,
+  EffectMain,
+  IgnitionEffect,
+  TriggerEffect,
+} from "../../components/EffectText.tsx";
 
 import CardArt from "../../assets/images/Mayakashi/YaskaTheSkeletalMayakashi.webp";
 import {MonsterAttribute} from "../../components/CardEnums.ts";
@@ -16,12 +23,12 @@ const YashaTheSkeletalMayakashi: React.FC = () => {
     effectRestrictions: <>You can only use the (2) and (3) effects of this card's name once per turn.</>,
     effects: [
       ContinuousEffect(<>You cannot Special Summon monsters from the Extra Deck, except "Mayakashi" monsters.</>),
-      EffectText(<>
+      IgnitionEffect(<>
         {EffectCost(<>You can discard 1 other card</>)}
         {EffectMain(<>Special Summon this card from your hand or GY, then if you discarded a "Mayakashi" card to
           activate this effect, you can draw 1 card.</>)}
       </>),
-      EffectText(<>
+      TriggerEffect(<>
           {EffectCondition(<>If this card is Normal or Special Summoned</>)}
           {EffectMain(<>You can send 1 "Mayakashi" monster from your Deck to the GY, or if your opponent controls a
             monster, you can add it to your hand instead.</>)}
