@@ -1,10 +1,10 @@
-import './style/App.css'
+import "./style/App.css"
 import {
-  createBrowserRouter,
+  createHashRouter,
   Outlet,
   RouterProvider,
-  ScrollRestoration
-} from 'react-router-dom';
+  ScrollRestoration,
+} from "react-router-dom";
 import {CardPage} from "./pages/CardPage.tsx";
 import {HomePage} from "./pages/HomePage.tsx";
 import {CustomCardPage} from "./pages/CustomCardPage.tsx";
@@ -20,29 +20,29 @@ function Layout() {
 }
 
 function App() {
-  const router = createBrowserRouter(([
+  const router = createHashRouter(([
     {
       path: "/",
       element: <Layout/>,
       children: [
         {
           index: true,
-          element: <HomePage/>
+          element: <HomePage/>,
         },
         {
           path: "card/:cardName",
-          element: <CardPage/>
+          element: <CardPage/>,
         },
         {
           path: "card/custom/:cardName",
-          element: <CustomCardPage/>
+          element: <CustomCardPage/>,
         },
         {
           path: "archetypes/:archetype",
-          element: <ArchetypePage/>
-        }
-      ]
-    }
+          element: <ArchetypePage/>,
+        },
+      ],
+    },
   ]));
   return (
     <>
