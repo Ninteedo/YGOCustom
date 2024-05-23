@@ -1,7 +1,7 @@
 import {MonsterCard} from "../../components/MonsterCard.tsx";
 import {ContinuousEffect, EffectCondition, EffectCost, EffectMain, EffectText} from "../../components/EffectText.tsx";
 
-import CardArt from "../../assets/images/DragonmaidNudyarl.png";
+import CardArt from "../../assets/images/Dragonmaid/DragonmaidNudyarl.webp";
 import {MonsterAttribute} from "../../components/CardEnums.ts";
 
 const DragonmaidNudyarl: React.FC = () => {

@@ -1,7 +1,7 @@
 import {MonsterCard} from "../../components/MonsterCard.tsx";
 import {ContinuousEffect, EffectCondition, EffectCost, EffectMain, EffectText} from "../../components/EffectText.tsx";
 
-import DragonmaidMarchebArt from "../../assets/images/DragonmaidMarcheb.png";
+import DragonmaidMarchebArt from "../../assets/images/Dragonmaid/DragonmaidMarcheb.webp";
 import React from "react";
 import {MonsterAttribute} from "../../components/CardEnums.ts";
 
