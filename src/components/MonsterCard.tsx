@@ -27,7 +27,7 @@ function CardName({name, id, link}: { name: string, id: string, link: boolean })
 function MonsterInfo({level, attribute}: { level: number, attribute: MonsterAttribute }): ReactNode {
   const attributeIcon = MonsterAttributeImage(attribute);
   const attributeIconElement = <img className={"attribute-icon"} src={attributeIcon} alt={attribute + " icon"}/>;
-  return <h4>Level {level} {attributeIconElement} {attribute} Monster</h4>;
+  return <h4 className={"monster-info"}>Level {level} {attributeIconElement} {attribute} Monster</h4>;
 }
 
 function CategoriesList({categories}: { categories: string[] }): ReactNode {
@@ -53,7 +53,7 @@ function EffectBlock({effectRestrictions, effects}: {
 function StatLine({atk, def}: { atk: number, def: number }): ReactNode {
   return (
     <div className="statline">
-      <span><b>ATK</b>/{atk} <b>DEF</b>/{def}</span>
+      <span><span><b>ATK</b>/{atk}</span>&nbsp;<span><b>DEF</b>/{def}</span></span>
     </div>
   );
 }

@@ -1,10 +1,11 @@
 import {ReactNode} from "react";
-import '../style/CardText.scss'
+import "../style/CardText.scss"
+import ContinuousIcon from "../assets/images/properties/Continuous.svg";
 
 function EffectCondition(conditionText: ReactNode) {
   return (
     <>
-    <span className={"effect-condition"}>{conditionText}</span>:&nbsp;
+      <span className={"effect-condition"}>{conditionText}</span>:&nbsp;
     </>
   )
 }
@@ -25,7 +26,10 @@ function EffectMain(effectText: ReactNode) {
 
 function ContinuousEffect(effectText: ReactNode) {
   return (
-    <span className={"continuous-effect"}>{effectText}</span>
+    <>
+      <img className={"inline-logo"} src={ContinuousIcon} alt={"Continuous Icon"}/>
+      <span className={"continuous-effect"}>{effectText}</span>
+    </>
   )
 }
 
@@ -35,4 +39,4 @@ function EffectText(effectText: ReactNode) {
   );
 }
 
-export { ContinuousEffect, EffectCondition, EffectCost, EffectMain, EffectText }
+export {ContinuousEffect, EffectCondition, EffectCost, EffectMain, EffectText}

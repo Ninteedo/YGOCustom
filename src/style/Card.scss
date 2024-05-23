@@ -3,11 +3,11 @@
     margin: 0;
   }
 
-  h4 {
+  .monster-info {
     font-weight: normal;
   }
 
-  h5 {
+  .categories {
     font-weight: bold;
     font-size: 1em;
   }
@@ -19,7 +19,7 @@
   margin: 10px auto;
   background-color: #111;
 
-  img {
+  img.card-art {
     width: auto;
     height: 200px;
   }
