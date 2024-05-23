@@ -1,4 +1,4 @@
-import '../style/Card.scss';
+import "../style/Card.scss";
 import {ReactNode} from "react";
 import {CardArt} from "./CardArt.tsx";
 import {Link} from "react-router-dom";
@@ -19,43 +19,69 @@ export interface MonsterCardProps extends BaseCardProps {
   def: number;
 }
 
-const MonsterCard: React.FC<MonsterCardProps> =
-  ({
-     id,
-     name,
-     level,
-     attribute,
-     type,
-     art,
-     categories,
-     effectRestrictions,
-     effects,
-     atk,
-     def
-   }) => {
-    const extendedCategories = [type];
-    extendedCategories.push(...categories);
-    const attributeIcon = MonsterAttributeImage(attribute);
-    const attributeIconElement = <img className={"attribute-icon"} src={attributeIcon} alt={attribute + " icon"}/>;
-    return (
-      <div className="card">
-        <h3 className="card-name"><Link to={`/card/custom/${id}`}>{name}</Link></h3>
-        <h4>Level {level} {attributeIconElement} {attribute} Monster</h4>
-        <CardArt src={art} alt={`Art for ${name}`}/>
-        <h5 className="categories">[{extendedCategories.map(category => `${category}`).join(' / ')}]</h5>
-        <hr/>
-        <div className="effect-block">
-          <p>{effectRestrictions}</p>
-          <ol className="effect-list">
-            {effects.map((effect, index) => <li key={index}>{effect}</li>)}
-          </ol>
-        </div>
-        <div className="statline">
-          <span><b>ATK</b>/{atk} <b>DEF</b>/{def}</span>
-        </div>
-      </div>
-    );
-  };
+function CardName({name, id, link}: { name: string, id: string, link: boolean }): ReactNode {
+  const inner = link ? <Link to={`/card/custom/${id}`}>{name}</Link> : name;
+  return <h3 className="card-name">{inner}</h3>;
+}
 
+function MonsterInfo({level, attribute}: { level: number, attribute: MonsterAttribute }): ReactNode {
+  const attributeIcon = MonsterAttributeImage(attribute);
+  const attributeIconElement = <img className={"attribute-icon"} src={attributeIcon} alt={attribute + " icon"}/>;
+  return <h4>Level {level} {attributeIconElement} {attribute} Monster</h4>;
+}
 
-export {MonsterCard}
+function CategoriesList({categories}: { categories: string[] }): ReactNode {
+  return (
+    <h5 className="categories">[{categories.map(category => `${category}`).join(" / ")}]</h5>
+  );
+}
+
+function EffectBlock({effectRestrictions, effects}: {
+  effectRestrictions: ReactNode,
+  effects: ReactNode[]
+}): ReactNode {
+  return (
+    <div className="effect-block">
+      <p>{effectRestrictions}</p>
+      <ol className="effect-list">
+        {effects.map((effect, index) => <li key={index}>{effect}</li>)}
+      </ol>
+    </div>
+  );
+}
+
+function StatLine({atk, def}: { atk: number, def: number }): ReactNode {
+  return (
+    <div className="statline">
+      <span><b>ATK</b>/{atk} <b>DEF</b>/{def}</span>
+    </div>
+  );
+}
+
+export function MonsterCard({
+  id,
+  name,
+  level,
+  attribute,
+  type,
+  art,
+  categories,
+  effectRestrictions,
+  effects,
+  atk,
+  def,
+}: MonsterCardProps) {
+  const extendedCategories = [type];
+  extendedCategories.push(...categories);
+  return (
+    <div className="card">
+      <CardName name={name} id={id} link={true}/>
+      <MonsterInfo level={level} attribute={attribute}/>
+      <CardArt src={art} alt={`Art for ${name}`}/>
+      <CategoriesList categories={extendedCategories}/>
+      <hr/>
+      <EffectBlock effectRestrictions={effectRestrictions} effects={effects}/>
+      <StatLine atk={atk} def={def}/>
+    </div>
+  );
+}
