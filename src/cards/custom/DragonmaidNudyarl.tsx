@@ -2,13 +2,14 @@ import {MonsterCard} from "../../components/MonsterCard.tsx";
 import {ContinuousEffect, EffectCondition, EffectCost, EffectMain, EffectText} from "../../components/EffectText.tsx";
 
 import CardArt from "../../assets/images/DragonmaidNudyarl.png";
+import {MonsterAttribute} from "../../components/CardEnums.ts";
 
 const DragonmaidNudyarl: React.FC = () => {
   const cardData = {
     id: "DragonmaidNudyarl",
     name: "Dragonmaid Nudyarl",
     level: 7,
-    attribute: "WATER",
+    attribute: MonsterAttribute.WATER,
     type: "Dragon",
     art: CardArt,
     categories: ["Effect"],

@@ -3,6 +3,7 @@ import {ContinuousEffect, EffectCondition, EffectCost, EffectMain, EffectText} f
 
 import DragonmaidMarchebArt from "../../assets/images/DragonmaidMarcheb.png";
 import React from "react";
+import {MonsterAttribute} from "../../components/CardEnums.ts";
 
 
 const DragonmaidMarcheb: React.FC = () => {
@@ -10,7 +11,7 @@ const DragonmaidMarcheb: React.FC = () => {
     id: "DragonmaidMarcheb",
     name: "Dragonmaid Marcheb",
     level: 9,
-    attribute: "DARK",
+    attribute: MonsterAttribute.DARK,
     type: "Dragon",
     art: DragonmaidMarchebArt,
     categories: ["Effect"],

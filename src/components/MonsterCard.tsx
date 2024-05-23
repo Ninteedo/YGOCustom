@@ -3,12 +3,13 @@ import {ReactNode} from "react";
 import {CardArt} from "./CardArt.tsx";
 import {Link} from "react-router-dom";
 import {BaseCardProps} from "./BaseCard.tsx";
+import {MonsterAttribute, MonsterAttributeImage} from "./CardEnums.ts";
 
 export interface MonsterCardProps extends BaseCardProps {
   id: string;
   name: string;
   level: number;
-  attribute: string;
+  attribute: MonsterAttribute;
   type: string;
   art: string;
   categories: string[];
@@ -32,12 +33,14 @@ const MonsterCard: React.FC<MonsterCardProps> =
      atk,
      def
    }) => {
-    let extendedCategories = [type];
+    const extendedCategories = [type];
     extendedCategories.push(...categories);
+    const attributeIcon = MonsterAttributeImage(attribute);
+    const attributeIconElement = <img className={"attribute-icon"} src={attributeIcon} alt={attribute + " icon"}/>;
     return (
       <div className="card">
         <h3 className="card-name"><Link to={`/card/custom/${id}`}>{name}</Link></h3>
-        <h4>Level {level} {attribute} Monster</h4>
+        <h4>Level {level} {attributeIconElement} {attribute} Monster</h4>
         <CardArt src={art} alt={`Art for ${name}`}/>
         <h5 className="categories">[{extendedCategories.map(category => `${category}`).join(' / ')}]</h5>
         <hr/>
