@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import '../Card.scss';
+import '../style/Card.scss';
 
 interface CardArtProps {
   src: string;

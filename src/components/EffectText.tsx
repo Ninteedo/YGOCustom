@@ -1,5 +1,5 @@
 import {ReactNode} from "react";
-import '../CardText.scss'
+import '../style/CardText.scss'
 
 function EffectCondition(conditionText: ReactNode) {
   return (

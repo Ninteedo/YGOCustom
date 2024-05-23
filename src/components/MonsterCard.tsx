@@ -1,4 +1,4 @@
-import '../Card.scss';
+import '../style/Card.scss';
 import {ReactNode} from "react";
 import {CardArt} from "./CardArt.tsx";
 import {Link} from "react-router-dom";
