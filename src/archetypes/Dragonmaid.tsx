@@ -1,17 +1,20 @@
-import React from "react";
 import DragonmaidMarcheb, {DragonmaidMarchebNotes} from "../cards/custom/DragonmaidMarcheb.tsx";
 import DragonmaidNudyarl from "../cards/custom/DragonmaidNudyarl.tsx";
 import DragonmaidLorpar from "../cards/custom/DragonmaidLorpar.tsx";
 import {CardAndNotes} from "../components/CardAndNotes.tsx";
+import {YugipediaLink} from "../components/YugipediaLink.tsx";
+import {Link} from "react-router-dom";
+import HouseDragonmaid from "../cards/custom/HouseDragonmaid.tsx";
 
-const DragonmaidArchetype: React.FC = () => {
+export default function DragonmaidArchetype() {
   return (
     <div>
       <h1>Dragonmaids Updated</h1>
       <p>
         Dragonmaid is a Fusion archetype that can be played as a midrange or control deck. It is characterised by
         its series of low-level maid-form monsters that provide great utility and resource generation, who can transform
-        into their high-level dragon-form counterparts by returning themselves to the hand.
+        into their high-level dragon-form counterparts by returning themselves to the hand.&nbsp;
+        {<YugipediaLink page={"Dragonmaid"} text={"Wiki page"} />}
       </p>
       <h2>Background</h2>
       <h3>Themes</h3>
@@ -33,12 +36,15 @@ const DragonmaidArchetype: React.FC = () => {
       <CardAndNotes card={<DragonmaidMarcheb/>} notes={<DragonmaidMarchebNotes/>} />
       <h3>Revised Cards</h3>
       <CardAndNotes card={<><DragonmaidNudyarl/><DragonmaidLorpar/></>} notes={<QuickEffectBigDragonNotes/>} />
+      <CardAndNotes card={<HouseDragonmaid/>} notes={<HouseDragonmaidNotes/>} />
 
     </div>
   )
 }
 
-const QuickEffectBigDragonNotes = () => {
+function QuickEffectBigDragonNotes() {
+  const lorparRulingUrl = "https://www.db.yugioh-card.com/yugiohdb/faq_search.action?ope=5&fid=22769&request_locale=ja"
+
   return (
     <>
       <p>
@@ -55,7 +61,8 @@ const QuickEffectBigDragonNotes = () => {
         Lorpar's effect prevents the targeted monster from activating its effects for the rest of the turn after it
         resolves. This is generally worse than negating a monster's effects, since it has to be used preemptively and
         is not useful against quick effects or effects that have already triggered, such as on-summon effects. As an
-        upside, since it affects players, it can prevent unaffected monsters from activating their effects.
+        upside, since it affects players, it can prevent unaffected monsters from activating their effects
+        (<Link to={lorparRulingUrl}>ruling</Link>).
       </p>
       <p>
         To prevent these from being used as handtraps in every other deck, an additional restriction where the player
@@ -66,4 +73,9 @@ const QuickEffectBigDragonNotes = () => {
   );
 }
 
-export default DragonmaidArchetype
+function HouseDragonmaidNotes() {
+  return (
+    <p>The change is simply replacing the "when" condition in the (2) effect with an "if" condition, so that it doesn't
+    miss timing when using Dragonmaid Tidying.</p>
+  )
+}

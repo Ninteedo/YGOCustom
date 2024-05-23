@@ -21,7 +21,7 @@
 
   img {
     width: auto;
-    max-height: 200px;
+    height: 200px;
   }
 
   .card-art {
@@ -89,7 +89,13 @@
   }
 }
 
-.attribute-icon {
+img.attribute-icon {
   height: 1em;
   vertical-align: text-bottom;
+}
+
+.inline-logo {
+    display: inline-block;
+    height: 1em;
+    vertical-align: middle;
 }

@@ -13,7 +13,7 @@ export interface MonsterCardProps extends BaseCardProps {
   type: string;
   art: string;
   categories: string[];
-  effectRestrictions: ReactNode;
+  effectRestrictions?: ReactNode;
   effects: ReactNode[];
   atk: number;
   def: number;
