@@ -2,6 +2,7 @@ import {ReactNode} from "react";
 import "../style/CardText.scss"
 import ContinuousIcon from "../assets/images/properties/Continuous.svg";
 import QuickIcon from "../assets/images/properties/Quick-Play.svg";
+import TriggerIcon from "../assets/images/properties/Trigger.svg";
 
 export function EffectCondition(conditionText: ReactNode) {
   return (
@@ -46,6 +47,7 @@ export function QuickEffect(effectText: ReactNode) {
 export function TriggerEffect(effectText: ReactNode) {
   return (
     <>
+      <img className={"inline-logo"} src={TriggerIcon} alt={"Trigger Icon"}/>
       <span className={"trigger-effect"}>{effectText}</span>
     </>
   );
