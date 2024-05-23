@@ -13,7 +13,11 @@ const CardPage: React.FC = () => {
       .catch(() => {
         setCardComponent(<div>Card not found</div>);
       });
-  })
+  }, [cardName])
+
+  useEffect(() => {
+    document.title = `${cardName}`;
+  }, [cardName])
 
   return (
     <div>

@@ -13,7 +13,11 @@ const ArchetypePage: React.FC = () => {
       .catch(() => {
         setArchetypeComponent(<div>Archetype not found</div>);
       });
-  })
+  }, [archetype])
+
+  useEffect(() => {
+    document.title = `${archetype}`;
+  }, [archetype]);
 
   return (
     <div>
