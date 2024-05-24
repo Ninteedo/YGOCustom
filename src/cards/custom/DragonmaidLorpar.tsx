@@ -28,8 +28,8 @@ const DragonmaidLorpar: React.FC = () => {
       QuickEffect(
         <>
           {EffectCondition(<>(Quick Effect)</>)}
-          {EffectCost(<>You can discard this card</>)}
-          {EffectMain(<>target 1 face-up monster on the field; players cannot activate that target's effects on the
+          {EffectCost(<>You can discard this card, then target 1 face-up monster on the field</>)}
+          {EffectMain(<>players cannot activate that target's effects on the
             field this turn.</>)}
         </>,
       ),
