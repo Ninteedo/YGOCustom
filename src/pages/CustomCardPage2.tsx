@@ -1,16 +1,20 @@
-import React, {ReactNode, useEffect, useState} from "react";
+import {ReactNode, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {CardDetail} from "../components/card/CardDetail.tsx";
 import {loadCard} from "../components/card/abstract/CardLoader.ts";
 
-const CustomCardPage2: React.FC = () => {
+export function CustomCardPage2() {
   const {cardName} = useParams<{ cardName: string }>();
   const [CardComponent, setCardComponent] = useState<ReactNode | null>(null);
 
   useEffect(() => {
     const fetchCard = async () => {
       const loadedCard = await loadCard(cardName);
-      setCardComponent(<CardDetail card={loadedCard}/>);
+      if (loadedCard === null) {
+        setCardComponent(<div>Card "{cardName}" not found</div>);
+      } else {
+        setCardComponent(<CardDetail card={loadedCard}/>);
+      }
     };
     fetchCard();
   }, [cardName])
@@ -25,5 +29,3 @@ const CustomCardPage2: React.FC = () => {
     </div>
   )
 }
-
-export {CustomCardPage2}

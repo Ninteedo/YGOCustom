@@ -3,7 +3,7 @@ import {MonsterAttribute} from "./MonsterAttribute.ts";
 import {MonsterCategory} from "./MonsterCategory.ts";
 import {MonsterType, monsterTypefromString} from "./MonsterType.ts";
 import React from "react";
-import {MonsterCard, MonsterCardProps} from "../../MonsterCard.tsx";
+import {MonsterCard, MonsterCardProps} from "./MonsterCardShared.tsx";
 import Effect from "../effect/Effect.tsx";
 import {parseEffect} from "../effect/EffectCard.ts";
 import EffectRestriction from "../effect/EffectRestriction.tsx";

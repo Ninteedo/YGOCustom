@@ -3,7 +3,7 @@ import {parseMonsterCard} from "./monster/BaseMonsterCard.ts";
 
 const CARD_DIR = "cards"
 
-export async function loadCard(id: string): Promise<BaseCard | null> {
+export async function loadCard(id: string | undefined): Promise<BaseCard | null> {
   // Load card JSON from file, then create an appropriate card object, based on the card type
   return fetch(`${CARD_DIR}/${id}.json`)
     .then((response) => response.json())

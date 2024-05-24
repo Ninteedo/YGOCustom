@@ -5,5 +5,7 @@ export interface BaseCard {
   name: string;
   art: string;
 
+  toCardElement(): ReactNode;
+
   toCardDetail(): ReactNode;
 }
