@@ -21,6 +21,8 @@ export class MainEffectMonster implements EffectMonster {
   public readonly monsterTypes: MonsterType[];
   public readonly level: number;
 
+  private readonly cardData: MonsterCardProps;
+
   constructor(
     art: string,
     atk: number,
@@ -45,6 +47,20 @@ export class MainEffectMonster implements EffectMonster {
     this.name = name;
     this.monsterTypes = monsterTypes;
     this.level = level;
+
+    this.cardData = {
+      id: this.id,
+      name: this.name,
+      level: this.level,
+      attribute: this.attribute,
+      monsterType: this.monsterTypes,
+      art: this.art,
+      categories: this.categories,
+      effectRestrictions: this.effectRestrictions,
+      effects: this.effects,
+      atk: this.atk,
+      def: this.def,
+    };
   }
 
   public static fromJson(json: string): MainEffectMonster {
@@ -69,21 +85,11 @@ export class MainEffectMonster implements EffectMonster {
   }
 
   public toCardDetail(): React.ReactNode {
-    const cardData: MonsterCardProps = {
-      id: this.id,
-      name: this.name,
-      level: this.level,
-      attribute: this.attribute,
-      monsterType: this.monsterTypes,
-      art: this.art,
-      categories: this.categories,
-      effectRestrictions: this.effectRestrictions,
-      effects: this.effects,
-      atk: this.atk,
-      def: this.def,
-    };
+    return MonsterCard(this.cardData);
+  }
 
-    return MonsterCard(cardData);
+  public toCardElement(): React.ReactNode {
+    return MonsterCard(this.cardData);
   }
 }
 

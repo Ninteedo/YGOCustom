@@ -1,5 +1,6 @@
 import {BaseCard} from "./BaseCard.ts";
 import {parseMonsterCard} from "./monster/BaseMonsterCard.ts";
+import {ReactNode} from "react";
 
 const CARD_DIR = "cards"
 
@@ -24,4 +25,8 @@ export async function loadCard(id: string | undefined): Promise<BaseCard | null>
       console.error(`Error loading card ${id}: ${error}`);
       return null;
     });
+}
+
+export function MissingCard({id}: { id: string }): ReactNode {
+  return <div>Card {id} not found</div>;
 }

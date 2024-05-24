@@ -1,7 +1,7 @@
 import {ReactNode, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import {CardDetail} from "../components/card/CardDetail.tsx";
-import {loadCard} from "../components/card/abstract/CardLoader.ts";
+import CardDetail from "../components/card/CardDetail.tsx";
+import {loadCard} from "../components/card/abstract/CardLoader.tsx";
 
 export function CustomCardPage2() {
   const {cardName} = useParams<{ cardName: string }>();

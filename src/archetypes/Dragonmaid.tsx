@@ -1,10 +1,7 @@
-import DragonmaidMarcheb from "../cards/custom/DragonmaidMarcheb.tsx";
-import DragonmaidNudyarl from "../cards/custom/DragonmaidNudyarl.tsx";
-import DragonmaidLorpar from "../cards/custom/DragonmaidLorpar.tsx";
 import {CardAndNotes} from "../components/card/CardAndNotes.tsx";
 import {YugipediaLink} from "../components/YugipediaLink.tsx";
 import {Link} from "react-router-dom";
-import HouseDragonmaid from "../cards/custom/HouseDragonmaid.tsx";
+import CardElement from "../components/card/CardElement.tsx";
 
 export default function DragonmaidArchetype() {
   return (
@@ -34,10 +31,12 @@ export default function DragonmaidArchetype() {
       </ul>
       <h2>Changes</h2>
       <h3>New Cards</h3>
-      <CardAndNotes card={<DragonmaidMarcheb/>} notes={<MarchebNotes/>}/>
+      <CardAndNotes card={<CardElement id={"DragonmaidMarcheb"}/>} notes={<MarchebNotes/>}/>
       <h3>Revised Cards</h3>
-      <CardAndNotes card={<><DragonmaidNudyarl/><DragonmaidLorpar/></>} notes={<QuickEffectBigDragonNotes/>}/>
-      <CardAndNotes card={<HouseDragonmaid/>} notes={<HouseDragonmaidNotes/>}/>
+      <CardAndNotes
+        card={<>{<CardElement id={"DragonmaidNudyarl"}/>}{<CardElement id={"DragonmaidLorpar"}/>}</>}
+        notes={<QuickEffectBigDragonNotes/>}/>
+      <CardAndNotes card={<CardElement id={"HouseDragonmaid"}/>} notes={<HouseDragonmaidNotes/>}/>
 
     </div>
   )
