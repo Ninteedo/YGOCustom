@@ -14,7 +14,7 @@ export default class TriggerEffect extends Effect {
   public render(): ReactNode {
     return (
       <>
-        <img className={"inline-logo"} src={TriggerIcon} alt={"Trigger Icon"}/>
+        <img className={"inline-logo"} src={TriggerIcon} alt={"Trigger Icon"} title={"Trigger Effect"}/>
         <span className={"trigger-effect"}>{this.renderClauses(this.clauses)}</span>
       </>
     )

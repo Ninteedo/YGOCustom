@@ -1,0 +1,39 @@
+{
+  "id": "OboroGurumaTheWheeledMayakashi",
+  "name": "Oboro-Guruma, the Wheeled Mayakashi",
+  "cardType": "Monster",
+  "kind": "Synchro",
+  "level": 3,
+  "attribute": "EARTH",
+  "type": [
+    "Zombie"
+  ],
+  "art": "Mayakashi/OboroGurumaTheWheeledMayakashi.webp",
+  "categories": [
+    "Synchro",
+    "Effect"
+  ],
+  "effectRestrictions": [
+    "You can only control 1 card with this name.",
+    "You can only use the (1) and (2) effects of this card's name once per turn."
+  ],
+  "effects": [
+    {
+      "type": "Trigger",
+      "condition": "If a Synchro Monster you control whose original Level is 5 battle or an opponent's card effect while this card is in the GY",
+      "main": "You can banish 1 other Zombie monster from your GY, and if you do, Special Summon this card."
+    },
+    {
+      "type": "Trigger",
+      "condition": "If this card is Special Summoned from the GY",
+      "main": "You can draw 2 cards, then discard 1 card, then, if that discarded card was a \"Mayakashi\" card you can apply this effect:\n● Your monsters cannot be destroyed by battle for the rest of this turn."
+    }
+  ],
+  "atk": 800,
+  "def": 2100,
+  "limitation": 3,
+  "source": [
+    "Konami",
+    "RGH"
+  ]
+}

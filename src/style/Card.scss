@@ -30,6 +30,29 @@
 
   .effect-block {
     font-size: 0.8em;
+
+    .effect-list {
+      padding-left: 30px;
+
+      li {
+        box-sizing: border-box;
+        border-radius: 3px;
+        padding: 1px;
+
+        &.highlight {
+          border: 1px dashed #ccc;
+          background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        &:not(.highlight) {
+          border: 1px solid transparent;
+        }
+      }
+    }
+
+    .effect-reference {
+      border-bottom: 1px dashed #ccc;
+    }
   }
 
   .overlay {

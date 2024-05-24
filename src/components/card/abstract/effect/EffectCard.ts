@@ -1,4 +1,4 @@
-import EffectRestriction from "./EffectRestriction.ts";
+import EffectRestriction from "./EffectRestriction.tsx";
 import Effect from "./Effect.tsx";
 import QuickEffect from "./QuickEffect.tsx";
 import EffectClause from "./clause/EffectClause.ts";

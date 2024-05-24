@@ -1,4 +1,4 @@
-import DragonmaidMarcheb, {DragonmaidMarchebNotes} from "../cards/custom/DragonmaidMarcheb.tsx";
+import DragonmaidMarcheb from "../cards/custom/DragonmaidMarcheb.tsx";
 import DragonmaidNudyarl from "../cards/custom/DragonmaidNudyarl.tsx";
 import DragonmaidLorpar from "../cards/custom/DragonmaidLorpar.tsx";
 import {CardAndNotes} from "../components/card/CardAndNotes.tsx";
@@ -14,7 +14,7 @@ export default function DragonmaidArchetype() {
         Dragonmaid is a Fusion archetype that can be played as a midrange or control deck. It is characterised by
         its series of low-level maid-form monsters that provide great utility and resource generation, who can transform
         into their high-level dragon-form counterparts by returning themselves to the hand.&nbsp;
-        {<YugipediaLink page={"Dragonmaid"} text={"Wiki page"} />}
+        {<YugipediaLink page={"Dragonmaid"} text={"Wiki page"}/>}
       </p>
       <h2>Background</h2>
       <h3>Themes</h3>
@@ -28,18 +28,41 @@ export default function DragonmaidArchetype() {
       <ul>
         <li>Only has a single relevant Fusion Monster to summon - Dragonmaid Sheou.</li>
         <li>Only one Fusion Spell, and reliant on opening the materials required. Access to Dragonmaid Changeover
-        is easily interrupted by most popular handtraps.</li>
+          is easily interrupted by most popular handtraps.
+        </li>
         <li>Difficult to survive the first few turns, resource game is too long-term in the modern game.</li>
       </ul>
       <h2>Changes</h2>
       <h3>New Cards</h3>
-      <CardAndNotes card={<DragonmaidMarcheb/>} notes={<DragonmaidMarchebNotes/>} />
+      <CardAndNotes card={<DragonmaidMarcheb/>} notes={<MarchebNotes/>}/>
       <h3>Revised Cards</h3>
-      <CardAndNotes card={<><DragonmaidNudyarl/><DragonmaidLorpar/></>} notes={<QuickEffectBigDragonNotes/>} />
-      <CardAndNotes card={<HouseDragonmaid/>} notes={<HouseDragonmaidNotes/>} />
+      <CardAndNotes card={<><DragonmaidNudyarl/><DragonmaidLorpar/></>} notes={<QuickEffectBigDragonNotes/>}/>
+      <CardAndNotes card={<HouseDragonmaid/>} notes={<HouseDragonmaidNotes/>}/>
 
     </div>
   )
+}
+
+function MarchebNotes() {
+  return (
+    <>
+      <p>Chamber Dragonmaid is the only one of the maids to lack a dragon form. This is quite surprising, considering
+        how glaring the omission is, and how the maid-form was released in 2020.</p>,
+      <p>This card follows the same pattern as the other Dragon forms, with a continuous protection effect while you
+        control a Fusion Monster, a discard effect, and an effect that returns itself to hand to summon a maid from the
+        hand.</p>,
+      <p>The highest level maid should have the highest level dragon form, and so be the most powerful. This card has
+        enhanced effects compared to the other Dragon forms. The protection effect also gives it battle destruction
+        immunity. The return to hand summon can summon any maid, not just Chamber, similar to how Chamber can summon any
+        dragon form.</p>,
+      <p>The discard effect is the one with the widest range of possible effects. It could be a search effect, something
+        the archetype would greatly benefit from, and other players have suggested this. I opted for an additional way
+        to Fusion Summon, as the deck relies heavily on Dragonmaid Changeover - a card that is not always accessible if
+        the opponent disrupts the normal summon of a maid. As a quick effect, it could also be used to dodge targeting
+        effects such as Infinite Impermanence. This has the potential to summon Dragonmaid Sheou on turn 1 while going
+        second, which is a powerful play, but requires 3 specific cards in hand, so should not be too problematic.</p>
+    </>
+  );
 }
 
 function QuickEffectBigDragonNotes() {
@@ -76,6 +99,6 @@ function QuickEffectBigDragonNotes() {
 function HouseDragonmaidNotes() {
   return (
     <p>The change is simply replacing the "when" condition in the (2) effect with an "if" condition, so that it doesn't
-    miss timing when using Dragonmaid Tidying.</p>
+      miss timing when using Dragonmaid Tidying.</p>
   )
 }

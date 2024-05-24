@@ -6,7 +6,7 @@ import {BaseCardProps} from "./BaseCard.tsx";
 import {MonsterAttribute, MonsterAttributeImage} from "./abstract/monster/MonsterAttribute.ts";
 import {MonsterType} from "./abstract/monster/MonsterType.ts";
 import {MonsterCategory} from "./abstract/monster/MonsterCategory.ts";
-import EffectRestriction from "./abstract/effect/EffectRestriction.ts";
+import EffectRestriction from "./abstract/effect/EffectRestriction.tsx";
 import Effect from "./abstract/effect/Effect.tsx";
 
 export interface MonsterCardProps extends BaseCardProps {
@@ -47,16 +47,12 @@ function EffectBlock({effectRestrictions, effects, cardId}: {
 }): ReactNode {
   return (
     <div className="effect-block">
-      <p>{effectRestrictions.map(r => r.toString())}</p>
+      <p>{effectRestrictions.map(((r, index) => r.render(index, cardId)))}</p>
       <ol className="effect-list">
-        {effects.map((effect, index) => <li key={effectKey(cardId, index)}>{effect.render()}</li>)}
+        {effects.map((effect, index) => <li key={index} data-effect-index={index + 1}>{effect.render()}</li>)}
       </ol>
     </div>
   );
-}
-
-function effectKey(cardId: string, index: number): string {
-  return `${cardId}-effect-${index}`;
 }
 
 function StatLine({atk, def}: { atk: number, def: number }): ReactNode {
@@ -83,7 +79,7 @@ export function MonsterCard({
   const extendedCategories = monsterType.map(type => type.toString());
   extendedCategories.push(...categories.map(category => category.toString()));
   return (
-    <div className="card">
+    <div className="card" data-card-id={id}>
       <CardName name={name} id={id} link={true}/>
       <MonsterInfo level={level} attribute={attribute}/>
       <CardArt src={art} alt={`Art for ${name}`}/>

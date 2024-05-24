@@ -14,7 +14,7 @@ export default class QuickEffect extends Effect {
   public render(): ReactNode {
     return (
       <>
-        <img className={"inline-logo"} src={QuickIcon} alt={"Quick Icon"}/>
+        <img className={"inline-logo"} src={QuickIcon} alt={"Quick Icon"} title={"Quick Effect"}/>
         <span className={"quick-effect"}>{this.renderClauses(this.clauses)}</span>
       </>
     )

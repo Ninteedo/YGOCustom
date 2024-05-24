@@ -1,0 +1,42 @@
+{
+  "id": "YashaTheSkeletalMayakashi",
+  "name": "Yasha, The Skeletal Mayakashi",
+  "cardType": "Monster",
+  "kind": "Regular",
+  "level": 5,
+  "attribute": "DARK",
+  "type": [
+    "Zombie"
+  ],
+  "art": "Mayakashi/YashaTheSkeletalMayakashi.webp",
+  "categories": [
+    "Effect"
+  ],
+  "effectRestrictions": [
+    "You can only control 1 card with this name.",
+    "You can only use the (2) and (3) effects of this card's name once per turn."
+  ],
+  "effects": [
+    {
+      "type": "Continuous",
+      "main": "You cannot Special Summon monsters from the Extra Deck, except \"Mayakashi\" monsters."
+    },
+    {
+      "type": "Ignition",
+      "cost": "You can discard 1 other card",
+      "main": "Special Summon this card from your hand or GY, then if you discarded a \"Mayakashi\" card to activate this effect, you can draw 1 card."
+    },
+    {
+      "type": "Trigger",
+      "condition": "If this card is Normal or Special Summoned",
+      "main": "You can send 1 \"Mayakashi\" monster from your Deck to the GY, or if your opponent controls a monster, you can add it to your hand instead."
+    }
+  ],
+  "atk": 2000,
+  "def": 0,
+  "limitation": 3,
+  "source": [
+    "Konami",
+    "RGH"
+  ]
+}
