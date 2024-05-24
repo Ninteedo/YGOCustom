@@ -1,7 +1,12 @@
 import {EffectMonster} from "./EffectMonster.ts";
 import {MonsterAttribute} from "./MonsterAttribute.ts";
 import {MonsterCategory} from "./MonsterCategory.ts";
-import {MonsterType} from "./MonsterType.ts";
+import {MonsterType, monsterTypefromString} from "./MonsterType.ts";
+import React from "react";
+import {MonsterCard, MonsterCardProps} from "../../MonsterCard.tsx";
+import Effect from "../effect/Effect.tsx";
+import {parseEffect} from "../effect/EffectCard.ts";
+import EffectRestriction from "../effect/EffectRestriction.ts";
 
 export class MainEffectMonster implements EffectMonster {
   public readonly art: string;
@@ -13,7 +18,7 @@ export class MainEffectMonster implements EffectMonster {
   public readonly effects: Effect[];
   public readonly id: string;
   public readonly name: string;
-  public readonly type: MonsterType[];
+  public readonly monsterTypes: MonsterType[];
   public readonly level: number;
 
   constructor(
@@ -26,7 +31,7 @@ export class MainEffectMonster implements EffectMonster {
     effects: Effect[],
     id: string,
     name: string,
-    type: MonsterType[],
+    monsterTypes: MonsterType[],
     level: number,
   ) {
     this.art = art;
@@ -38,7 +43,7 @@ export class MainEffectMonster implements EffectMonster {
     this.effects = effects;
     this.id = id;
     this.name = name;
-    this.type = type;
+    this.monsterTypes = monsterTypes;
     this.level = level;
   }
 
@@ -62,20 +67,42 @@ export class MainEffectMonster implements EffectMonster {
   public toString(): string {
     return JSON.stringify(this);
   }
+
+  public toCardDetail(): React.ReactNode {
+    const cardData: MonsterCardProps = {
+      id: this.id,
+      name: this.name,
+      level: this.level,
+      attribute: this.attribute,
+      monsterType: this.monsterTypes,
+      art: this.art,
+      categories: this.categories,
+      effectRestrictions: this.effectRestrictions,
+      effects: this.effects,
+      atk: this.atk,
+      def: this.def,
+    };
+
+    return MonsterCard(cardData);
+  }
 }
 
 export function parseRegularMonster(json: any): MainEffectMonster {
+  const artSrc: string = "../../../public/images/" + json.art;
+  const effects: Effect[] = json.effects.map(parseEffect);
+  const monsterTypes: MonsterType[] = json.type.map((type: string) => monsterTypefromString(type));
+
   return new MainEffectMonster(
-    json.art,
+    artSrc,
     json.atk,
     json.attribute,
     json.categories,
     json.def,
     json.effectRestrictions,
-    json.effects,
+    effects,
     json.id,
     json.name,
-    json.type,
+    monsterTypes,
     json.level,
   );
 }

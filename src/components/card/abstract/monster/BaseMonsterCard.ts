@@ -6,7 +6,7 @@ import {parseRegularMonster} from "./MainEffectMonster.ts";
 
 export interface BaseMonsterCard extends BaseCard {
   attribute: MonsterAttribute;
-  type: MonsterType[];
+  monsterTypes: MonsterType[];
   categories: MonsterCategory[];
   atk: number;
   def: number;

@@ -4,17 +4,21 @@ import {Link} from "react-router-dom";
 import {CardArt} from "./CardArt.tsx";
 import {BaseCardProps} from "./BaseCard.tsx";
 import {MonsterAttribute, MonsterAttributeImage} from "./abstract/monster/MonsterAttribute.ts";
+import {MonsterType} from "./abstract/monster/MonsterType.ts";
+import {MonsterCategory} from "./abstract/monster/MonsterCategory.ts";
+import EffectRestriction from "./abstract/effect/EffectRestriction.ts";
+import Effect from "./abstract/effect/Effect.tsx";
 
 export interface MonsterCardProps extends BaseCardProps {
   id: string;
   name: string;
   level: number;
   attribute: MonsterAttribute;
-  type: string;
+  monsterType: MonsterType[];
   art: string;
-  categories: string[];
-  effectRestrictions?: ReactNode;
-  effects: ReactNode[];
+  categories: MonsterCategory[];
+  effectRestrictions: EffectRestriction[];
+  effects: Effect[];
   atk: number;
   def: number;
 }
@@ -36,18 +40,23 @@ function CategoriesList({categories}: { categories: string[] }): ReactNode {
   );
 }
 
-function EffectBlock({effectRestrictions, effects}: {
-  effectRestrictions: ReactNode,
-  effects: ReactNode[]
+function EffectBlock({effectRestrictions, effects, cardId}: {
+  effectRestrictions: EffectRestriction[],
+  effects: Effect[],
+  cardId: string,
 }): ReactNode {
   return (
     <div className="effect-block">
-      <p>{effectRestrictions}</p>
+      <p>{effectRestrictions.map(r => r.toString())}</p>
       <ol className="effect-list">
-        {effects.map((effect, index) => <li key={index}>{effect}</li>)}
+        {effects.map((effect, index) => <li key={effectKey(cardId, index)}>{effect.render()}</li>)}
       </ol>
     </div>
   );
+}
+
+function effectKey(cardId: string, index: number): string {
+  return `${cardId}-effect-${index}`;
 }
 
 function StatLine({atk, def}: { atk: number, def: number }): ReactNode {
@@ -63,7 +72,7 @@ export function MonsterCard({
   name,
   level,
   attribute,
-  type,
+  monsterType,
   art,
   categories,
   effectRestrictions,
@@ -71,8 +80,8 @@ export function MonsterCard({
   atk,
   def,
 }: MonsterCardProps) {
-  const extendedCategories = [type];
-  extendedCategories.push(...categories);
+  const extendedCategories = monsterType.map(type => type.toString());
+  extendedCategories.push(...categories.map(category => category.toString()));
   return (
     <div className="card">
       <CardName name={name} id={id} link={true}/>
@@ -80,7 +89,7 @@ export function MonsterCard({
       <CardArt src={art} alt={`Art for ${name}`}/>
       <CategoriesList categories={extendedCategories}/>
       <hr/>
-      <EffectBlock effectRestrictions={effectRestrictions} effects={effects}/>
+      <EffectBlock effectRestrictions={effectRestrictions} effects={effects} cardId={id}/>
       <hr/>
       <StatLine atk={atk} def={def}/>
     </div>

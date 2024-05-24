@@ -1,6 +1,5 @@
 import {ReactNode} from "react";
 
-export default interface EffectRestriction {
-
+export default interface EffectClause {
   render(): ReactNode;
 }

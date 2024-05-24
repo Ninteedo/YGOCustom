@@ -26,3 +26,35 @@ export enum MonsterType {
   Wyrm = "Wyrm",
   Zombie = "Zombie",
 }
+
+export function monsterTypefromString(value: string): MonsterType {
+  switch (value) {
+    case "Aqua": return MonsterType.Aqua;
+    case "Beast": return MonsterType.Beast;
+    case "Beast-Warrior": return MonsterType.BeastWarrior;
+    case "Creator God": return MonsterType.CreatorGod;
+    case "Cyberse": return MonsterType.Cyberse;
+    case "Dinosaur": return MonsterType.Dinosaur;
+    case "Divine-Beast": return MonsterType.DivineBeast;
+    case "Dragon": return MonsterType.Dragon;
+    case "Fairy": return MonsterType.Fairy;
+    case "Fiend": return MonsterType.Fiend;
+    case "Fish": return MonsterType.Fish;
+    case "Illusion": return MonsterType.Illusion;
+    case "Insect": return MonsterType.Insect;
+    case "Machine": return MonsterType.Machine;
+    case "Plant": return MonsterType.Plant;
+    case "Psychic": return MonsterType.Psychic;
+    case "Pyro": return MonsterType.Pyro;
+    case "Reptile": return MonsterType.Reptile;
+    case "Rock": return MonsterType.Rock;
+    case "Sea Serpent": return MonsterType.SeaSerpent;
+    case "Spellcaster": return MonsterType.Spellcaster;
+    case "Thunder": return MonsterType.Thunder;
+    case "Warrior": return MonsterType.Warrior;
+    case "Winged Beast": return MonsterType.WingedBeast;
+    case "Wyrm": return MonsterType.Wyrm;
+    case "Zombie": return MonsterType.Zombie;
+    default: throw new Error(`Unknown MonsterType: ${value}`);
+  }
+}
