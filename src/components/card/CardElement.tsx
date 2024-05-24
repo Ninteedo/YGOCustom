@@ -1,6 +1,8 @@
 import {BaseCard} from "./abstract/BaseCard.ts";
 import {useEffect, useState} from "react";
 import {loadCard, MissingCard} from "./abstract/CardLoader.tsx";
+import CardError from "./CardError.tsx";
+import CardLoading from "./CardLoading.tsx";
 
 interface CardElementProps {
   id: string;
@@ -25,18 +27,18 @@ export default function CardElement({id}: CardElementProps) {
       } catch (error) {
         setError(`Error loading card ${id}: ${error}`);
       } finally {
-      setLoading(false);
+        setLoading(false);
       }
     };
     fetchCard();
   }, [id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <CardLoading id={id}/>;
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return <CardError message={error}/>;
   }
 
   if (!card) {

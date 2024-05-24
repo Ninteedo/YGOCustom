@@ -21,10 +21,6 @@ export async function loadCard(id: string | undefined): Promise<BaseCard | null>
           throw new Error(`Unknown card type: ${cardType}`);
       }
     })
-    .catch((error) => {
-      console.error(`Error loading card ${id}: ${error}`);
-      return null;
-    });
 }
 
 export function MissingCard({id}: { id: string }): ReactNode {
