@@ -9,7 +9,7 @@ import {
 } from "../../components/card/EffectText.tsx";
 
 import CardArt from "../../assets/images/Mayakashi/YaskaTheSkeletalMayakashi.webp";
-import {MonsterAttribute} from "../../components/card/CardEnums.ts";
+import {MonsterAttribute} from "../../components/card/abstract/monster/MonsterAttribute.ts";
 
 const YashaTheSkeletalMayakashi: React.FC = () => {
   const cardData = {

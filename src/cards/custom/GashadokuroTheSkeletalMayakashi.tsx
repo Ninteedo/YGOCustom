@@ -2,7 +2,7 @@ import {MonsterCard} from "../../components/card/MonsterCard.tsx";
 import {ContinuousEffect, EffectCondition, EffectMain, TriggerEffect} from "../../components/card/EffectText.tsx";
 
 import CardArt from "../../assets/images/Mayakashi/GashadokuroTheSkeletalMayakashi.webp";
-import {MonsterAttribute} from "../../components/card/CardEnums.ts";
+import {MonsterAttribute} from "../../components/card/abstract/monster/MonsterAttribute.ts";
 
 const GashadokuroTheSkeletalMayakashi: React.FC = () => {
   const cardData = {

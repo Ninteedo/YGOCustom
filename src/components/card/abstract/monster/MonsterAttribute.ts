@@ -1,10 +1,10 @@
-import LightSvg from "../../assets/images/attributes/LIGHT.svg";
-import DarkSvg from "../../assets/images/attributes/DARK.svg";
-import EarthSvg from "../../assets/images/attributes/EARTH.svg";
-import FireSvg from "../../assets/images/attributes/FIRE.svg";
-import WaterSvg from "../../assets/images/attributes/WATER.svg";
-import WindSvg from "../../assets/images/attributes/WIND.svg";
-import DivineSvg from "../../assets/images/attributes/DIVINE.svg";
+import LightSvg from "../../../../assets/images/attributes/LIGHT.svg";
+import DarkSvg from "../../../../assets/images/attributes/DARK.svg";
+import EarthSvg from "../../../../assets/images/attributes/EARTH.svg";
+import FireSvg from "../../../../assets/images/attributes/FIRE.svg";
+import WaterSvg from "../../../../assets/images/attributes/WATER.svg";
+import WindSvg from "../../../../assets/images/attributes/WIND.svg";
+import DivineSvg from "../../../../assets/images/attributes/DIVINE.svg";
 
 export enum MonsterAttribute {
   LIGHT = "LIGHT",

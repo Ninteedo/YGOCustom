@@ -1,9 +1,9 @@
 import "../../style/Card.scss";
 import {ReactNode} from "react";
-import {CardArt} from "./CardArt.tsx";
 import {Link} from "react-router-dom";
+import {CardArt} from "./CardArt.tsx";
 import {BaseCardProps} from "./BaseCard.tsx";
-import {MonsterAttribute, MonsterAttributeImage} from "./CardEnums.ts";
+import {MonsterAttribute, MonsterAttributeImage} from "./abstract/monster/MonsterAttribute.ts";
 
 export interface MonsterCardProps extends BaseCardProps {
   id: string;

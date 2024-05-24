@@ -10,7 +10,7 @@ import {
 
 import DragonmaidMarchebArt from "../../assets/images/Dragonmaid/DragonmaidMarcheb.webp";
 import React from "react";
-import {MonsterAttribute} from "../../components/card/CardEnums.ts";
+import {MonsterAttribute} from "../../components/card/abstract/monster/MonsterAttribute.ts";
 
 
 const DragonmaidMarcheb: React.FC = () => {

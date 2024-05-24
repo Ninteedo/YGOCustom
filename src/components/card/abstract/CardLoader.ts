@@ -1,0 +1,27 @@
+import {BaseCard} from "./BaseCard.ts";
+import {parseMonsterCard} from "./monster/BaseMonsterCard.ts";
+
+const CARD_DIR = "cards"
+
+export async function loadCard(id: string): Promise<BaseCard | null> {
+  // Load card JSON from file, then create an appropriate card object, based on the card type
+  return fetch(`${CARD_DIR}/${id}.json`)
+    .then((response) => response.json())
+    .then((json) => {
+      const cardType: string = json.cardType.toLowerCase();
+      switch (cardType) {
+        case "monster":
+          return parseMonsterCard(json);
+        // case "spell":
+        //   return SpellCard.fromJson(json);
+        // case "trap":
+        //   return TrapCard.fromJson(json);
+        default:
+          throw new Error(`Unknown card type: ${cardType}`);
+      }
+    })
+    .catch((error) => {
+      console.error(`Error loading card ${id}: ${error}`);
+      return null;
+    });
+}
