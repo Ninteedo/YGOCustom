@@ -1,8 +1,8 @@
-import {MonsterCard} from "../../components/MonsterCard.tsx";
-import {EffectCondition, EffectCost, EffectMain, TriggerEffect} from "../../components/EffectText.tsx";
+import {MonsterCard} from "../../components/card/MonsterCard.tsx";
+import {EffectCondition, EffectCost, EffectMain, TriggerEffect} from "../../components/card/EffectText.tsx";
 
 import CardArt from "../../assets/images/Dragonmaid/HouseDragonmaid.webp";
-import {MonsterAttribute} from "../../components/CardEnums.ts";
+import {MonsterAttribute} from "../../components/card/CardEnums.ts";
 
 const HouseDragonmaid: React.FC = () => {
   const cardData = {

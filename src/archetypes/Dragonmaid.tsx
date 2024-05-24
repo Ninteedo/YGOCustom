@@ -1,7 +1,7 @@
 import DragonmaidMarcheb, {DragonmaidMarchebNotes} from "../cards/custom/DragonmaidMarcheb.tsx";
 import DragonmaidNudyarl from "../cards/custom/DragonmaidNudyarl.tsx";
 import DragonmaidLorpar from "../cards/custom/DragonmaidLorpar.tsx";
-import {CardAndNotes} from "../components/CardAndNotes.tsx";
+import {CardAndNotes} from "../components/card/CardAndNotes.tsx";
 import {YugipediaLink} from "../components/YugipediaLink.tsx";
 import {Link} from "react-router-dom";
 import HouseDragonmaid from "../cards/custom/HouseDragonmaid.tsx";

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import '../style/Card.scss';
+import '../../style/Card.scss';
 
 export interface BaseCardProps {
   id: string;

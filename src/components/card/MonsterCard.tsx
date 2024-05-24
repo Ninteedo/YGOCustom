@@ -1,4 +1,4 @@
-import "../style/Card.scss";
+import "../../style/Card.scss";
 import {ReactNode} from "react";
 import {CardArt} from "./CardArt.tsx";
 import {Link} from "react-router-dom";
@@ -81,6 +81,7 @@ export function MonsterCard({
       <CategoriesList categories={extendedCategories}/>
       <hr/>
       <EffectBlock effectRestrictions={effectRestrictions} effects={effects}/>
+      <hr/>
       <StatLine atk={atk} def={def}/>
     </div>
   );
