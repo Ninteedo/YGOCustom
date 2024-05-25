@@ -1,0 +1,31 @@
+---
+id: DragonmaidMarcheb
+name: Dragonmaid Marcheb
+cardType: Monster
+kind: Regular
+level: 9
+attribute: DARK
+type:
+  - Dragon
+art: Dragonmaid/DragonmaidMarcheb.webp
+categories:
+  - Effect
+effectRestrictions:
+  - You can only use the (2) and (3) effects of this card's name once per turn.
+effects:
+  - type: ContinuousEffect
+    main: Cannot be destroyed by battle or card effects while you control a Fusion Monster.
+  - type: Quick
+    condition: "(Quick Effect)"
+    cost: You can discard this card
+    main: Fusion Summon 1 Dragon Fusion Monster from your Extra Deck using monsters
+      from your hand or field as material.
+  - type: TriggerEffect
+    condition: At the end of the Battle Phase
+    main: You can return this card to the hand, and if you do, Special Summon 1 Level
+      4 or lower "Dragonmaid" monster from your hand.
+atk: 2800
+def: 1800
+limitation: 3
+source:
+  - RGH

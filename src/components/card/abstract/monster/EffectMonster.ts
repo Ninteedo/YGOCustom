@@ -6,11 +6,14 @@ import EffectRestriction from "../effect/EffectRestriction.tsx";
 import Effect from "../effect/Effect.tsx";
 import {MonsterType} from "./MonsterType.ts";
 import React from "react";
+import {MonsterCard, MonsterCardProps} from "./MonsterCardDisplayElement.tsx";
 
 export abstract class EffectMonster extends BaseMonsterCard implements EffectCard {
   public readonly effectRestrictions: EffectRestriction[];
   public readonly effects: Effect[];
   public readonly level: number;
+
+  private readonly cardData: MonsterCardProps;
 
   protected constructor(
     art: string,
@@ -30,10 +33,31 @@ export abstract class EffectMonster extends BaseMonsterCard implements EffectCar
     this.effectRestrictions = effectRestrictions;
     this.effects = effects;
     this.level = level;
+
+    this.cardData = {
+      id: this.id,
+      name: this.name,
+      level: this.level,
+      attribute: this.attribute,
+      monsterType: this.monsterTypes,
+      art: this.art,
+      categories: this.categories,
+      effectRestrictions: this.effectRestrictions,
+      effects: this.effects,
+      atk: this.atk,
+      def: this.def,
+    };
   }
 
-  abstract toCardDetail(): React.ReactNode;
+  public toCardDetail(): React.ReactNode {
+    return MonsterCard(this.cardData, this.kind, this.subKind);
+  }
 
-  abstract toCardElement(): React.ReactNode;
+  public toCardElement(): React.ReactNode {
+    return MonsterCard(this.cardData, this.kind, this.subKind);
+  }
 
+  public toString(): string {
+    return JSON.stringify(this);
+  }
 }

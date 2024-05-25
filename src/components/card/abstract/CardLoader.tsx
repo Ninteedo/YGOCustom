@@ -1,19 +1,21 @@
 import {BaseCard} from "./BaseCard.ts";
 import {BaseMonsterCard} from "./monster/BaseMonsterCard.ts";
-import {RegularEffectMonster} from "./monster/RegularEffectMonster.tsx";
-import {FusionMonster} from "./monster/FusionMonster.tsx";
+import {RegularEffectMonster} from "./monster/subkinds/RegularEffectMonster.tsx";
+import {FusionMonster} from "./monster/subkinds/FusionMonster.tsx";
+import YAML from "yaml";
 
 const CARD_DIR = "cards"
 
 export async function loadCard(id: string | undefined): Promise<BaseCard | null> {
   // Load card JSON from file, then create an appropriate card object, based on the card type
-  return fetch(`${CARD_DIR}/${id}.json`)
-    .then((response) => response.json())
-    .then((json) => {
-      const cardType: string = json.cardType.toLowerCase();
+  return fetch(`${CARD_DIR}/${id}.yaml`)
+    .then((response) => response.text())
+    .then((response) => YAML.parse(response))
+    .then((yaml) => {
+      const cardType: string = yaml.cardType.toLowerCase();
       switch (cardType) {
         case "monster":
-          return parseMonsterCard(json);
+          return parseMonsterCard(yaml);
         // case "spell":
         //   return SpellCard.fromJson(json);
         // case "trap":
