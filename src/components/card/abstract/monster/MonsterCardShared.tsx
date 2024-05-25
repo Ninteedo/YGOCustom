@@ -38,11 +38,11 @@ export function MonsterCard({
   effects,
   atk,
   def,
-}: MonsterCardProps) {
+}: MonsterCardProps, cardKind: string, cardSubKind: string) {
   const extendedCategories = monsterType.map(type => type.toString());
   extendedCategories.push(...categories.map(category => category.toString()));
   return (
-    <div className="card" data-card-id={id}>
+    <div className={["card", "card-" + cardKind, "card-" + cardSubKind].join(" ")} data-card-id={id}>
       <CardName name={name} id={id} link={true}/>
       <MonsterInfo level={level} attribute={attribute}/>
       <CardArt src={art} alt={`Art for ${name}`}/>

@@ -2,7 +2,8 @@ import {MonsterAttribute} from "./MonsterAttribute.ts";
 import {BaseCard} from "../BaseCard.ts";
 import {MonsterType} from "./MonsterType.ts";
 import {MonsterCategory} from "./MonsterCategory.ts";
-import {parseRegularMonster} from "./MainEffectMonster.ts";
+import {parseRegularMonster} from "./MainEffectMonster.tsx";
+import {parseFusionMonster} from "./FusionMonster.tsx";
 
 export interface BaseMonsterCard extends BaseCard {
   attribute: MonsterAttribute;
@@ -25,8 +26,8 @@ export function parseMonsterCard(json: { kind: string }): BaseMonsterCard {
     //   return parseNormalMonster(json);
     // case "ritual":
     //   return parseRitualMonster(json);
-    // case "fusion":
-    //   return parseFusionMonster(json);
+    case "fusion":
+      return parseFusionMonster(json);
     // case "synchro":
     //   return parseSynchroMonster(json);
     // case "xyz":

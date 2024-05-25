@@ -1,7 +1,7 @@
 import {CardAndNotes} from "../components/card/CardAndNotes.tsx";
 import {YugipediaLink} from "../components/YugipediaLink.tsx";
 import {Link} from "react-router-dom";
-import CardElement from "../components/card/CardElement.tsx";
+import CardElement from "../components/card/display/CardElement.tsx";
 
 export default function DragonmaidArchetype() {
   return (
@@ -46,14 +46,14 @@ function MarchebNotes() {
   return (
     <>
       <p>Chamber Dragonmaid is the only one of the maids to lack a dragon form. This is quite surprising, considering
-        how glaring the omission is, and how the maid-form was released in 2020.</p>,
+        how glaring the omission is, and how the maid-form was released in 2020.</p>
       <p>This card follows the same pattern as the other Dragon forms, with a continuous protection effect while you
         control a Fusion Monster, a discard effect, and an effect that returns itself to hand to summon a maid from the
-        hand.</p>,
+        hand.</p>
       <p>The highest level maid should have the highest level dragon form, and so be the most powerful. This card has
         enhanced effects compared to the other Dragon forms. The protection effect also gives it battle destruction
         immunity. The return to hand summon can summon any maid, not just Chamber, similar to how Chamber can summon any
-        dragon form.</p>,
+        dragon form.</p>
       <p>The discard effect is the one with the widest range of possible effects. It could be a search effect, something
         the archetype would greatly benefit from, and other players have suggested this. I opted for an additional way
         to Fusion Summon, as the deck relies heavily on Dragonmaid Changeover - a card that is not always accessible if
