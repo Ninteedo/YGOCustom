@@ -27,7 +27,7 @@ export enum MonsterType {
   Zombie = "Zombie",
 }
 
-export function monsterTypefromString(value: string): MonsterType {
+export function monsterTypeFromString(value: string): MonsterType {
   switch (value) {
     case "Aqua": return MonsterType.Aqua;
     case "Beast": return MonsterType.Beast;
@@ -57,4 +57,11 @@ export function monsterTypefromString(value: string): MonsterType {
     case "Zombie": return MonsterType.Zombie;
     default: throw new Error(`Unknown MonsterType: ${value}`);
   }
+}
+
+export function parseMonsterTypes(values: string[] | string): MonsterType[] {
+  if (typeof values === "string") {
+    values = values.split(",");
+  }
+  return values.map(monsterTypeFromString);
 }

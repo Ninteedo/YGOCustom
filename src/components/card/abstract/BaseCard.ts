@@ -1,11 +1,21 @@
 import {ReactNode} from "react";
 
-export interface BaseCard {
-  id: string;
-  name: string;
-  art: string;
+export abstract class BaseCard {
+  public readonly id: string;
+  public readonly name: string;
+  public readonly art: string;
+  public readonly kind: string;
+  public readonly subKind: string;
 
-  toCardElement(): ReactNode;
+  protected constructor(id: string, name: string, art: string, kind: string, subKind: string) {
+    this.id = id;
+    this.name = name;
+    this.art = art;
+    this.kind = kind;
+    this.subKind = subKind;
+  }
 
-  toCardDetail(): ReactNode;
+  abstract toCardElement(): ReactNode;
+
+  abstract toCardDetail(): ReactNode;
 }

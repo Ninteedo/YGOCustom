@@ -2,41 +2,35 @@ import {MonsterAttribute} from "./MonsterAttribute.ts";
 import {BaseCard} from "../BaseCard.ts";
 import {MonsterType} from "./MonsterType.ts";
 import {MonsterCategory} from "./MonsterCategory.ts";
-import {parseRegularMonster} from "./RegularEffectMonster.tsx";
-import {parseFusionMonster} from "./FusionMonster.tsx";
+import React from "react";
 
-export interface BaseMonsterCard extends BaseCard {
-  attribute: MonsterAttribute;
-  monsterTypes: MonsterType[];
-  categories: MonsterCategory[];
-  atk: number;
-  def: number;
-}
+export abstract class BaseMonsterCard extends BaseCard {
+  public readonly attribute: MonsterAttribute;
+  public readonly categories: MonsterCategory[];
+  public readonly monsterTypes: MonsterType[];
+  public readonly atk: number;
+  public readonly def: number;
 
-export function parseMonsterCard(json: { kind: string }): BaseMonsterCard {
-  if (json.kind === undefined || json.kind.length === 0) {
-    return parseRegularMonster(json);
+  protected constructor(
+    art: string,
+    attribute: MonsterAttribute,
+    categories: MonsterCategory[],
+    id: string,
+    monsterTypes: MonsterType[],
+    name: string,
+    atk: number,
+    def: number,
+    subKind: string,
+  ) {
+    super(id, name, art, "monster", subKind);
+    this.attribute = attribute;
+    this.categories = categories;
+    this.monsterTypes = monsterTypes;
+    this.atk = atk;
+    this.def = def;
   }
 
-  const monsterKind: string = json.kind.toLowerCase();
-  switch (monsterKind) {
-    case "regular":
-      return parseRegularMonster(json);
-    // case "normal":
-    //   return parseNormalMonster(json);
-    // case "ritual":
-    //   return parseRitualMonster(json);
-    case "fusion":
-      return parseFusionMonster(json);
-    // case "synchro":
-    //   return parseSynchroMonster(json);
-    // case "xyz":
-    //   return parseXyzMonster(json);
-    // case "link":
-    //   return parseLinkMonster(json);
-    // case "pendulum":
-    //   return parsePendulumMonster(json);
-    default:
-      throw new Error(`Unknown monster kind: ${monsterKind}`);
-  }
+  abstract toCardDetail(): React.ReactNode;
+
+  abstract toCardElement(): React.ReactNode;
 }

@@ -1,6 +1,6 @@
 import {BaseCard} from "../abstract/BaseCard.ts";
 import {useEffect, useState} from "react";
-import {loadCard, MissingCard} from "../abstract/CardLoader.tsx";
+import {loadCard} from "../abstract/CardLoader.tsx";
 import CardError from "./CardError.tsx";
 import CardLoading from "./CardLoading.tsx";
 
@@ -25,6 +25,7 @@ export default function CardElement({id}: CardElementProps) {
           setError(`Card "${id}" not found`);
         }
       } catch (error) {
+        console.error(error);
         setError(`Error loading card ${id}: ${error}`);
       } finally {
         setLoading(false);
@@ -42,7 +43,7 @@ export default function CardElement({id}: CardElementProps) {
   }
 
   if (!card) {
-    return <MissingCard id={id}/>;
+    return <CardError message={`Card "${id}" not found`}/>;
   }
 
   return card.toCardElement();

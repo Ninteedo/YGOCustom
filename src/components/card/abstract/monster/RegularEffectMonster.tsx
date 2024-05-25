@@ -1,15 +1,14 @@
 import {EffectMonster} from "./EffectMonster.ts";
 import {MonsterAttribute} from "./MonsterAttribute.ts";
 import {MonsterCategory} from "./MonsterCategory.ts";
-import {MonsterType, monsterTypefromString} from "./MonsterType.ts";
+import {MonsterType, parseMonsterTypes} from "./MonsterType.ts";
 import React from "react";
-import {MonsterCard, MonsterCardProps} from "./MonsterCardShared.tsx";
+import {MonsterCard, MonsterCardProps} from "./MonsterCardDisplayElement.tsx";
 import Effect from "../effect/Effect.tsx";
-import {parseEffect} from "../effect/EffectCard.ts";
-import EffectRestriction from "../effect/EffectRestriction.tsx";
+import {parseEffects} from "../effect/EffectCard.ts";
+import EffectRestriction, {parseEffectRestrictions} from "../effect/EffectRestriction.tsx";
 
 export class RegularEffectMonster extends EffectMonster {
-
   private readonly cardData: MonsterCardProps;
 
   constructor(
@@ -25,7 +24,7 @@ export class RegularEffectMonster extends EffectMonster {
     monsterTypes: MonsterType[],
     level: number,
   ) {
-    super(art, attribute, categories, effectRestrictions, effects, id, level, monsterTypes, name, atk, def);
+    super(art, attribute, categories, effectRestrictions, effects, id, level, monsterTypes, name, atk, def, "regular");
 
     this.cardData = {
       id: this.id,
@@ -42,20 +41,24 @@ export class RegularEffectMonster extends EffectMonster {
     };
   }
 
-  public static fromJson(json: string): RegularEffectMonster {
-    const obj = JSON.parse(json);
+  public static fromJson(json: any): RegularEffectMonster {
+    const artSrc: string = json.art;
+    const effectRestrictions: EffectRestriction[] = parseEffectRestrictions(json.effectRestrictions);
+    const effects: Effect[] = parseEffects(json.effects);
+    const monsterTypes: MonsterType[] = parseMonsterTypes(json.type);
+
     return new RegularEffectMonster(
-      obj.art,
-      obj.atk,
-      obj.attribute,
-      obj.categories,
-      obj.def,
-      obj.effectRestrictions,
-      obj.effects,
-      obj.id,
-      obj.name,
-      obj.type,
-      obj.level,
+      artSrc,
+      json.atk,
+      json.attribute,
+      json.categories,
+      json.def,
+      effectRestrictions,
+      effects,
+      json.id,
+      json.name,
+      monsterTypes,
+      json.level,
     );
   }
 
@@ -70,25 +73,4 @@ export class RegularEffectMonster extends EffectMonster {
   public toCardElement(): React.ReactNode {
     return MonsterCard(this.cardData, "monster", "regular");
   }
-}
-
-export function parseRegularMonster(json: any): RegularEffectMonster {
-  const artSrc: string = json.art;
-  const effectRestrictions: EffectRestriction[] = json.effectRestrictions.map((r: string) => new EffectRestriction(r));
-  const effects: Effect[] = json.effects.map(parseEffect);
-  const monsterTypes: MonsterType[] = json.type.map((type: string) => monsterTypefromString(type));
-
-  return new RegularEffectMonster(
-    artSrc,
-    json.atk,
-    json.attribute,
-    json.categories,
-    json.def,
-    effectRestrictions,
-    effects,
-    json.id,
-    json.name,
-    monsterTypes,
-    json.level,
-  );
 }

@@ -7,18 +7,10 @@ import Effect from "../effect/Effect.tsx";
 import {MonsterType} from "./MonsterType.ts";
 import React from "react";
 
-export abstract class EffectMonster implements BaseMonsterCard, EffectCard {
-public readonly attribute: MonsterAttribute;
-  public readonly art: string;
-  public readonly categories: MonsterCategory[];
+export abstract class EffectMonster extends BaseMonsterCard implements EffectCard {
   public readonly effectRestrictions: EffectRestriction[];
   public readonly effects: Effect[];
-  public readonly id: string;
   public readonly level: number;
-  public readonly monsterTypes: MonsterType[];
-  public readonly name: string;
-  public readonly atk: number;
-  public readonly def: number;
 
   protected constructor(
     art: string,
@@ -32,18 +24,12 @@ public readonly attribute: MonsterAttribute;
     name: string,
     atk: number,
     def: number,
+    subKind: string,
   ) {
-    this.art = art;
-    this.attribute = attribute;
-    this.categories = categories;
+    super(art, attribute, categories, id, monsterTypes, name, atk, def, subKind);
     this.effectRestrictions = effectRestrictions;
     this.effects = effects;
-    this.id = id;
     this.level = level;
-    this.monsterTypes = monsterTypes;
-    this.name = name;
-    this.atk = atk;
-    this.def = def;
   }
 
   abstract toCardDetail(): React.ReactNode;

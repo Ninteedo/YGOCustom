@@ -1,9 +1,9 @@
 import {EffectMonster} from "./EffectMonster.ts";
 import {MonsterAttribute} from "./MonsterAttribute.ts";
 import {MonsterCategory} from "./MonsterCategory.ts";
-import {MonsterType, monsterTypefromString} from "./MonsterType.ts";
+import {MonsterType, monsterTypeFromString} from "./MonsterType.ts";
 import React from "react";
-import {MonsterCard, MonsterCardProps} from "./MonsterCardShared.tsx";
+import {MonsterCard, MonsterCardProps} from "./MonsterCardDisplayElement.tsx";
 import Effect from "../effect/Effect.tsx";
 import {parseEffect} from "../effect/EffectCard.ts";
 import EffectRestriction from "../effect/EffectRestriction.tsx";
@@ -25,7 +25,7 @@ export class FusionMonster extends EffectMonster {
     monsterTypes: MonsterType[],
     level: number,
   ) {
-    super(art, attribute, categories, effectRestrictions, effects, id, level, monsterTypes, name, atk, def);
+    super(art, attribute, categories, effectRestrictions, effects, id, level, monsterTypes, name, atk, def, "fusion");
 
     this.cardData = {
       id: this.id,
@@ -42,20 +42,24 @@ export class FusionMonster extends EffectMonster {
     };
   }
 
-  public static fromJson(json: string): FusionMonster {
-    const obj = JSON.parse(json);
+  public static fromJson(json: any): FusionMonster {
+    const artSrc: string = json.art;
+    const effectRestrictions: EffectRestriction[] = json.effectRestrictions.map((r: string) => new EffectRestriction(r));
+    const effects: Effect[] = json.effects.map(parseEffect);
+    const monsterTypes: MonsterType[] = json.type.map((type: string) => monsterTypeFromString(type));
+
     return new FusionMonster(
-      obj.art,
-      obj.atk,
-      obj.attribute,
-      obj.categories,
-      obj.def,
-      obj.effectRestrictions,
-      obj.effects,
-      obj.id,
-      obj.name,
-      obj.type,
-      obj.level,
+      artSrc,
+      json.atk,
+      json.attribute,
+      json.categories,
+      json.def,
+      effectRestrictions,
+      effects,
+      json.id,
+      json.name,
+      monsterTypes,
+      json.level,
     );
   }
 
@@ -64,31 +68,10 @@ export class FusionMonster extends EffectMonster {
   }
 
   public toCardDetail(): React.ReactNode {
-    return MonsterCard(this.cardData, "monster", "fusion");
+    return MonsterCard(this.cardData, this.kind, this.subKind);
   }
 
   public toCardElement(): React.ReactNode {
-    return MonsterCard(this.cardData, "monster", "fusion");
+    return MonsterCard(this.cardData, this.kind, this.subKind);
   }
-}
-
-export function parseFusionMonster(json: any): FusionMonster {
-  const artSrc: string = json.art;
-  const effectRestrictions: EffectRestriction[] = json.effectRestrictions.map((r: string) => new EffectRestriction(r));
-  const effects: Effect[] = json.effects.map(parseEffect);
-  const monsterTypes: MonsterType[] = json.type.map((type: string) => monsterTypefromString(type));
-
-  return new FusionMonster(
-    artSrc,
-    json.atk,
-    json.attribute,
-    json.categories,
-    json.def,
-    effectRestrictions,
-    effects,
-    json.id,
-    json.name,
-    monsterTypes,
-    json.level,
-  );
 }

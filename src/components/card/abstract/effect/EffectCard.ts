@@ -38,6 +38,10 @@ export function parseEffect(effectObject: any): Effect {
   }
 }
 
+export function parseEffects(effectObjects: any[]): Effect[] {
+  return effectObjects.map(parseEffect);
+}
+
 function parseClauses(effectObject: any): EffectClause[] {
   let clauses: EffectClause[] = [];
 

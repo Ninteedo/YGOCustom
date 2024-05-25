@@ -58,3 +58,10 @@ function setEffectHighlight(effectNumber: number, cardId: string, toHighlight: b
     }
   }
 }
+
+export function parseEffectRestrictions(restrictions: string[] | string): EffectRestriction[] {
+  if (typeof restrictions === "string") {
+    return [new EffectRestriction(restrictions)];
+  }
+  return restrictions.map((restriction) => new EffectRestriction(restriction));
+}
