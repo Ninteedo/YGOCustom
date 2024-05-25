@@ -6,7 +6,7 @@ import Effect from "../../effect/Effect.tsx";
 import {parseEffects} from "../../effect/EffectCard.ts";
 import EffectRestriction, {parseEffectRestrictions} from "../../effect/EffectRestriction.tsx";
 
-export class FusionMonster extends EffectMonster implements MaterialedMonster {
+export class SynchroMonster extends EffectMonster implements MaterialedMonster {
   public readonly materials: string;
 
   constructor(
@@ -23,18 +23,18 @@ export class FusionMonster extends EffectMonster implements MaterialedMonster {
     monsterTypes: MonsterType[],
     level: number,
   ) {
-    super(art, attribute, categories, effectRestrictions, effects, id, level, monsterTypes, name, atk, def, "fusion");
+    super(art, attribute, categories, effectRestrictions, effects, id, level, monsterTypes, name, atk, def, "synchro");
     this.materials = materials;
     this.addMaterials(materials);
   }
 
-  public static fromJson(json: any): FusionMonster {
+  public static fromJson(json: any): SynchroMonster {
     const artSrc: string = json.art;
     const effectRestrictions: EffectRestriction[] = parseEffectRestrictions(json.effectRestrictions);
     const effects: Effect[] = parseEffects(json.effects);
     const monsterTypes: MonsterType[] = parseMonsterTypes(json.type);
 
-    return new FusionMonster(
+    return new SynchroMonster(
       artSrc,
       json.atk,
       json.attribute,

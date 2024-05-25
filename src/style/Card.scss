@@ -24,6 +24,16 @@
     .card-header {
       max-width: 95%;
       margin: 0 auto;
+
+      .card-name {
+        a {
+          color: #ddd;
+        }
+
+        a:hover {
+          color: #fff;
+        }
+      }
     }
 
     img.card-art {
@@ -38,6 +48,11 @@
     .effect-block {
       font-size: 0.8em;
       padding: 3px;
+
+      .card-materials {
+        font-style: italic;
+        color: rgba(255, 255, 255, 0.8);
+      }
 
       .effect-list {
         padding-left: 20px;
@@ -60,6 +75,12 @@
 
       .effect-reference {
         border-bottom: 1px dashed #ccc;
+        cursor: pointer;
+
+        &:hover {
+          border-bottom: 1px solid #ccc;
+          color: #fff;
+        }
       }
     }
 

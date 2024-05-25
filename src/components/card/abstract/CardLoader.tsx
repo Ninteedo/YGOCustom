@@ -3,6 +3,9 @@ import {BaseMonsterCard} from "./monster/BaseMonsterCard.ts";
 import {RegularEffectMonster} from "./monster/subkinds/RegularEffectMonster.tsx";
 import {FusionMonster} from "./monster/subkinds/FusionMonster.tsx";
 import YAML from "yaml";
+import {SynchroMonster} from "./monster/subkinds/SynchroMonster.tsx";
+import {NormalMonster} from "./monster/subkinds/NormalMonster.tsx";
+import {RitualMonster} from "./monster/subkinds/RitualMonster.tsx";
 
 const CARD_DIR = "cards"
 
@@ -26,7 +29,7 @@ export async function loadCard(id: string | undefined): Promise<BaseCard | null>
     })
 }
 
-export function parseMonsterCard(json: { kind: string }): BaseMonsterCard {
+function parseMonsterCard(json: { kind: string }): BaseMonsterCard {
   if (json.kind === undefined || json.kind.length === 0) {
     return RegularEffectMonster.fromJson(json);
   }
@@ -35,20 +38,18 @@ export function parseMonsterCard(json: { kind: string }): BaseMonsterCard {
   switch (monsterKind) {
     case "regular":
       return RegularEffectMonster.fromJson(json);
-    // case "normal":
-    //   return parseNormalMonster(json);
-    // case "ritual":
-    //   return parseRitualMonster(json);
+    case "normal":
+      return NormalMonster.fromJson(json);
+    case "ritual":
+      return RitualMonster.fromJson(json);
     case "fusion":
       return FusionMonster.fromJson(json);
-    // case "synchro":
-    //   return parseSynchroMonster(json);
+    case "synchro":
+      return SynchroMonster.fromJson(json);
     // case "xyz":
     //   return parseXyzMonster(json);
     // case "link":
     //   return parseLinkMonster(json);
-    // case "pendulum":
-    //   return parsePendulumMonster(json);
     default:
       throw new Error(`Unknown monster kind: ${monsterKind}`);
   }

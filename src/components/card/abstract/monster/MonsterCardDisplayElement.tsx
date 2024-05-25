@@ -20,6 +20,7 @@ export interface MonsterCardProps extends BaseCardProps {
   monsterType: MonsterType[];
   art: string;
   categories: MonsterCategory[];
+  materials?: string;
   effectRestrictions: EffectRestriction[];
   effects: Effect[];
   atk: number;
@@ -34,6 +35,7 @@ export function MonsterCard({
   monsterType,
   art,
   categories,
+  materials,
   effectRestrictions,
   effects,
   atk,
@@ -50,7 +52,7 @@ export function MonsterCard({
           <CardArt src={art} alt={`Art for ${name}`}/>
           <CategoriesList categories={extendedCategories}/>
         </div>
-        <EffectBlock effectRestrictions={effectRestrictions} effects={effects} cardId={id}/>
+        <EffectBlock materials={materials} effectRestrictions={effectRestrictions} effects={effects} cardId={id}/>
         <StatLine atk={atk} def={def}/>
       </div>
     </div>

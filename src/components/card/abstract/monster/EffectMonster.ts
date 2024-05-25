@@ -13,7 +13,7 @@ export abstract class EffectMonster extends BaseMonsterCard implements EffectCar
   public readonly effects: Effect[];
   public readonly level: number;
 
-  private readonly cardData: MonsterCardProps;
+  private cardData: MonsterCardProps;
 
   protected constructor(
     art: string,
@@ -47,6 +47,10 @@ export abstract class EffectMonster extends BaseMonsterCard implements EffectCar
       atk: this.atk,
       def: this.def,
     };
+  }
+
+  protected addMaterials(materials: string): void {
+    this.cardData.materials = materials;
   }
 
   public toCardDetail(): React.ReactNode {
