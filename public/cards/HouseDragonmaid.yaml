@@ -20,8 +20,7 @@ effects:
     main: Special Summon 1 "Dragonmaid" monster from your hand or GY in Defense Position,
       whose Level is 1 higher or 1 lower than it.
   - type: Trigger
-    condition: If another face-up Dragon monster(s) you control returns to your hand
-      (except during the Damage Step)
+    condition: If another face-up Dragon monster(s) you control returns to your hand (except during the Damage Step)
     cost: You can target 1 monster your opponent controls
     main: destroy it.
 atk: 3000

@@ -15,13 +15,13 @@ effectRestrictions:
   - You cannot activate the effects of monsters from the hand, except "Dragonmaid" monsters,
     the turn you activate the (2) effect of this card.
 effects:
-  - type: ContinuousEffect
+  - type: Continuous
     main: Cannot be destroyed by card effects while you control a Fusion Monster.
   - type: Quick
-    condition: "(Quick Effect)"
+    condition: (Quick Effect)
     cost: You can discard this card, then target 1 face-up monster on the field
     main: players cannot activate that target's effects on the field this turn.
-  - type: TriggerEffect
+  - type: Trigger
     condition: At the end of the Battle Phase
     main: You can return this card to the hand, and if you do, Special Summon 1 Level
       3 "Dragonmaid" monster from your hand.
