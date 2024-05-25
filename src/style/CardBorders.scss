@@ -1,0 +1,64 @@
+@mixin textured-background($colour-light, $colour-dark) {
+  background:
+          linear-gradient(135deg, rgba($colour-light, 0.2) 25%, transparent 25%) 0 0,
+          linear-gradient(225deg, rgba($colour-light, 0.2) 25%, transparent 25%) 0 0,
+          linear-gradient(315deg, rgba($colour-light, 0.2) 25%, transparent 25%) 0 0,
+          linear-gradient(45deg, rgba($colour-light, 0.2) 25%, transparent 25%) 0 0,
+          linear-gradient(45deg, $colour-light, $colour-dark);
+  background-size: 100px 100px, 100px 100px, 100px 100px, 100px 100px, 200% 200%;
+  background-blend-mode: overlay;
+}
+
+.card {
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border: 2px solid #ccc;
+  border-radius: 10px;
+
+  &.card-fusion {
+    @include textured-background(rgb(143, 63, 213), rgb(90, 52, 126));
+  }
+
+  &.card-regular {
+    @include textured-background(rgb(218, 124, 30), rgb(128, 70, 12));
+  }
+
+  &.card-normal {
+    @include textured-background(rgb(253, 230, 138), rgb(159, 142, 74));
+  }
+
+  &.card-spell {
+    @include textured-background(rgb(29, 158, 116), rgb(18, 99, 72));
+  }
+
+  &.card-trap {
+    @include textured-background(rgb(188, 90, 132), rgb(120, 58, 85));
+  }
+
+  &.card-synchro {
+    @include textured-background(rgb(204, 204, 204), rgb(102, 102, 102));
+  }
+
+  &.card-token {
+    @include textured-background(rgb(192, 192, 192), rgb(128, 128, 128));
+  }
+
+  &.card-xyz {
+    @include textured-background(rgb(100, 100, 100), rgb(0, 0, 0));
+  }
+
+  .card-content {
+    background-color: rgba(10, 10, 10, 0.95);
+    box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.5);
+
+    border-radius: 5px;
+
+    .effect-block {
+      border: 1.5px solid #aaa;
+      border-radius: 3px;
+
+      background-color: rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+  }
+}

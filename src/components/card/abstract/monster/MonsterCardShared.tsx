@@ -43,14 +43,16 @@ export function MonsterCard({
   extendedCategories.push(...categories.map(category => category.toString()));
   return (
     <div className={["card", "card-" + cardKind, "card-" + cardSubKind].join(" ")} data-card-id={id}>
-      <CardName name={name} id={id} link={true}/>
-      <MonsterInfo level={level} attribute={attribute}/>
-      <CardArt src={art} alt={`Art for ${name}`}/>
-      <CategoriesList categories={extendedCategories}/>
-      <hr/>
-      <EffectBlock effectRestrictions={effectRestrictions} effects={effects} cardId={id}/>
-      <hr/>
-      <StatLine atk={atk} def={def}/>
+      <div className={"card-content"}>
+        <div className={"card-header"}>
+          <CardName name={name} id={id} link={true}/>
+          <MonsterInfo level={level} attribute={attribute}/>
+          <CardArt src={art} alt={`Art for ${name}`}/>
+          <CategoriesList categories={extendedCategories}/>
+        </div>
+        <EffectBlock effectRestrictions={effectRestrictions} effects={effects} cardId={id}/>
+        <StatLine atk={atk} def={def}/>
+      </div>
     </div>
   );
 }

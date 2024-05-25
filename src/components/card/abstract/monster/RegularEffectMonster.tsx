@@ -8,7 +8,7 @@ import Effect from "../effect/Effect.tsx";
 import {parseEffect} from "../effect/EffectCard.ts";
 import EffectRestriction from "../effect/EffectRestriction.tsx";
 
-export class MainEffectMonster extends EffectMonster {
+export class RegularEffectMonster extends EffectMonster {
 
   private readonly cardData: MonsterCardProps;
 
@@ -42,9 +42,9 @@ export class MainEffectMonster extends EffectMonster {
     };
   }
 
-  public static fromJson(json: string): MainEffectMonster {
+  public static fromJson(json: string): RegularEffectMonster {
     const obj = JSON.parse(json);
-    return new MainEffectMonster(
+    return new RegularEffectMonster(
       obj.art,
       obj.atk,
       obj.attribute,
@@ -72,13 +72,13 @@ export class MainEffectMonster extends EffectMonster {
   }
 }
 
-export function parseRegularMonster(json: any): MainEffectMonster {
+export function parseRegularMonster(json: any): RegularEffectMonster {
   const artSrc: string = json.art;
   const effectRestrictions: EffectRestriction[] = json.effectRestrictions.map((r: string) => new EffectRestriction(r));
   const effects: Effect[] = json.effects.map(parseEffect);
   const monsterTypes: MonsterType[] = json.type.map((type: string) => monsterTypefromString(type));
 
-  return new MainEffectMonster(
+  return new RegularEffectMonster(
     artSrc,
     json.atk,
     json.attribute,

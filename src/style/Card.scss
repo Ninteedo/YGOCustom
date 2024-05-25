@@ -1,83 +1,92 @@
+@import "CardBorders";
+
 .card {
-  h3, h4, h5, p, ol {
-    margin: 0;
-  }
-
-  .monster-info {
-    font-weight: normal;
-  }
-
-  .categories {
-    font-weight: bold;
-    font-size: 1em;
-  }
-
-  border: 2px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
   max-width: 600px;
   margin: 10px auto;
-  background-color: #111;
+  padding: 10px;
 
-  img.card-art {
-    width: auto;
-    height: 200px;
-  }
+  .card-content {
+    padding: 2px;
 
-  .card-art {
-    cursor: pointer;
-  }
+    h3, h4, h5, p, ol {
+      margin: 0;
+    }
 
-  .effect-block {
-    font-size: 0.8em;
+    .monster-info {
+      font-weight: normal;
+    }
 
-    .effect-list {
-      padding-left: 30px;
+    .categories {
+      font-weight: bold;
+      font-size: 1em;
+    }
 
-      li {
-        box-sizing: border-box;
-        border-radius: 3px;
-        padding: 1px;
+    .card-header {
+      max-width: 95%;
+      margin: 0 auto;
+    }
 
-        &.highlight {
-          border: 1px dashed #ccc;
-          background-color: rgba(255, 255, 255, 0.05);
+    img.card-art {
+      width: auto;
+      height: 200px;
+    }
+
+    .card-art {
+      cursor: pointer;
+    }
+
+    .effect-block {
+      font-size: 0.8em;
+      padding: 3px;
+
+      .effect-list {
+        padding-left: 20px;
+
+        li {
+          box-sizing: border-box;
+          border-radius: 3px;
+          padding: 1px;
+
+          &.highlight {
+            border: 1px dashed #ccc;
+            background-color: rgba(255, 255, 255, 0.05);
+          }
+
+          &:not(.highlight) {
+            border: 1px solid transparent;
+          }
         }
+      }
 
-        &:not(.highlight) {
-          border: 1px solid transparent;
-        }
+      .effect-reference {
+        border-bottom: 1px dashed #ccc;
       }
     }
 
-    .effect-reference {
-      border-bottom: 1px dashed #ccc;
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+
+      img {
+        max-width: 90%;
+        max-height: 90%;
+        height: auto;
+      }
     }
-  }
 
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-
-    img {
-      max-width: 90%;
-      max-height: 90%;
-      height: auto;
+    .statline {
+      display: flex;
+      justify-content: right;
+      margin-top: 10px;
     }
-  }
-
-  .statline {
-    display: flex;
-    justify-content: right;
-    margin-top: 10px;
   }
 }
 
@@ -91,6 +100,7 @@
   border: 2px solid #ccc;
   border-radius: 5px;
   padding: 10px;
+  margin-bottom: 10px;
 
   gap: 10px;
 

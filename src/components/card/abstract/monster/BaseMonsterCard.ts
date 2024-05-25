@@ -2,7 +2,7 @@ import {MonsterAttribute} from "./MonsterAttribute.ts";
 import {BaseCard} from "../BaseCard.ts";
 import {MonsterType} from "./MonsterType.ts";
 import {MonsterCategory} from "./MonsterCategory.ts";
-import {parseRegularMonster} from "./MainEffectMonster.tsx";
+import {parseRegularMonster} from "./RegularEffectMonster.tsx";
 import {parseFusionMonster} from "./FusionMonster.tsx";
 
 export interface BaseMonsterCard extends BaseCard {
