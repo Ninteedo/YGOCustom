@@ -1,4 +1,4 @@
-import {MonsterAttribute, MonsterAttributeImage} from "../MonsterAttribute.ts";
+import {MonsterAttribute, MonsterAttributeImage} from "../../monster/MonsterAttribute.ts";
 import {ReactNode} from "react";
 
 export default function MonsterInfo({level, attribute}: { level: number, attribute: MonsterAttribute }): ReactNode {
