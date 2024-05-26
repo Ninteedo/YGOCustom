@@ -1,0 +1,3 @@
+interface MaterialedMonster {
+  materials: string;
+}

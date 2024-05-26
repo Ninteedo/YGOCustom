@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import {CardPage} from "./pages/CardPage.tsx";
 import {HomePage} from "./pages/HomePage.tsx";
-import {CustomCardPage} from "./pages/CustomCardPage.tsx";
+import {CustomCardPage2} from "./pages/CustomCardPage2.tsx";
 import ArchetypePage from "./pages/ArchetypePage.tsx";
 
 function Layout() {
@@ -35,7 +35,7 @@ function App() {
         },
         {
           path: "card/custom/:cardName",
-          element: <CustomCardPage/>,
+          element: <CustomCardPage2/>,
         },
         {
           path: "archetypes/:archetype",

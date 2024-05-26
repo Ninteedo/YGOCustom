@@ -1,7 +1,7 @@
-import React, {ReactNode, useEffect, useState} from "react";
+import {ReactNode, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 
-const CustomCardPage: React.FC = () => {
+export function CustomCardPage() {
   const {cardName} = useParams<{ cardName: string }>();
   const [CardComponent, setCardComponent] = useState<ReactNode | null>(null);
 
@@ -25,5 +25,3 @@ const CustomCardPage: React.FC = () => {
     </div>
   )
 }
-
-export {CustomCardPage}

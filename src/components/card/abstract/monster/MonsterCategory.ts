@@ -1,0 +1,15 @@
+export enum MonsterCategory {
+  Effect = 'Effect',
+  Ritual = 'Ritual',
+  Fusion = 'Fusion',
+  Synchro = 'Synchro',
+  Xyz = 'Xyz',
+  Pendulum = 'Pendulum',
+  Link = 'Link',
+  Tuner = 'Tuner',
+  Union = 'Union',
+  Spirit = 'Spirit',
+  Toon = 'Toon',
+  Gemini = 'Gemini',
+  Flip = 'Flip',
+}

@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "YGO Card",
+  "description": "A Yu-Gi-Oh! TCG card.",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the card, used as the primary key in the database. Length must be between 1 and 64 characters, and must start with a letter. Only alphanumeric characters are allowed.",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-zA-Z][a-zA-Z0-9]*$"
+    },
+    "name": { "type": "string", "minLength": 1 },
+    "cardType": {
+      "type": "string",
+      "enum": [
+        "Monster", "Spell", "Trap",
+        "monster", "spell", "trap"
+      ]
+    },
+    "kind": { "type": "string" },
+    "level": { "type": "integer", "minimum": 0, "maximum": 20 },
+    "attribute": {
+      "type": "string",
+      "enum": [
+        "LIGHT", "DARK", "FIRE", "WATER", "WIND", "EARTH", "DIVINE",
+        "light", "dark", "fire", "water", "wind", "earth", "divine",
+        "Light", "Dark", "Fire", "Water", "Wind", "Earth", "Divine"
+      ]
+    },
+    "type": { "type": "array", "items": { "type": "string" } },
+    "art": { "type": "string" },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Effect", "Ritual", "Fusion", "Synchro", "Xyz", "Pendulum", "Link", "Tuner", "Union", "Spirit", "Toon", "Gemini", "Flip",
+          "effect", "ritual", "fusion", "synchro", "xyz", "pendulum", "link", "tuner", "union", "spirit", "toon", "gemini", "flip",
+          "XYZ", "LINK", "FLIP"
+        ]
+      }
+    },
+    "effectRestrictions": { "type": "array", "items": { "type": "string" } },
+    "effects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "Ignition", "Quick", "Trigger", "Continuous",
+              "ignition", "quick", "trigger", "continuous"
+            ]
+          },
+          "condition": { "type": "string" },
+          "cost": { "type": "string" },
+          "main": { "type": "string" }
+        },
+        "required": ["type", "main"]
+      }
+    },
+    "atk": { "type": "integer", "minimum": 0 },
+    "def": { "type": "integer", "minimum": 0 },
+    "limitation": { "type": "integer", "minimum": 0, "maximum": 3 },
+    "source": { "type": "array", "items": { "type": "string" } }
+  },
+  "required": ["id", "name", "cardType", "kind", "art", "limitation", "source"],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "cardType": { "pattern": "^(?i)monster$" }
+        }
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "Normal", "Regular", "Ritual", "Fusion", "Synchro", "Xyz", "Link",
+              "normal", "regular", "ritual", "fusion", "synchro", "xyz", "link",
+              "XYZ", "LINK"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "cardType": { "pattern": "^(?i)spell$" }
+        }
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "Normal", "Continuous", "Equip", "Quick-Play", "Ritual", "Field",
+              "normal", "continuous", "equip", "quick-play", "ritual", "field"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "cardType": { "pattern": "^(?i)trap$" }
+        }
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "Normal", "Continuous", "Counter",
+              "normal", "continuous", "counter"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

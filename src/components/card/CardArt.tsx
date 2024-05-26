@@ -6,6 +6,8 @@ interface CardArtProps {
   alt: string;
 }
 
+const IMAGE_PATH = "../../../public/images/";
+
 const CardArt: React.FC<CardArtProps> = ({src, alt}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -30,15 +32,17 @@ const CardArt: React.FC<CardArtProps> = ({src, alt}) => {
     }
   }, [isExpanded]);
 
+  const fullSrc = IMAGE_PATH + src;
+
   return (
     <>
       <img
         className={`card-art ${isExpanded ? "expanded" : ""}`}
-        src={src}
+        src={fullSrc}
         alt={alt}
         onClick={toggleExpand}/>
       {isExpanded && <div className={"overlay"} onClick={toggleExpand}>
-          <img src={src} alt={alt}/>
+          <img src={fullSrc} alt={alt}/>
       </div>}
     </>
   )
