@@ -1,0 +1,37 @@
+---
+id: TsukahagiThePoisonousMayakashi
+name: Tsukahagi, The Poisonous Mayakashi
+cardType: Monster
+kind: Regular
+level: 3
+attribute: EARTH
+type:
+  - Zombie
+art: Mayakashi/TsukahagiThePoisonousMayakashi.webp
+categories:
+  - Tuner
+  - Effect
+effectRestrictions:
+  - You can only control 1 card with this name.
+  - You can only use one of the (1), (2), or (3) effects of this card's name per turn,
+    and only once that turn.
+effects:
+  - type: Ignition
+    cost: You can discard this card
+    main: take 1 "Mayakashi" Spell/Trap from your Deck, and either add it to your hand
+      or send it to the GY.
+  - type: Trigger
+    condition: If a face-up "Mayakashi" Synchro or Link Monster you control leaves the
+      field due to your opponent's card, and is not in the GY
+    main: You can Special Summon both this card and 1 "Mayakashi" Synchro or Link Monster
+      from your GY, but banish this card when it leaves the field.
+  - type: Trigger
+    condition: If this card is banished
+    main: You can return 1 banished "Mayakashi" card to the GY, except "Tsukahagi, the
+      Poisonous Mayakashi", then draw 1 card.
+atk: 0
+def: 2000
+limitation: 3
+source:
+  - Konami
+  - RGH

@@ -1,0 +1,31 @@
+---
+id: HouseDragonmaid
+name: House Dragonmaid
+cardType: Monster
+kind: Fusion
+level: 9
+attribute: LIGHT
+type:
+  - Dragon
+art: Dragonmaid/HouseDragonmaid.webp
+categories:
+  - Fusion
+  - Effect
+materials: 1 "Dragonmaid" monster + 1 Dragon monster
+effectRestrictions: []
+effects:
+  - type: Trigger
+    condition: Once per turn, during the Standby Phase
+    cost: You can target 1 other "Dragonmaid" monster you control
+    main: Special Summon 1 "Dragonmaid" monster from your hand or GY in Defense Position,
+      whose Level is 1 higher or 1 lower than it.
+  - type: Trigger
+    condition: If another face-up Dragon monster(s) you control returns to your hand (except during the Damage Step)
+    cost: You can target 1 monster your opponent controls
+    main: destroy it.
+atk: 3000
+def: 2000
+limitation: 3
+source:
+  - Konami
+  - RGH

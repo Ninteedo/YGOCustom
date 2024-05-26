@@ -1,0 +1,33 @@
+---
+id: DragonmaidNudyarl
+name: Dragonmaid Nudyarl
+cardType: Monster
+kind: Regular
+level: 7
+attribute: WATER
+type:
+  - Dragon
+art: Dragonmaid/DragonmaidNudyarl.webp
+categories:
+  - Effect
+effectRestrictions:
+  - You can only use the (2) and (3) effects of this card's name once per turn.
+  - You cannot activate the effects of monsters from the hand, except "Dragonmaid" monsters,
+    the turn you activate the (2) effect of this card.
+effects:
+  - type: Continuous
+    main: Cannot be destroyed by card effects while you control a Fusion Monster.
+  - type: Quick
+    condition: (Quick Effect)
+    cost: You can discard this card, then target 1 monster in either GY
+    main: shuffle it into the Deck.
+  - type: Trigger
+    condition: At the end of the Battle Phase
+    main: You can return this card to the hand, and if you do, Special Summon 1 Level
+      2 "Dragonmaid" monster from your hand.
+atk: 2600
+def: 1600
+limitation: 3
+source:
+  - Konami
+  - RGH
