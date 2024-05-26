@@ -10,6 +10,7 @@ import {HomePage} from "./pages/HomePage.tsx";
 import {CustomCardPage2} from "./pages/CustomCardPage2.tsx";
 import ArchetypePage from "./pages/ArchetypePage.tsx";
 import NavBar from "./components/NavBar.tsx";
+import CardSearchPage from "./pages/CardSearchPage.tsx";
 
 function Layout() {
   return (
@@ -45,6 +46,10 @@ function App() {
           path: "archetypes/:archetype",
           element: <ArchetypePage/>,
         },
+        {
+          path: "search",
+          element: <CardSearchPage/>,
+        }
       ],
     },
   ]));

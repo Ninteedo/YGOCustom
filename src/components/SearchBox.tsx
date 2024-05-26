@@ -9,25 +9,26 @@ import {useNavigate} from "react-router-dom";
 interface SearchBoxProps {
   isVisible: boolean;
   toggleSearch: () => void;
+  isPage?: boolean;
 }
 
-export default function SearchBox({isVisible, toggleSearch}: SearchBoxProps): ReactNode {
+export default function SearchBox({isVisible, toggleSearch, isPage}: SearchBoxProps): ReactNode {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<BaseCard[]>([]);
   const [displayRowsLimit, setDisplayRowsLimit] = useState(3);
 
   useEffect(() => {
     const body = document.querySelector("body") as HTMLElement;
-    if (isVisible) {
-      body.classList.add("search-box-visible");
-    } else {
-      body.classList.remove("search-box-visible");
+    if (!isPage) {
+      if (isVisible) {
+        body.classList.add("search-box-visible");
+      } else {
+        body.classList.remove("search-box-visible");
+      }
     }
-  }, [isVisible]);
+  }, [isVisible, isPage]);
 
   useEffect(() => {
-
-    // setSearchResults(searchCards(searchTerm));
     const fetchResults = async () => {
       const results = await searchCards(searchTerm);
       setSearchResults(results);
@@ -48,9 +49,11 @@ export default function SearchBox({isVisible, toggleSearch}: SearchBoxProps): Re
           <button className={"close-button"} onClick={toggleSearch}>x</button>
         </div>
         <SearchResults results={searchResults} toggleSearch={toggleSearch} displayRowsLimit={displayRowsLimit}
-        setDisplayRowsLimit={setDisplayRowsLimit} cardsPerRow={4}/>
+                       setDisplayRowsLimit={setDisplayRowsLimit} cardsPerRow={4}/>
       </div>
-      <div className={"search-box-overlay" + (isVisible ? "" : " hidden")} onClick={toggleSearch}/>
+      {!isPage && (
+        <div className={"search-box-overlay" + (isVisible ? "" : " hidden")} onClick={toggleSearch}/>
+      )}
     </>
   )
 }
@@ -82,7 +85,7 @@ function SearchResults({
     return () => {
       window.removeEventListener("scroll", handleScroll);
     }
-  }, [setDisplayRowsLimit]);
+  }, [setDisplayRowsLimit, displayRowsLimit]);
 
   const limitedResults = results.slice(0, displayRowsLimit * cardsPerRow);
 
