@@ -1,0 +1,5 @@
+[submodule "yaml-yugi"]
+	path = yaml-yugi
+	url = https://github.com/DawnbrandBots/yaml-yugi.git
+	shallow = true
+	update = rebase
