@@ -4,8 +4,8 @@
   border-radius: 5px;
 
   width: 90%;
-  height: 80%;
-  margin: 5%;
+  height: 90vh;
+  margin: 3% auto;
   padding: 1rem;
 
   display: flex;
@@ -46,5 +46,10 @@
     border-radius: 5px;
 
     overflow-y: scroll;
+
+    > div {
+      margin: 0.5%;
+      width: 24%;
+    }
   }
 }

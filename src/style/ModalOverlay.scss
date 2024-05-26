@@ -39,7 +39,7 @@
 
   @include fadeInOut(0.3s);
 
-  > * {
+  > .modal-content {
     position: fixed;
     top: 0;
     left: 0;
