@@ -6,7 +6,7 @@ interface CardArtProps {
   alt: string;
 }
 
-const IMAGE_PATH = "../../../public/images/";
+const IMAGE_PATH = "/images/";
 
 const CardArt: React.FC<CardArtProps> = ({src, alt}) => {
   const [isExpanded, setIsExpanded] = useState(false);
