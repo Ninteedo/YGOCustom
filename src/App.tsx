@@ -9,12 +9,16 @@ import {CardPage} from "./pages/CardPage.tsx";
 import {HomePage} from "./pages/HomePage.tsx";
 import {CustomCardPage2} from "./pages/CustomCardPage2.tsx";
 import ArchetypePage from "./pages/ArchetypePage.tsx";
+import NavBar from "./components/NavBar.tsx";
 
 function Layout() {
   return (
     <>
+      <NavBar/>
       <ScrollRestoration/>
-      <Outlet/>
+      <div id={"content"}>
+        <Outlet/>
+      </div>
     </>
   );
 }
