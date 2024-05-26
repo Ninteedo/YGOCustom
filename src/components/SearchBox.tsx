@@ -7,26 +7,13 @@ import {loadCard} from "./card/abstract/CardLoader.tsx";
 import {useNavigate} from "react-router-dom";
 
 interface SearchBoxProps {
-  isVisible: boolean;
   toggleSearch: () => void;
-  isPage?: boolean;
 }
 
-export default function SearchBox({isVisible, toggleSearch, isPage}: SearchBoxProps): ReactNode {
+export default function SearchBox({toggleSearch}: SearchBoxProps): ReactNode {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<BaseCard[]>([]);
   const [displayRowsLimit, setDisplayRowsLimit] = useState(3);
-
-  useEffect(() => {
-    const body = document.querySelector("body") as HTMLElement;
-    if (!isPage) {
-      if (isVisible) {
-        body.classList.add("search-box-visible");
-      } else {
-        body.classList.remove("search-box-visible");
-      }
-    }
-  }, [isVisible, isPage]);
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -42,18 +29,20 @@ export default function SearchBox({isVisible, toggleSearch, isPage}: SearchBoxPr
 
   return (
     <>
-      <div className={"search-box " + (isVisible ? "visible" : "hidden")}>
+      <div className={"search-box"}>
         <div>
           <input type="text" name={"search-term"} className={"search-term"} placeholder={"Search"}
                  onInput={handleInput}/>
           <button className={"close-button"} onClick={toggleSearch}>x</button>
         </div>
-        <SearchResults results={searchResults} toggleSearch={toggleSearch} displayRowsLimit={displayRowsLimit}
-                       setDisplayRowsLimit={setDisplayRowsLimit} cardsPerRow={4}/>
+        <SearchResults
+          results={searchResults}
+          toggleSearch={toggleSearch}
+          displayRowsLimit={displayRowsLimit}
+          setDisplayRowsLimit={setDisplayRowsLimit}
+          cardsPerRow={4}
+        />
       </div>
-      {!isPage && (
-        <div className={"search-box-overlay" + (isVisible ? "" : " hidden")} onClick={toggleSearch}/>
-      )}
     </>
   )
 }

@@ -1,6 +1,7 @@
 import {ReactNode, useState} from "react";
 import "../style/NavBar.scss";
 import SearchBox from "./SearchBox.tsx";
+import ModalOverlay from "./ModalOverlay.tsx";
 
 export default function NavBar(): ReactNode {
   const [isSearchVisible, setSearchVisible] = useState(false);
@@ -12,14 +13,16 @@ export default function NavBar(): ReactNode {
   return (
     <div className={"nav-bar"}>
       <div className={"logo"}>
-        <img src={"vite.svg"} alt={"Logo"} />
+        <img src={"vite.svg"} alt={"Logo"}/>
       </div>
       <div className={"links"}>
         <a href={"#"}>Home</a>
       </div>
       <div className={"search"}>
         <button onClick={toggleSearch}>Search</button>
-        <SearchBox isVisible={isSearchVisible} toggleSearch={toggleSearch} />
+        <ModalOverlay close={toggleSearch} isVisible={isSearchVisible}>
+          <SearchBox toggleSearch={toggleSearch}/>
+        </ModalOverlay>
       </div>
     </div>
   )
