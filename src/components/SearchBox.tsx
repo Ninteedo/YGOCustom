@@ -6,12 +6,15 @@ import cardManifest from "../cardManifest.json";
 import {loadCard} from "./card/abstract/CardLoader.tsx";
 import {useNavigate} from "react-router-dom";
 
-export default function SearchBox({isVisible, toggleSearch}: {
-  isVisible: boolean,
-  toggleSearch: () => void
-}): ReactNode {
+interface SearchBoxProps {
+  isVisible: boolean;
+  toggleSearch: () => void;
+}
+
+export default function SearchBox({isVisible, toggleSearch}: SearchBoxProps): ReactNode {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<BaseCard[]>([]);
+  const [displayRowsLimit, setDisplayRowsLimit] = useState(3);
 
   useEffect(() => {
     const body = document.querySelector("body") as HTMLElement;
@@ -44,17 +47,48 @@ export default function SearchBox({isVisible, toggleSearch}: {
                  onInput={handleInput}/>
           <button className={"close-button"} onClick={toggleSearch}>x</button>
         </div>
-        <SearchResults results={searchResults} toggleSearch={toggleSearch}/>
+        <SearchResults results={searchResults} toggleSearch={toggleSearch} displayRowsLimit={displayRowsLimit}
+        setDisplayRowsLimit={setDisplayRowsLimit} cardsPerRow={4}/>
       </div>
       <div className={"search-box-overlay" + (isVisible ? "" : " hidden")} onClick={toggleSearch}/>
     </>
   )
 }
 
-function SearchResults({results, toggleSearch}: { results: BaseCard[], toggleSearch: () => void }) {
+interface SearchResultsProps {
+  results: BaseCard[];
+  toggleSearch: () => void;
+  displayRowsLimit: number;
+  setDisplayRowsLimit: (rows: number) => void;
+  cardsPerRow: number;
+}
+
+function SearchResults({
+  results,
+  toggleSearch,
+  displayRowsLimit,
+  setDisplayRowsLimit,
+  cardsPerRow,
+}: SearchResultsProps) {
+  useEffect(() => {
+    const handleScroll = () => {
+      const bottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
+      if (bottom) {
+        setDisplayRowsLimit(displayRowsLimit + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    }
+  }, [setDisplayRowsLimit]);
+
+  const limitedResults = results.slice(0, displayRowsLimit * cardsPerRow);
+
   return (
     <div className={"results"}>
-      {results.map((result, index) => {
+      {limitedResults.map((result, index) => {
         return <SearchResult key={index} card={result} toggleSearch={toggleSearch}/>
       })}
     </div>
