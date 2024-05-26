@@ -4,11 +4,12 @@ import '../../style/Card.scss';
 interface CardArtProps {
   src: string;
   alt: string;
+  canExpand?: boolean;
 }
 
 const IMAGE_PATH = "/images/";
 
-const CardArt: React.FC<CardArtProps> = ({src, alt}) => {
+const CardArt: React.FC<CardArtProps> = ({src, alt, canExpand}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => {
@@ -41,7 +42,7 @@ const CardArt: React.FC<CardArtProps> = ({src, alt}) => {
         src={fullSrc}
         alt={alt}
         onClick={toggleExpand}/>
-      {isExpanded && <div className={"overlay"} onClick={toggleExpand}>
+      {isExpanded && canExpand && <div className={"overlay"} onClick={toggleExpand}>
           <img src={fullSrc} alt={alt}/>
       </div>}
     </>

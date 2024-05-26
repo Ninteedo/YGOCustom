@@ -1,0 +1,20 @@
+.card-small {
+  //width: 25%;
+
+  .card-content {
+    width: auto;
+    display: block;
+
+    img.card-art {
+      width: 100%;
+    }
+  }
+
+  .card-name {
+    font-size: 1rem;
+  }
+
+  &.has-click-action {
+    cursor: pointer;
+  }
+}
