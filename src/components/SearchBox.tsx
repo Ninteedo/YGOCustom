@@ -60,9 +60,7 @@ function SearchResults({
   useEffect(() => {
     const handleScroll = () => {
       if (resultsRef.current) {
-        const bottom =
-          Math.ceil(resultsRef.current.clientHeight + resultsRef.current.scrollTop) >=
-          resultsRef.current.scrollHeight;
+        const bottom = Math.abs(resultsRef.current.scrollHeight - (resultsRef.current.scrollTop + resultsRef.current.clientHeight)) <= 1;
         if (bottom) {
           setDisplayRowsLimit(displayRowsLimit + 1);
         }
@@ -72,9 +70,11 @@ function SearchResults({
     if (resultsRef.current) {
       resultsRef.current.addEventListener("scroll", handleScroll);
     }
+    const resultsRefInner = resultsRef.current;
+
     return () => {
-      if (resultsRef.current) {
-        resultsRef.current.removeEventListener("scroll", handleScroll);
+      if (resultsRefInner) {
+        resultsRefInner.removeEventListener("scroll", handleScroll);
       }
     };
   }, [setDisplayRowsLimit, displayRowsLimit]);

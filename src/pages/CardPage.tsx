@@ -1,13 +1,12 @@
 import React, {ReactNode, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
-import {BaseCard} from "../components/card/abstract/BaseCard.ts";
-import {useCardDbContext} from "../components/card/abstract/parse/CardDb.tsx";
+import {useGetOfficialCard} from "../components/card/abstract/parse/CardLoader.tsx";
 
 const CardPage: React.FC = () => {
   const {cardName} = useParams<{ cardName: string }>();
   const [CardComponent, setCardComponent] = useState<ReactNode | null>(null);
 
-  let card = useGetOfficialCard(cardName);
+  const card = useGetOfficialCard(cardName);
 
   useEffect(() => {
     if (card === undefined) {
@@ -26,14 +25,6 @@ const CardPage: React.FC = () => {
       {CardComponent}
     </div>
   )
-}
-
-function useGetOfficialCard(id: string | undefined): BaseCard | undefined {
-  const cardDb = useCardDbContext();
-  if (id === undefined) {
-    return undefined;
-  }
-  return cardDb.find(card => card.id == id);
 }
 
 export {CardPage}

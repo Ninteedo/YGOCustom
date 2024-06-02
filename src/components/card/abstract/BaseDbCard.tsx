@@ -1,5 +1,5 @@
 import {BaseCard} from "./BaseCard.ts";
-import React from "react";
+import React, {Fragment} from "react";
 import CardTemplate from "./display/elements/CardTemplate.tsx";
 
 export default class BaseDbCard extends BaseCard {
@@ -8,12 +8,13 @@ export default class BaseDbCard extends BaseCard {
   constructor(json: any) {
     const id = json.konami_id;
     const name = json.name;
-    const artSrc = getYugipediaLink(json.images[0].image);
+    const artSrc = getYgoProDeckImageLink(json.password);
     const card_type = json.card_type;
     const sub_kind = "not implemented yet";
 
     super(id, name, artSrc, card_type, sub_kind);
 
+    console.log(json.text);
     this.text = json.text;
   }
 
@@ -24,7 +25,7 @@ export default class BaseDbCard extends BaseCard {
         name={this.name}
         artSrc={this.art}
         infoLine={<p>Not implemented</p>}
-        effectBlock={<p>{this.text}</p>}
+        effectBlock={<p>{this.text.split("\n").map(s => <Fragment>{s}<br/></Fragment>)}</p>}
         cardKind={this.kind}
         cardSubKind={this.subKind}
         overrideArtSrc={true}
@@ -58,4 +59,8 @@ export default class BaseDbCard extends BaseCard {
 
 function getYugipediaLink(fileName: string): string {
   return `https://yugipedia.com/wiki/Special:Redirect/file/${fileName}?utm_source=rghdev`
+}
+
+function getYgoProDeckImageLink(passcode: string): string {
+  return `https://images.ygoprodeck.com/images/cards_cropped/${passcode}.jpg?utm_source=rghdev`
 }

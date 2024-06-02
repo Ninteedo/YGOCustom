@@ -13,6 +13,7 @@ import EffectCostClause from "../effect/clause/EffectCostClause.ts";
 import EffectConditionClause from "../effect/clause/EffectConditionClause.ts";
 import EffectMainClause from "../effect/clause/EffectMainClause.ts";
 import BaseDbCard from "../BaseDbCard.tsx";
+import {useCardDbContext} from "./CardDb.tsx";
 
 const CARD_DIR = "cards"
 
@@ -104,4 +105,12 @@ function parseEffectClauses(text: string): EffectClause[] {
   clauses.push(new EffectMainClause(remainingText));
 
   return clauses;
+}
+
+export function useGetOfficialCard(id: string | undefined): BaseCard | undefined {
+  const cardDb = useCardDbContext();
+  if (id === undefined) {
+    return undefined;
+  }
+  return cardDb.find(card => card.id == id);
 }
