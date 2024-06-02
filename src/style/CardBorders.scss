@@ -47,6 +47,10 @@
     @include textured-background(rgb(100, 100, 100), rgb(0, 0, 0));
   }
 
+  &.card-link {
+    @include textured-background(rgb(22, 38, 189), rgb(15, 42, 170));
+  }
+
   .card-content {
     background-color: rgba(10, 10, 10, 0.95);
     box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.5);
