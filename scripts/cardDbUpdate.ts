@@ -1,17 +1,4 @@
-import {exec} from 'child_process';
 import fs from "fs";
-// import cardDbTemp from "../scripts/cards.json";
-
-function gitSubmoduleUpdate(): void {
-  exec('git submodule update --init --recursive --depth 1', (err, stdout, stderr) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    console.log(stdout);
-    console.error(stderr);
-  });
-}
 
 async function loadCardDb(): Promise<any[]> {
   return await fetch("https://dawnbrandbots.github.io/yaml-yugi/cards.json")
@@ -20,8 +7,6 @@ async function loadCardDb(): Promise<any[]> {
       console.log('Aggregate card data loaded.');
       return data;
     });
-
-  // return cardDbTemp;
 }
 
 function saveDbByLanguages(cardDb: any[]): void {
@@ -57,7 +42,6 @@ function getCardByLanguage(card: any, language: string): any {
 }
 
 async function main(): Promise<void> {
-  gitSubmoduleUpdate();
   const cardDb = await loadCardDb();
   saveDbByLanguages(cardDb);
 }
