@@ -1,10 +1,11 @@
-import React, {ReactNode, useEffect, useState} from "react";
+import React, {ReactNode, useEffect, useRef, useState} from "react";
 import "../style/SearchBox.scss";
 import {BaseCard} from "./card/abstract/BaseCard.ts";
 import CardSmall from "./card/display/CardSmall.tsx";
 import cardManifest from "../cardManifest.json";
-import {loadCard} from "./card/abstract/CardLoader.tsx";
+import {loadCard} from "./card/abstract/parse/CardLoader.tsx";
 import {useNavigate} from "react-router-dom";
+import {useCardDbContext} from "./card/abstract/parse/CardDb.tsx";
 
 interface SearchBoxProps {
   toggleSearch: () => void;
@@ -12,16 +13,8 @@ interface SearchBoxProps {
 
 export default function SearchBox({toggleSearch}: SearchBoxProps): ReactNode {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState<BaseCard[]>([]);
   const [displayRowsLimit, setDisplayRowsLimit] = useState(3);
-
-  useEffect(() => {
-    const fetchResults = async () => {
-      const results = await searchCards(searchTerm);
-      setSearchResults(results);
-    }
-    fetchResults();
-  }, [searchTerm]);
+  const [searchResults, loading] = useSearchCards(searchTerm);
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -62,36 +55,46 @@ function SearchResults({
   setDisplayRowsLimit,
   cardsPerRow,
 }: SearchResultsProps) {
+  const resultsRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const handleScroll = () => {
-      const bottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
-      if (bottom) {
-        setDisplayRowsLimit(displayRowsLimit + 1);
+      if (resultsRef.current) {
+        const bottom =
+          Math.ceil(resultsRef.current.clientHeight + resultsRef.current.scrollTop) >=
+          resultsRef.current.scrollHeight;
+        if (bottom) {
+          setDisplayRowsLimit(displayRowsLimit + 1);
+        }
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
+    if (resultsRef.current) {
+      resultsRef.current.addEventListener("scroll", handleScroll);
     }
+    return () => {
+      if (resultsRef.current) {
+        resultsRef.current.removeEventListener("scroll", handleScroll);
+      }
+    };
   }, [setDisplayRowsLimit, displayRowsLimit]);
 
   const limitedResults = results.slice(0, displayRowsLimit * cardsPerRow);
 
   return (
-    <div className={"results"}>
+    <div className={"results"} ref={resultsRef}>
       {limitedResults.map((result, index) => {
-        return <SearchResult key={index} card={result} toggleSearch={toggleSearch}/>
+        return <SearchResult key={index} card={result} toggleSearch={toggleSearch} />;
       })}
     </div>
-  )
+  );
 }
 
 function SearchResult({card, toggleSearch}: { card: BaseCard, toggleSearch: () => void }) {
   const navigate = useNavigate();
 
-  const clickAction = (id: string) => {
-    navigate(`/card/custom/${id}`);
+  const clickAction = () => {
+    navigate(card.getLinkUrl());
     toggleSearch();
   }
 
@@ -99,18 +102,35 @@ function SearchResult({card, toggleSearch}: { card: BaseCard, toggleSearch: () =
                     clickAction={clickAction}/>
 }
 
-async function searchCards(searchTerm: string): Promise<BaseCard[]> {
-  const hits: string[] = cardManifest.entries.filter((entry: string) => {
-    return entry.toLowerCase().includes(searchTerm.toLowerCase());
-  });
-  const results: BaseCard[] = [];
+function useSearchCards(searchTerm: string): [BaseCard[], boolean] {
+  const [results, setResults] = useState<BaseCard[]>([]);
+  const [loading, setLoading] = useState(false);
+  const cardDb = useCardDbContext();
 
-  for (const hit of hits) {
-    const card = await loadCard(hit);
-    if (card) {
-      results.push(card);
-    }
-  }
+  useEffect(() => {
+    const fetchResults = async () => {
+      setLoading(true);
+      const hitsCustom: string[] = cardManifest.entries.filter((entry: string) => {
+        return entry.toLowerCase().includes(searchTerm.toLowerCase());
+      });
+      const results: BaseCard[] = [];
 
-  return results;
+      const hitsBase: BaseCard[] = cardDb.filter(c => c.toText().toLowerCase().includes(searchTerm.toLowerCase()));
+      results.push(...hitsBase);
+
+      for (const hit of hitsCustom) {
+        const card = await loadCard(hit);
+        if (card) {
+          results.push(card);
+        }
+      }
+
+      setResults(results);
+      setLoading(false);
+    };
+
+    fetchResults();
+  }, [searchTerm, cardDb]);
+
+  return [results, loading];
 }

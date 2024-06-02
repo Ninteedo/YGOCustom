@@ -5,11 +5,12 @@ interface CardArtProps {
   src: string;
   alt: string;
   canExpand?: boolean;
+  overrideLink?: boolean;
 }
 
 const IMAGE_PATH = "/images/";
 
-const CardArt: React.FC<CardArtProps> = ({src, alt, canExpand}) => {
+const CardArt: React.FC<CardArtProps> = ({src, alt, canExpand, overrideLink}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => {
@@ -33,7 +34,10 @@ const CardArt: React.FC<CardArtProps> = ({src, alt, canExpand}) => {
     }
   }, [isExpanded]);
 
-  const fullSrc = IMAGE_PATH + src;
+  let fullSrc = src;
+  if (!overrideLink && !src.includes("http://") && !src.includes("https://")) {
+    fullSrc = IMAGE_PATH + src;
+  }
 
   return (
     <>

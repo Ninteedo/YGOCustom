@@ -7,13 +7,13 @@ interface CardSmallProps {
   art: string;
   cardKind: string;
   cardSubKind: string;
-  clickAction?: (id: string) => void;
+  clickAction?: () => void;
 }
 
 export default function CardSmall({id, name, art, cardKind, cardSubKind, clickAction}: CardSmallProps) {
   const handleClick = () => {
     if (clickAction) {
-      clickAction(id);
+      clickAction();
     }
   }
 
