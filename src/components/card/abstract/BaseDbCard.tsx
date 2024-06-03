@@ -97,7 +97,8 @@ function getYugipediaLink(fileName: string): string {
 }
 
 function getYgoProDeckImageLink(passcode: string): string {
-  return `https://images.ygoprodeck.com/images/cards_cropped/${passcode}.jpg?utm_source=rghdev`
+  // return `https://images.ygoprodeck.com/images/cards_cropped/${passcode}.jpg?utm_source=rghdev`
+  return "not implemented";
 }
 
 function getDbCardSubKind(json: any): string {
