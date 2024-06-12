@@ -27,7 +27,6 @@ export default function CardTemplate({
   cardSubKind,
   overrideArtSrc
 }: CardTemplateProps) {
-  console.log(overrideArtSrc + " " + artSrc);
   return (
     <div className={["card", "card-" + cardKind, "card-" + cardSubKind].join(" ")} data-card-id={id}>
       <div className={"card-content"}>
