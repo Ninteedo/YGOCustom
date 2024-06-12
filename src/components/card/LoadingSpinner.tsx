@@ -1,11 +1,8 @@
 import {ReactNode} from "react";
+import '../../style/Spinner.scss';
 
 export function LoadingSpinner(): ReactNode {
   return (
-    <div className="loading-spinner">
-      <div className="spinner-border text-primary" role="status">
-        <span className="sr-only">Loading...</span>
-      </div>
-    </div>
+    <div className="loading-spinner"></div>
   );
 }
