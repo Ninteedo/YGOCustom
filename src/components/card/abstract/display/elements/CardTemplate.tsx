@@ -34,7 +34,7 @@ export default function CardTemplate({
         <div className={"card-header"}>
           <CardName name={name} id={id} link={true}/>
           {infoLine}
-          <CardArt src={artSrc} alt={`Art for ${name}`} overrideLink={overrideArtSrc}/>
+          <CardArt src={artSrc} alt={`Art for ${name}`} overrideLink={overrideArtSrc} canExpand={true}/>
           {categoryLine}
         </div>
         {effectBlock}
