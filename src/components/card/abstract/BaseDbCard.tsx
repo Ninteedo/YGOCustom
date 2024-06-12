@@ -136,13 +136,13 @@ function getDbCardSubKind(json: any): string {
 }
 
 function getLevelName(monsterSubKind: string, json: any): string {
+  const levelNumber = json.level;
   if (monsterSubKind === "link") {
-    const linkArrows = json.link_arrows;
-    const linkRating = linkArrows.length;
+    const linkRating = json.linkval;
     return `Link-${linkRating}`;
   } else if (monsterSubKind === "xyz") {
-    return `Rank ${json.rank}`;
+    return `Rank ${levelNumber}`;
   } else {
-    return `Level ${json.level}`;
+    return `Level ${levelNumber}`;
   }
 }
