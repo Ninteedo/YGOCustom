@@ -9,15 +9,15 @@ export default class BaseDbCard extends BaseCard {
   private readonly json: any;
 
   constructor(json: any) {
-    const id = json.konami_id;
+    const id = json.id;
     const name = json.name;
-    const artSrc = getYgoProDeckImageLink(json.password);
-    const cardKind = json.card_type.toLowerCase();
+    const artSrc = getLocalImageLink(json["card_images"][0]["id"]);
+    const cardKind = getDbCardKind(json);
     const subKind = getDbCardSubKind(json).toLowerCase();
 
     super(id, name, artSrc, cardKind, subKind);
 
-    this.text = json.text;
+    this.text = json.desc;
     this.json = json;
   }
 
@@ -84,7 +84,7 @@ export default class BaseDbCard extends BaseCard {
         effectBlock={<p>{this.text.split("\n").map((s, index) => <Fragment key={index}>{s}<br/></Fragment>)}</p>}
         cardKind={this.kind}
         cardSubKind={this.subKind}
-        overrideArtSrc={true}
+        overrideArtSrc={false}
         statLine={this.getStatLine()}
         categoryLine={this.getCategoryLine()}
       />
@@ -101,31 +101,44 @@ function getYgoProDeckImageLink(passcode: string): string {
   return "not implemented";
 }
 
+function getLocalImageLink(id: string): string {
+  return `official/${id}.jpg`;
+}
+
+function getDbCardKind(json: any): string {
+  const typeString = json.type.toLowerCase();
+
+  if (typeString.includes("monster")) {
+    return "monster";
+  } else if (typeString.includes("spell")) {
+    return "spell";
+  } else if (typeString.includes("trap")) {
+    return "trap";
+  }
+}
+
 function getDbCardSubKind(json: any): string {
-  switch (json.card_type.toLowerCase()) {
-    case "monster":
-      const monsterTypeLine = json.monster_type_line;
-      if (monsterTypeLine.includes("Fusion")) {
-        return "Fusion";
-      } else if (monsterTypeLine.includes("Synchro")) {
-        return "Synchro";
-      } else if (monsterTypeLine.includes("Xyz")) {
-        return "Xyz";
-      } else if (monsterTypeLine.includes("Link")) {
-        return "Link";
-      } else if (monsterTypeLine.includes("Ritual")) {
-        return "Ritual";
-      } else if (monsterTypeLine.includes("Effect")) {
-        return "Regular";
-      } else {
-        return "Normal";
-      }
-    case "spell":
-      return json.property.toLowerCase();
-    case "trap":
-      return json.property.toLowerCase();
-    default:
-      return "Unknown";
+  const typeString = json.type.toLowerCase();
+  const kind = getDbCardKind(json);
+
+  if (kind == "monster") {
+    if (typeString.includes("link")) {
+      return "link";
+    } else if (typeString.includes("xyz")) {
+      return "xyz";
+    } else if (typeString.includes("synchro")) {
+      return "synchro";
+    } else if (typeString.includes("fusion")) {
+      return "fusion";
+    } else if (typeString.includes("ritual")) {
+      return "ritual";
+    } else if (typeString.includes("effect")) {
+      return "effect";
+    } else {
+      return "normal";
+    }
+  } else {
+    return json.race.toLowerCase();
   }
 }
 

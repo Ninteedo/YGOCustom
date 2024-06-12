@@ -61,11 +61,12 @@ async function saveNewCardImages(cardDb: any): Promise<void> {
   }
 }
 
-function saveDbByLanguages(cardDb: any[]): void {
-  const LANGUAGES = ["en", "de", "es", "fr", "it", "pt", "ja", "ko", "zh-TW", "zh-CN"];
+function saveDbByLanguages(cardDb: any): void {
+  const LANGUAGES = ["en"];  // , "de", "es", "fr", "it", "pt", "ja", "ko", "zh-TW", "zh-CN"];
 
   for (const language of LANGUAGES) {
-    const db = getCardDbByLanguage(cardDb, language);
+    // const db = getCardDbByLanguage(cardDb, language);
+    const db = cardDb['data'];
     console.log(`Saving card data for ${language}.`)
     fs.writeFileSync(`public/db/cards.${language}.json`, JSON.stringify(db, null, 2), "utf8");
     console.log(`Saved public/db/cards.${language}.json`);
@@ -73,7 +74,7 @@ function saveDbByLanguages(cardDb: any[]): void {
 }
 
 function getCardDbByLanguage(cardDb: any[], language: string): any[] {
-  return cardDb.map(card => getCardByLanguage(card, language));
+  return cardDb['data'].map(card => getCardByLanguage(card, language));
 }
 
 function getCardByLanguage(card: any, language: string): any {
@@ -104,7 +105,7 @@ async function main(): Promise<void> {
   console.log("Database update required. " + currentDbVersion + " -> " + latestDbVersion);
 
   const cardDb = await loadCardDb();
-  await saveNewCardImages(cardDb);
+  // await saveNewCardImages(cardDb);
   saveDbByLanguages(cardDb);
   fs.writeFileSync(DB_VERSION_FILE, latestDbVersion, "utf8");
 }
