@@ -6,6 +6,7 @@ import cardManifest from "../cardManifest.json";
 import {loadCard} from "./card/abstract/parse/CardLoader.tsx";
 import {useNavigate} from "react-router-dom";
 import {useCardDbContext} from "./card/abstract/parse/CardDb.tsx";
+import {LoadingSpinner} from "./card/LoadingSpinner.tsx";
 
 interface SearchBoxProps {
   toggleSearch: () => void;
@@ -34,6 +35,7 @@ export default function SearchBox({toggleSearch}: SearchBoxProps): ReactNode {
           displayRowsLimit={displayRowsLimit}
           setDisplayRowsLimit={setDisplayRowsLimit}
           cardsPerRow={4}
+          isLoading={loading}
         />
       </div>
     </>
@@ -46,6 +48,7 @@ interface SearchResultsProps {
   displayRowsLimit: number;
   setDisplayRowsLimit: (rows: number) => void;
   cardsPerRow: number;
+  isLoading: boolean;
 }
 
 function SearchResults({
@@ -54,6 +57,7 @@ function SearchResults({
   displayRowsLimit,
   setDisplayRowsLimit,
   cardsPerRow,
+  isLoading
 }: SearchResultsProps) {
   const resultsRef = useRef<HTMLDivElement>(null);
 
@@ -78,6 +82,10 @@ function SearchResults({
       }
     };
   }, [setDisplayRowsLimit, displayRowsLimit]);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
 
   const limitedResults = results.slice(0, displayRowsLimit * cardsPerRow);
 

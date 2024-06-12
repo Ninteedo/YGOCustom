@@ -92,15 +92,6 @@ export default class BaseDbCard extends BaseCard {
   }
 }
 
-function getYugipediaLink(fileName: string): string {
-  return `https://yugipedia.com/wiki/Special:Redirect/file/${fileName}?utm_source=rghdev`
-}
-
-function getYgoProDeckImageLink(passcode: string): string {
-  // return `https://images.ygoprodeck.com/images/cards_cropped/${passcode}.jpg?utm_source=rghdev`
-  return "not implemented";
-}
-
 function getLocalImageLink(id: string): string {
   return `official/${id}.jpg`;
 }
@@ -114,6 +105,8 @@ function getDbCardKind(json: any): string {
     return "spell";
   } else if (typeString.includes("trap")) {
     return "trap";
+  } else {
+    return "unknown";
   }
 }
 
