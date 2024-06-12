@@ -83,10 +83,6 @@ function SearchResults({
     };
   }, [setDisplayRowsLimit, displayRowsLimit]);
 
-  if (isLoading) {
-    return <LoadingSpinner />;
-  }
-
   const limitedResults = results.slice(0, displayRowsLimit * cardsPerRow);
 
   return (
@@ -94,6 +90,7 @@ function SearchResults({
       {limitedResults.map((result, index) => {
         return <SearchResult key={index} card={result} toggleSearch={toggleSearch} />;
       })}
+      {isLoading && <LoadingSpinner />}
     </div>
   );
 }
