@@ -12,8 +12,8 @@ import EffectClause from "../effect/clause/EffectClause.ts";
 import EffectCostClause from "../effect/clause/EffectCostClause.ts";
 import EffectConditionClause from "../effect/clause/EffectConditionClause.ts";
 import EffectMainClause from "../effect/clause/EffectMainClause.ts";
-import {useCardDbContext} from "./CardDb.tsx";
 import {useEffect, useState} from "react";
+import {useCardDbContext} from "./cardDbUtility.ts";
 
 const CARD_DIR = "cards"
 
@@ -109,7 +109,7 @@ function parseEffectClauses(text: string): EffectClause[] {
 
 export function useGetOfficialCard(id: string | undefined): [BaseCard | undefined, boolean] {
   const [result, setResult] = useState<BaseCard | undefined>(undefined);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const cardDb = useCardDbContext();
 
   useEffect(() => {
@@ -123,7 +123,7 @@ export function useGetOfficialCard(id: string | undefined): [BaseCard | undefine
     }
 
     fetchResults();
-  });
+  }, [id, cardDb]);
 
   return [result, loading];
 }

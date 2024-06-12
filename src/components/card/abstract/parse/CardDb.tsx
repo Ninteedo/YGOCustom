@@ -1,46 +1,37 @@
 import {BaseCard} from "../BaseCard.ts";
-import BaseDbCard from "../BaseDbCard.tsx";
-import {createContext, ReactNode, useContext, useEffect, useState} from "react";
+import {ReactNode, useEffect, useState} from "react";
+import {LoadingSpinner} from "../../LoadingSpinner.tsx";
+import {cardDbContext, fetchCardDb} from "./cardDbUtility.ts";
 
-export async function fetchCardDb(language: string) {
-  const dbLocation = `/db/cards.${language}.json`;
-  const cardDbJson = await fetch(dbLocation)
-    .then(response => response.json())
-    .then(data => {
-      console.log('Aggregate card data loaded.');
-      return data;
-    });
-
-  return loadCardDb(cardDbJson);
-}
-
-function loadCardDb(json: any): BaseCard[] {
-  return json.map((card: any) => parseDbCard(card));
-}
-
-function parseDbCard(json: any): BaseCard {
-  return new BaseDbCard(json);
-}
-
-const cardDbContext = createContext<BaseCard[]>([]);
-
-export function useCardDbContext() {
-  return useContext(cardDbContext)
-}
-
-export const CardDbProvider = ({ children }) => {
-  const [cards, setCards] = useState([]);
-  const [loading, setLoading] = useState(true);
+export const CardDbProvider = ({ children }: { children: ReactNode }) => {
+  const [cards, setCards] = useState<BaseCard[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [totalSize, setTotalSize] = useState<number>(0);
+  const [progress, setProgress] = useState<number>(0);
 
   useEffect(() => {
     const fetchCards = async () => {
-      const cards = await fetchCardDb("en");
-      setCards(cards);
+      const { data } = await fetchCardDb("en", (loaded, total) => {
+        setTotalSize(total);
+        setProgress(loaded);
+      });
+      setCards(data);
       setLoading(false);
     }
 
     fetchCards();
   }, []);
+
+  const percent = Math.round((progress / totalSize) * 100) || 0;
+
+  if (loading) {
+    return (
+      <>
+        <LoadingSpinner/>
+        <div>Downloaded {Math.round(progress/1000)} of {Math.round(totalSize/1000)} KB ({percent}%)</div>
+      </>
+    );
+  }
 
   return (
     <cardDbContext.Provider value={cards}>

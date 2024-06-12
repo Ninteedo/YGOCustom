@@ -5,8 +5,8 @@ import CardSmall from "./card/display/CardSmall.tsx";
 import cardManifest from "../cardManifest.json";
 import {loadCard} from "./card/abstract/parse/CardLoader.tsx";
 import {useNavigate} from "react-router-dom";
-import {useCardDbContext} from "./card/abstract/parse/CardDb.tsx";
 import {LoadingSpinner} from "./card/LoadingSpinner.tsx";
+import {useCardDbContext} from "./card/abstract/parse/cardDbUtility.ts";
 
 interface SearchBoxProps {
   toggleSearch: () => void;

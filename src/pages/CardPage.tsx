@@ -10,12 +10,17 @@ const CardPage: React.FC = () => {
   const [card, loading] = useGetOfficialCard(cardName);
 
   useEffect(() => {
+    if (loading) {
+      return;
+    }
+
     if (card === undefined) {
       setCardComponent(<div>Card "{cardName}" not found</div>);
+      console.log("loading=" + loading + ", card=" + card + ", cardName=" + cardName)
     } else {
       setCardComponent(card.toCardDetail());
     }
-  }, [card, cardName]);
+  }, [card, cardName, loading]);
 
   useEffect(() => {
     document.title = `${cardName}`;
