@@ -3,7 +3,7 @@ import "../style/SearchBox.scss";
 import {BaseCard} from "./card/abstract/BaseCard.ts";
 import CardSmall from "./card/display/CardSmall.tsx";
 import cardManifest from "../cardManifest.json";
-import {loadCard} from "./card/abstract/parse/CardLoader.tsx";
+import {loadCard} from "./card/abstract/parse/cardLoader.ts";
 import {useNavigate} from "react-router-dom";
 import {LoadingSpinner} from "./card/LoadingSpinner.tsx";
 import {useCardDbContext} from "./card/abstract/parse/cardDbUtility.ts";

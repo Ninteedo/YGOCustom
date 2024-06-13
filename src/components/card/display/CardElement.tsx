@@ -1,6 +1,6 @@
 import {BaseCard} from "../abstract/BaseCard.ts";
 import {useEffect, useState} from "react";
-import {loadCard} from "../abstract/parse/CardLoader.tsx";
+import {loadCard} from "../abstract/parse/cardLoader.ts";
 import CardError from "./CardError.tsx";
 import CardLoading from "./CardLoading.tsx";
 
