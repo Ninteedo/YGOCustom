@@ -11,7 +11,7 @@ export default class BaseDbCard extends BaseCard {
   constructor(json: any) {
     const id = json.id;
     const name = json.name;
-    const artSrc = getLocalImageLink(json["card_images"][0]["id"]);
+    const artSrc = getBucketImageLink(json["card_images"][0]["id"]);
     const cardKind = getDbCardKind(json);
     const subKind = getDbCardSubKind(json).toLowerCase();
 
@@ -92,8 +92,8 @@ export default class BaseDbCard extends BaseCard {
   }
 }
 
-function getLocalImageLink(id: string): string {
-  return `official/${id}.jpg`;
+function getBucketImageLink(id: string): string {
+  return `https://images.ygo.rgh.dev/${id}.jpg`;
 }
 
 function getDbCardKind(json: any): string {
