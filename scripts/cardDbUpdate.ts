@@ -3,9 +3,9 @@ import fs from "fs";
 import AWS from "aws-sdk";
 import {ListObjectsV2Request} from "aws-sdk/clients/s3";
 
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   require('dotenv').config();
+// }
 
 const DB_VERSION_FILE = "public/db/version.txt";
 
