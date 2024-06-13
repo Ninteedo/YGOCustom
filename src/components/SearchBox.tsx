@@ -64,7 +64,7 @@ function SearchResults({
   useEffect(() => {
     const handleScroll = () => {
       if (resultsRef.current) {
-        const bottom = Math.abs(resultsRef.current.scrollHeight - (resultsRef.current.scrollTop + resultsRef.current.clientHeight)) <= 1;
+        const bottom = Math.abs(resultsRef.current.scrollHeight - (resultsRef.current.scrollTop + resultsRef.current.clientHeight)) <= 100;
         if (bottom) {
           setDisplayRowsLimit(displayRowsLimit + 1);
         }
