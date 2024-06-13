@@ -54,7 +54,8 @@ export function useSearchCards(searchTerm: string): [BaseCard[], boolean, () => 
         return;
       }
 
-      newResults.push(...dbResults.slice((page - 1) * pageLength, page * pageLength), ...manifestResults.filter(Boolean));
+      const filtered: BaseCard[] = manifestResults.filter(card => card !== null) as BaseCard[];
+      newResults.push(...dbResults.slice((page - 1) * pageLength, page * pageLength), ...filtered);
 
       if (newResults.length < pageLength) {
         setHasMore(false);

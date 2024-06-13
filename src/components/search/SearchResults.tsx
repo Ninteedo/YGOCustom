@@ -27,7 +27,7 @@ export function SearchResults({
   const [results, isLoading, loadMore] = useSearchCards(searchTerm);
   const observer = useRef<IntersectionObserver | null>(null);
   const lastElementRef = useCallback(
-    (node: Element) => {
+    (node: HTMLDivElement | null) => {
       if (isLoading) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {

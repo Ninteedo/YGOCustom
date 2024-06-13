@@ -50,4 +50,8 @@ export class NormalMonster extends BaseMonsterCard {
   toCardElement(): React.ReactNode {
     return undefined;
   }
+
+  toText(): string {
+    return JSON.stringify(this);
+  }
 }
