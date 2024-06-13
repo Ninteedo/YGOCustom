@@ -33,9 +33,10 @@
   }
 
   .results {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 0.5%;
+    overflow: auto;
 
     width: 100%;
     height: 100%;
@@ -48,8 +49,12 @@
     overflow-y: scroll;
 
     > div {
-      margin: 0.5%;
-      width: 24%;
+      //margin: 0.5%;
+      //width: 200px;
+      //width: 20vw;
+      //height: 33vh;
+      //overflow: hidden;
+      height: auto;
     }
   }
 }

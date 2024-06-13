@@ -11,15 +11,18 @@ import {CustomCardPage2} from "./pages/CustomCardPage2.tsx";
 import ArchetypePage from "./pages/ArchetypePage.tsx";
 import NavBar from "./components/NavBar.tsx";
 import CardSearchPage from "./pages/CardSearchPage.tsx";
+import {CardDbProvider} from "./components/card/abstract/parse/CardDb.tsx";
 
 function Layout() {
   return (
     <>
-      <NavBar/>
-      <ScrollRestoration/>
-      <div id={"content"}>
-        <Outlet/>
-      </div>
+      <CardDbProvider>
+        <NavBar/>
+        <ScrollRestoration/>
+        <div id={"content"}>
+          <Outlet/>
+        </div>
+      </CardDbProvider>
     </>
   );
 }
@@ -35,7 +38,7 @@ function App() {
           element: <HomePage/>,
         },
         {
-          path: "card/:cardName",
+          path: "card/official/:cardName",
           element: <CardPage/>,
         },
         {
@@ -49,7 +52,7 @@ function App() {
         {
           path: "search",
           element: <CardSearchPage/>,
-        }
+        },
       ],
     },
   ]));

@@ -33,4 +33,8 @@ export abstract class BaseMonsterCard extends BaseCard {
   abstract toCardDetail(): React.ReactNode;
 
   abstract toCardElement(): React.ReactNode;
+
+  getLinkUrl(): string {
+    return `/card/custom/${this.id}`;
+  }
 }

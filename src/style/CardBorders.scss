@@ -19,7 +19,7 @@
     @include textured-background(rgb(143, 63, 213), rgb(90, 52, 126));
   }
 
-  &.card-regular {
+  &.card-regular, &.card-effect.card-monster {
     @include textured-background(rgb(218, 124, 30), rgb(128, 70, 12));
   }
 
@@ -45,6 +45,10 @@
 
   &.card-xyz {
     @include textured-background(rgb(100, 100, 100), rgb(0, 0, 0));
+  }
+
+  &.card-link {
+    @include textured-background(rgb(22, 38, 189), rgb(15, 42, 170));
   }
 
   .card-content {

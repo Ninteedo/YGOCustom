@@ -1,5 +1,5 @@
 import {ReactNode, useEffect} from "react";
-import SearchBox from "../components/SearchBox.tsx";
+import SearchBox from "../components/search/SearchBox.tsx";
 
 export default function CardSearchPage(): ReactNode {
   useEffect(() => {

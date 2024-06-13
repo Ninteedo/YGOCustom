@@ -64,4 +64,8 @@ export abstract class EffectMonster extends BaseMonsterCard implements EffectCar
   public toString(): string {
     return JSON.stringify(this);
   }
+
+  public toText(): string {
+    return toString();
+  }
 }

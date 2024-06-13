@@ -18,4 +18,8 @@ export abstract class BaseCard {
   abstract toCardElement(): ReactNode;
 
   abstract toCardDetail(): ReactNode;
+
+  abstract toText(): string;
+
+  abstract getLinkUrl(): string;
 }

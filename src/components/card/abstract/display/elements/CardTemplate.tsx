@@ -12,6 +12,7 @@ interface CardTemplateProps {
   statLine?: ReactNode;
   cardKind: string;
   cardSubKind: string;
+  overrideArtSrc?: boolean
 }
 
 export default function CardTemplate({
@@ -24,14 +25,15 @@ export default function CardTemplate({
   statLine,
   cardKind,
   cardSubKind,
+  overrideArtSrc
 }: CardTemplateProps) {
   return (
-    <div className={["card", "card-" + cardKind, "card-" + cardSubKind].join(" ")} data-card-id={id}>
+    <div className={["card", "card-" + cardKind.toLowerCase(), "card-" + cardSubKind.toLowerCase()].join(" ")} data-card-id={id}>
       <div className={"card-content"}>
         <div className={"card-header"}>
           <CardName name={name} id={id} link={true}/>
           {infoLine}
-          <CardArt src={artSrc} alt={`Art for ${name}`}/>
+          <CardArt src={artSrc} alt={`Art for ${name}`} overrideLink={overrideArtSrc} canExpand={true}/>
           {categoryLine}
         </div>
         {effectBlock}
