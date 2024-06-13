@@ -1,6 +1,6 @@
 import {ReactNode, useState} from "react";
 import "../style/NavBar.scss";
-import SearchBox from "./SearchBox.tsx";
+import SearchBox from "./search/SearchBox.tsx";
 import ModalOverlay from "./ModalOverlay.tsx";
 
 export default function NavBar(): ReactNode {
