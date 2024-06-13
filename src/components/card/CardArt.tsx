@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import {ReactNode, useEffect, useState} from "react";
 import '../../style/Card.scss';
 import {LoadingSpinner} from "./LoadingSpinner.tsx";
 
@@ -11,11 +11,11 @@ interface CardArtProps {
 
 const IMAGE_PATH = "/images/";
 
-const CardArt: React.FC<CardArtProps> = ({src, alt, canExpand, overrideLink}) => {
+export function CardArt({src, alt, canExpand, overrideLink}: CardArtProps): ReactNode {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [imageSrc, setImageSrc] = useState('');
-  const [error, setError] = useState<string>(null); // Add error state
+  const [error, setError] = useState<string | null>(null); // Add error state
 
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
@@ -45,19 +45,28 @@ const CardArt: React.FC<CardArtProps> = ({src, alt, canExpand, overrideLink}) =>
 
   useEffect(() => {
     setIsLoading(true);
+    setError(null); // Reset error state when the src prop changes
+    const controller = new AbortController(); // Create a new AbortController
     const img = new Image();
     img.src = fullSrc;
+
     img.onload = () => {
-      setIsLoading(false);
-      setImageSrc(fullSrc);
+      if (!controller.signal.aborted) { // Check if the request has been cancelled
+        setIsLoading(false);
+        setImageSrc(fullSrc);
+      }
     };
+
     img.onerror = (error) => {
-      console.error('Failed to load image ' + fullSrc, error);
-      setError(error); // Set error state when an error occurs
-      setIsLoading(false);
+      if (!controller.signal.aborted) { // Check if the request has been cancelled
+        console.error('Failed to load image ' + fullSrc, error);
+        setError((typeof error === "string" && error) || "An error occurred");
+        setIsLoading(false);
+      }
     };
 
     return () => {
+      controller.abort(); // Cancel the request when the src prop changes
       img.onload = null;
       img.onerror = null;
     };
@@ -74,10 +83,8 @@ const CardArt: React.FC<CardArtProps> = ({src, alt, canExpand, overrideLink}) =>
           onClick={toggleExpand}/>
       }
       {isExpanded && canExpand && <div className={"overlay"} onClick={toggleExpand}>
-          <img src={fullSrc} alt={alt}/>
+          <img src={imageSrc} alt={alt}/>
       </div>}
     </>
   )
 }
-
-export {CardArt}
