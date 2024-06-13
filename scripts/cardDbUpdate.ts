@@ -105,7 +105,7 @@ async function main(): Promise<void> {
   console.log("Database update required. " + currentDbVersion + " -> " + latestDbVersion);
 
   const cardDb = await loadCardDb();
-  // await saveNewCardImages(cardDb);
+  await saveNewCardImages(cardDb);
   saveDbByLanguages(cardDb);
   fs.writeFileSync(DB_VERSION_FILE, latestDbVersion, "utf8");
 }

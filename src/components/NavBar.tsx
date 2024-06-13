@@ -5,9 +5,11 @@ import ModalOverlay from "./ModalOverlay.tsx";
 
 export default function NavBar(): ReactNode {
   const [isSearchVisible, setSearchVisible] = useState(false);
+  const [searchHasBeenVisible, setSearchHasBeenVisible] = useState(false);
 
   const toggleSearch = () => {
     setSearchVisible(!isSearchVisible);
+    setSearchHasBeenVisible(true);
   };
 
   return (
@@ -21,7 +23,7 @@ export default function NavBar(): ReactNode {
       <div className={"search"}>
         <button onClick={toggleSearch}>Search</button>
         <ModalOverlay close={toggleSearch} isVisible={isSearchVisible}>
-          <SearchBox toggleSearch={toggleSearch}/>
+          {(isSearchVisible || searchHasBeenVisible) && <SearchBox toggleSearch={toggleSearch}/>}
         </ModalOverlay>
       </div>
     </div>
