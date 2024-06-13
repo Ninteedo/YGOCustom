@@ -24,7 +24,7 @@ jobs:
         run: npm install
 
       - name: Run the pre-build script
-        run: npm run prebuild
+        run: npm run cardDbUpdate
         env:
           R2_ACCESS_KEY_ID = ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY = ${{ secrets.R2_SECRET_ACCESS_KEY }}
