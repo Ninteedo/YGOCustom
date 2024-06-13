@@ -1,7 +1,11 @@
 import axios from "axios";
 import fs from "fs";
-import {Endpoint, S3} from "aws-sdk";
+import AWS from "aws-sdk";
 import {ListObjectsV2Request} from "aws-sdk/clients/s3";
+
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 const DB_VERSION_FILE = "public/db/version.txt";
 
@@ -27,42 +31,6 @@ async function loadCardDb(): Promise<any> {
     });
 }
 
-// async function saveNewCardImages(cardDb: any): Promise<void> {
-//   for (const card of cardDb["data"]) {
-//     const imagesList = card["card_images"];
-//     for (const dict of imagesList) {
-//       const imageId = dict["id"];
-//       const croppedUrl = dict["image_url_cropped"];
-//       const imagePath = `public/images/official/${imageId}.jpg`;
-//       if (!fs.existsSync(imagePath)) {
-//         console.log(`Downloading ${imageId}.jpg`);
-//         try {
-//           const response = await axios({
-//             url: croppedUrl,
-//             method: 'GET',
-//             responseType: 'stream'
-//           });
-//
-//           const writer = fs.createWriteStream(imagePath);
-//
-//           response.data.pipe(writer);
-//
-//           await new Promise((resolve, reject) => {
-//             writer.on('finish', resolve);
-//             writer.on('error', reject);
-//           });
-//         } catch (e) {
-//           console.error(`Error downloading ${imageId}.jpg`);
-//           console.error(e);
-//         }
-//
-//         // wait 0.1 seconds
-//         await new Promise(resolve => setTimeout(resolve, 500));
-//       }
-//     }
-//   }
-// }
-
 function saveDbByLanguages(cardDb: any): void {
   const LANGUAGES = ["en"];  // , "de", "es", "fr", "it", "pt", "ja", "ko", "zh-TW", "zh-CN"];
 
@@ -75,35 +43,14 @@ function saveDbByLanguages(cardDb: any): void {
   }
 }
 
-// function getCardDbByLanguage(cardDb: any[], language: string): any[] {
-//   return cardDb['data'].map(card => getCardByLanguage(card, language));
-// }
-
-// function getCardByLanguage(card: any, language: string): any {
-//   const data = {...card};
-//
-//   // remove language fields
-//   try {
-//     data.name = data.name[language];
-//     data.text = data.text[language];
-//     data.sets = data.sets[language];
-//   } catch (e) {
-//     console.error(`Error processing card ${data.name} for language ${language}.`);
-//     console.error(e);
-//     throw e;
-//   }
-//
-//   return data;
-// }
-
 async function main(): Promise<void> {
   const currentDbVersion = await fetchCurrentDbVersion();
   const latestDbVersion = await fetchLatestDbVersion();
 
-  if (currentDbVersion === latestDbVersion) {
-    console.log("Database is already up to date. " + currentDbVersion);
-    return;
-  }
+  // if (currentDbVersion === latestDbVersion) {
+  //   console.log("Database is already up to date. " + currentDbVersion);
+  //   return;
+  // }
   console.log("Database update required. " + currentDbVersion + " -> " + latestDbVersion);
 
   const cardDb = await loadCardDb();
@@ -113,12 +60,12 @@ async function main(): Promise<void> {
 }
 
 function configureR2Client() {
-  return new S3({
+  return new AWS.S3({
     accessKeyId: process.env.R2_ACCESS_KEY_ID,
     secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
     region: 'auto',
     s3ForcePathStyle: true,
-    endpoint: new Endpoint(`https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`),
+    endpoint: new AWS.Endpoint(`https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`),
   })
 }
 
@@ -128,21 +75,26 @@ async function listR2Images(): Promise<Set<string>> {
   const params: ListObjectsV2Request = { Bucket: process.env.R2_BUCKET_NAME };
   const imageSet = new Set<string>();
 
-  const data = await s3.listObjectsV2(params).promise();
-  if (!data.Contents) {
-    throw new Error("No contents found in R2 bucket.");
-  }
-
-  for (const item of data.Contents) {
-    if (item.Key) {
-      imageSet.add(item.Key);
+  let data;
+  do {
+    data = await s3.listObjectsV2(params).promise();
+    if (!data.Contents) {
+      throw new Error("No contents found in R2 bucket.");
     }
-  }
+
+    for (const item of data.Contents) {
+      if (item.Key) {
+        imageSet.add(item.Key);
+      }
+    }
+
+    params.ContinuationToken = data.NextContinuationToken;
+  } while (data.IsTruncated);
 
   return imageSet;
 }
 
-async function uploadCardImage(croppedUrl: string, imageId: string, s3: S3, bucketName: string): Promise<void> {
+async function uploadCardImage(croppedUrl: string, imageId: string, s3: AWS.S3, bucketName: string): Promise<void> {
   try {
     const response = await axios({
       url: croppedUrl,
@@ -166,12 +118,9 @@ async function uploadCardImage(croppedUrl: string, imageId: string, s3: S3, buck
     }).promise();
 
     console.log(`Uploaded ${imageId} to R2`);
-
   } catch (e) {
     console.error(`Error downloading or uploading ${imageId}`);
-    console.error(e);
   }
-
 }
 
 async function saveNewCardImages(cardDb: any): Promise<void> {
@@ -179,13 +128,17 @@ async function saveNewCardImages(cardDb: any): Promise<void> {
   const s3 = configureR2Client();
   const bucketName = process.env.R2_BUCKET_NAME;
 
+  if (!bucketName) {
+    throw new Error("R2_BUCKET_NAME environment variable not set.");
+  }
+
   for (const card of cardDb["data"]) {
     const imagesList = card["card_images"];
     for (const dict of imagesList) {
       const imageId = `${dict["id"]}.jpg`;
       const croppedUrl = dict["image_url_cropped"];
 
-      if (!r2Images.has(`official/${imageId}`)) {
+      if (!r2Images.has(imageId)) {
         console.log(`Downloading ${imageId}`);
         await uploadCardImage(croppedUrl, imageId, s3, bucketName);
         // Wait to avoid rate limiting
