@@ -1,5 +1,7 @@
 import axios from "axios";
 import fs from "fs";
+import {Endpoint, S3} from "aws-sdk";
+import {ListObjectsV2Request} from "aws-sdk/clients/s3";
 
 const DB_VERSION_FILE = "public/db/version.txt";
 
@@ -25,41 +27,41 @@ async function loadCardDb(): Promise<any> {
     });
 }
 
-async function saveNewCardImages(cardDb: any): Promise<void> {
-  for (const card of cardDb["data"]) {
-    const imagesList = card["card_images"];
-    for (const dict of imagesList) {
-      const imageId = dict["id"];
-      const croppedUrl = dict["image_url_cropped"];
-      const imagePath = `public/images/official/${imageId}.jpg`;
-      if (!fs.existsSync(imagePath)) {
-        console.log(`Downloading ${imageId}.jpg`);
-        try {
-          const response = await axios({
-            url: croppedUrl,
-            method: 'GET',
-            responseType: 'stream'
-          });
-
-          const writer = fs.createWriteStream(imagePath);
-
-          response.data.pipe(writer);
-
-          await new Promise((resolve, reject) => {
-            writer.on('finish', resolve);
-            writer.on('error', reject);
-          });
-        } catch (e) {
-          console.error(`Error downloading ${imageId}.jpg`);
-          console.error(e);
-        }
-
-        // wait 0.1 seconds
-        await new Promise(resolve => setTimeout(resolve, 500));
-      }
-    }
-  }
-}
+// async function saveNewCardImages(cardDb: any): Promise<void> {
+//   for (const card of cardDb["data"]) {
+//     const imagesList = card["card_images"];
+//     for (const dict of imagesList) {
+//       const imageId = dict["id"];
+//       const croppedUrl = dict["image_url_cropped"];
+//       const imagePath = `public/images/official/${imageId}.jpg`;
+//       if (!fs.existsSync(imagePath)) {
+//         console.log(`Downloading ${imageId}.jpg`);
+//         try {
+//           const response = await axios({
+//             url: croppedUrl,
+//             method: 'GET',
+//             responseType: 'stream'
+//           });
+//
+//           const writer = fs.createWriteStream(imagePath);
+//
+//           response.data.pipe(writer);
+//
+//           await new Promise((resolve, reject) => {
+//             writer.on('finish', resolve);
+//             writer.on('error', reject);
+//           });
+//         } catch (e) {
+//           console.error(`Error downloading ${imageId}.jpg`);
+//           console.error(e);
+//         }
+//
+//         // wait 0.1 seconds
+//         await new Promise(resolve => setTimeout(resolve, 500));
+//       }
+//     }
+//   }
+// }
 
 function saveDbByLanguages(cardDb: any): void {
   const LANGUAGES = ["en"];  // , "de", "es", "fr", "it", "pt", "ja", "ko", "zh-TW", "zh-CN"];
@@ -73,26 +75,26 @@ function saveDbByLanguages(cardDb: any): void {
   }
 }
 
-function getCardDbByLanguage(cardDb: any[], language: string): any[] {
-  return cardDb['data'].map(card => getCardByLanguage(card, language));
-}
+// function getCardDbByLanguage(cardDb: any[], language: string): any[] {
+//   return cardDb['data'].map(card => getCardByLanguage(card, language));
+// }
 
-function getCardByLanguage(card: any, language: string): any {
-  const data = {...card};
-
-  // remove language fields
-  try {
-    data.name = data.name[language];
-    data.text = data.text[language];
-    data.sets = data.sets[language];
-  } catch (e) {
-    console.error(`Error processing card ${data.name} for language ${language}.`);
-    console.error(e);
-    throw e;
-  }
-
-  return data;
-}
+// function getCardByLanguage(card: any, language: string): any {
+//   const data = {...card};
+//
+//   // remove language fields
+//   try {
+//     data.name = data.name[language];
+//     data.text = data.text[language];
+//     data.sets = data.sets[language];
+//   } catch (e) {
+//     console.error(`Error processing card ${data.name} for language ${language}.`);
+//     console.error(e);
+//     throw e;
+//   }
+//
+//   return data;
+// }
 
 async function main(): Promise<void> {
   const currentDbVersion = await fetchCurrentDbVersion();
@@ -108,6 +110,89 @@ async function main(): Promise<void> {
   await saveNewCardImages(cardDb);
   saveDbByLanguages(cardDb);
   fs.writeFileSync(DB_VERSION_FILE, latestDbVersion, "utf8");
+}
+
+function configureR2Client() {
+  return new S3({
+    accessKeyId: process.env.R2_ACCESS_KEY_ID,
+    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+    region: 'auto',
+    s3ForcePathStyle: true,
+    endpoint: new Endpoint(`https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`),
+  })
+}
+
+async function listR2Images(): Promise<Set<string>> {
+  const s3 = configureR2Client();
+
+  const params: ListObjectsV2Request = { Bucket: process.env.R2_BUCKET_NAME };
+  const imageSet = new Set<string>();
+
+  const data = await s3.listObjectsV2(params).promise();
+  if (!data.Contents) {
+    throw new Error("No contents found in R2 bucket.");
+  }
+
+  for (const item of data.Contents) {
+    if (item.Key) {
+      imageSet.add(item.Key);
+    }
+  }
+
+  return imageSet;
+}
+
+async function uploadCardImage(croppedUrl: string, imageId: string, s3: S3, bucketName: string): Promise<void> {
+  try {
+    const response = await axios({
+      url: croppedUrl,
+      method: 'GET',
+      responseType: 'stream'
+    });
+
+    const buffer = await new Promise<Buffer>((resolve, reject) => {
+      const chunks: Uint8Array[] = [];
+      response.data.on('data', (chunk: Uint8Array) => chunks.push(chunk));
+      response.data.on('end', () => resolve(Buffer.concat(chunks)));
+      response.data.on('error', reject);
+    });
+
+    // Upload to Cloudflare R2
+    await s3.putObject({
+      Bucket: bucketName,
+      Key: `official/${imageId}`,
+      Body: buffer,
+      ContentType: 'image/jpeg'
+    }).promise();
+
+    console.log(`Uploaded ${imageId} to R2`);
+
+  } catch (e) {
+    console.error(`Error downloading or uploading ${imageId}`);
+    console.error(e);
+  }
+
+}
+
+async function saveNewCardImages(cardDb: any): Promise<void> {
+  const r2Images = await listR2Images();
+  const s3 = configureR2Client();
+  const bucketName = process.env.R2_BUCKET_NAME;
+
+  for (const card of cardDb["data"]) {
+    const imagesList = card["card_images"];
+    for (const dict of imagesList) {
+      const imageId = `${dict["id"]}.jpg`;
+      const croppedUrl = dict["image_url_cropped"];
+
+      if (!r2Images.has(`official/${imageId}`)) {
+        console.log(`Downloading ${imageId}`);
+        await uploadCardImage(croppedUrl, imageId, s3, bucketName);
+        // Wait to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
+    }
+  }
 }
 
 await main();
