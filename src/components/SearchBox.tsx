@@ -14,52 +14,52 @@ interface SearchBoxProps {
 
 export default function SearchBox({toggleSearch}: SearchBoxProps): ReactNode {
   const [searchTerm, setSearchTerm] = useState("");
-  const [displayRowsLimit, setDisplayRowsLimit] = useState(3);
-  const [searchResults, loading] = useSearchCards(searchTerm);
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   }
 
   return (
-    <>
-      <div className={"search-box"}>
-        <div>
-          <input type="text" name={"search-term"} className={"search-term"} placeholder={"Search"}
-                 onInput={handleInput}/>
-          <button className={"close-button"} onClick={toggleSearch}>x</button>
-        </div>
-        <SearchResults
-          results={searchResults}
-          toggleSearch={toggleSearch}
-          displayRowsLimit={displayRowsLimit}
-          setDisplayRowsLimit={setDisplayRowsLimit}
-          cardsPerRow={4}
-          isLoading={loading}
-        />
+    <div className={"search-box"}>
+      <div>
+        <input type="text" name={"search-term"} className={"search-term"} placeholder={"Search"}
+               onInput={handleInput}/>
+        <button className={"close-button"} onClick={toggleSearch}>x</button>
       </div>
-    </>
+      <SearchResults
+        searchTerm={searchTerm}
+        toggleSearch={toggleSearch}
+        cardsPerRow={4}
+      />
+    </div>
   )
 }
 
 interface SearchResultsProps {
-  results: BaseCard[];
+  searchTerm: string;
   toggleSearch: () => void;
-  displayRowsLimit: number;
-  setDisplayRowsLimit: (rows: number) => void;
   cardsPerRow: number;
-  isLoading: boolean;
 }
 
+/**
+ * Display search results in a scrollable container
+ * <p>Dynamically loads more results as the user scrolls to the bottom</p>
+ * @param results The search results to display
+ * @param toggleSearch Function to close the search box
+ * @param displayRowsLimit The number of rows to display
+ * @param setDisplayRowsLimit Function to set the number of rows to display
+ * @param cardsPerRow The number of cards to display per row
+ * @param isLoading Whether the search results are still loading
+ * @constructor Create element
+ */
 function SearchResults({
-  results,
+  searchTerm,
   toggleSearch,
-  displayRowsLimit,
-  setDisplayRowsLimit,
   cardsPerRow,
-  isLoading
 }: SearchResultsProps) {
   const resultsRef = useRef<HTMLDivElement>(null);
+  const [results, isLoading] = useSearchCards(searchTerm);
+  const [displayRowsLimit, setDisplayRowsLimit] = useState(3);
 
   useEffect(() => {
     const handleScroll = () => {

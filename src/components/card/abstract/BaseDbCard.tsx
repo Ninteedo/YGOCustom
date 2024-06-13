@@ -13,7 +13,7 @@ export default class BaseDbCard extends BaseCard {
     const name = json.name;
     const artSrc = getBucketImageLink(json["card_images"][0]["id"]);
     const cardKind = getDbCardKind(json);
-    const subKind = getDbCardSubKind(json).toLowerCase();
+    const subKind = getDbCardSubKind(json);
 
     super(id, name, artSrc, cardKind, subKind);
 
@@ -116,22 +116,22 @@ function getDbCardSubKind(json: any): string {
 
   if (kind == "monster") {
     if (typeString.includes("link")) {
-      return "link";
+      return "Link";
     } else if (typeString.includes("xyz")) {
-      return "xyz";
+      return "Xyz";
     } else if (typeString.includes("synchro")) {
-      return "synchro";
+      return "Synchro";
     } else if (typeString.includes("fusion")) {
-      return "fusion";
+      return "Fusion";
     } else if (typeString.includes("ritual")) {
-      return "ritual";
+      return "Ritual";
     } else if (typeString.includes("effect")) {
-      return "effect";
+      return "Effect";
     } else {
-      return "normal";
+      return "Normal";
     }
   } else {
-    return json.race.toLowerCase();
+    return json.race;
   }
 }
 

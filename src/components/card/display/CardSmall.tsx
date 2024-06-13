@@ -17,7 +17,7 @@ export default function CardSmall({id, name, art, cardKind, cardSubKind, clickAc
     }
   }
 
-  let rootClasses = ["card", "card-small", `card-${cardKind}`, `card-${cardSubKind}`];
+  let rootClasses = ["card", "card-small", `card-${cardKind.toLowerCase()}`, `card-${cardSubKind.toLowerCase()}`];
   if (clickAction) {
     rootClasses.push("has-click-action");
   }
