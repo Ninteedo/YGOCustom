@@ -26,10 +26,10 @@ jobs:
       - name: Run the pre-build script
         run: npm run cardDbUpdate
         env:
-          R2_ACCESS_KEY_ID = ${{ secrets.R2_ACCESS_KEY_ID }}
-          R2_SECRET_ACCESS_KEY = ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          R2_BUCKET_NAME = ${{ secrets.R2_BUCKET_NAME }}
-          R2_ACCOUNT_ID = ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET_NAME: ${{ secrets.R2_BUCKET_NAME }}
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
 
       - name: Build the project
         run: npm run build
