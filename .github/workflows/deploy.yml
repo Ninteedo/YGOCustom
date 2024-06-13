@@ -23,8 +23,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run the pre-build script
-        run: npm run prebuild
+#      - name: Run the pre-build script
+#        run: npm run prebuild
 
       - name: Build the project
         run: npm run build
