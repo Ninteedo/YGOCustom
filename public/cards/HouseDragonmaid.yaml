@@ -7,7 +7,7 @@ level: 9
 attribute: LIGHT
 type:
   - Dragon
-art: Dragonmaid/HouseDragonmaid.webp
+art: images/Dragonmaid/HouseDragonmaid.webp
 categories:
   - Fusion
   - Effect

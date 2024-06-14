@@ -9,9 +9,7 @@ interface CardArtProps {
   overrideLink?: boolean;
 }
 
-const IMAGE_PATH = "/images/";
-
-export function CardArt({src, alt, canExpand, overrideLink}: CardArtProps): ReactNode {
+export function CardArt({src, alt, canExpand}: CardArtProps): ReactNode {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [imageSrc, setImageSrc] = useState('');
@@ -38,28 +36,23 @@ export function CardArt({src, alt, canExpand, overrideLink}: CardArtProps): Reac
     }
   }, [isExpanded]);
 
-  let fullSrc = src;
-  if (!overrideLink && !src.includes("http://") && !src.includes("https://")) {
-    fullSrc = IMAGE_PATH + src;
-  }
-
   useEffect(() => {
     setIsLoading(true);
     setError(null); // Reset error state when the src prop changes
     const controller = new AbortController(); // Create a new AbortController
     const img = new Image();
-    img.src = fullSrc;
+    img.src = src;
 
     img.onload = () => {
       if (!controller.signal.aborted) { // Check if the request has been cancelled
         setIsLoading(false);
-        setImageSrc(fullSrc);
+        setImageSrc(src);
       }
     };
 
     img.onerror = (error) => {
       if (!controller.signal.aborted) { // Check if the request has been cancelled
-        console.error('Failed to load image ' + fullSrc, error);
+        console.error('Failed to load image ' + src, error);
         setError((typeof error === "string" && error) || "An error occurred");
         setIsLoading(false);
       }
@@ -70,7 +63,7 @@ export function CardArt({src, alt, canExpand, overrideLink}: CardArtProps): Reac
       img.onload = null;
       img.onerror = null;
     };
-  }, [fullSrc]);
+  }, [src]);
 
   return (
     <>
