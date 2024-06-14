@@ -7,7 +7,7 @@ level: 9
 attribute: DARK
 type:
   - Dragon
-art: Dragonmaid/DragonmaidMarcheb.webp
+art: images/Dragonmaid/DragonmaidMarcheb.webp
 categories:
   - Effect
 effectRestrictions:

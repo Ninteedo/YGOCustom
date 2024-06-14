@@ -7,7 +7,7 @@ level: 7
 attribute: WATER
 type:
   - Dragon
-art: Dragonmaid/DragonmaidNudyarl.webp
+art: images/Dragonmaid/DragonmaidNudyarl.webp
 categories:
   - Effect
 effectRestrictions:
