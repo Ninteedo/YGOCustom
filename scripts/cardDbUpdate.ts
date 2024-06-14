@@ -1,7 +1,6 @@
-import axios from "axios";
+import fetch from "node-fetch";
 import fs from "fs";
-import AWS from "aws-sdk";
-import {ListObjectsV2Request} from "aws-sdk/clients/s3";
+import { ListObjectsV2CommandInput, S3 } from "@aws-sdk/client-s3";
 
 // import dotenv from "dotenv";
 // if (process.env.NODE_ENV !== 'production') {
@@ -17,10 +16,14 @@ async function fetchCurrentDbVersion(): Promise<string | null> {
   return fs.readFileSync(DB_VERSION_FILE, "utf8");
 }
 
+interface DbVersionResponse {
+  database_version: string;
+}
+
 async function fetchLatestDbVersion(): Promise<string> {
   return await fetch("https://db.ygoprodeck.com/api/v7/checkDBVer.php")
-    .then(response => response.json())
-    .then(data => data[0]["database_version"]);
+    .then(response => response.json() as Promise<DbVersionResponse[]>)
+    .then((data: DbVersionResponse[]) => data[0]["database_version"]);
 }
 
 async function loadCardDb(): Promise<any> {
@@ -72,13 +75,15 @@ function configureR2Client() {
   if (!process.env.R2_ACCOUNT_ID)
     throw new Error("R2_ACCOUNT_ID environment variable not set.");
 
-  return new AWS.S3({
-    accessKeyId: process.env.R2_ACCESS_KEY_ID,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+  return new S3({
+    credentials: {
+      accessKeyId: process.env.R2_ACCESS_KEY_ID,
+      secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+    },
     region: 'auto',
-    s3ForcePathStyle: true,
-    endpoint: new AWS.Endpoint(`https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`),
-  })
+    forcePathStyle: true,
+    endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  });
 }
 
 async function listR2Images(): Promise<Set<string>> {
@@ -89,12 +94,12 @@ async function listR2Images(): Promise<Set<string>> {
   }
   console.log(`Listing images from ${process.env.R2_BUCKET_NAME}`);
 
-  const params: ListObjectsV2Request = { Bucket: process.env.R2_BUCKET_NAME };
+  const params: ListObjectsV2CommandInput = { Bucket: process.env.R2_BUCKET_NAME };
   const imageSet = new Set<string>();
 
   let data;
   do {
-    data = await s3.listObjectsV2(params).promise();
+    data = await s3.listObjectsV2(params);
     if (!data.Contents) {
       throw new Error("No contents found in R2 bucket.");
     }
@@ -113,26 +118,12 @@ async function listR2Images(): Promise<Set<string>> {
   return imageSet;
 }
 
-async function uploadCardImage(croppedUrl: string, imageId: string, s3: AWS.S3, bucketName: string): Promise<void> {
+async function uploadCardImage(croppedUrl: string, imageId: string, s3: S3, bucketName: string): Promise<void> {
   try {
-    const response = await axios({
-      url: croppedUrl,
-      method: 'GET',
-      responseType: 'stream'
-    });
+    const response = await fetch(croppedUrl);
 
-    let buffer;
-    try {
-      buffer = await new Promise<Buffer>((resolve, reject) => {
-        const chunks: Uint8Array[] = [];
-        response.data.on('data', (chunk: Uint8Array) => chunks.push(chunk));
-        response.data.on('end', () => resolve(Buffer.concat(chunks)));
-        response.data.on('error', reject);
-      });
-    } catch (e) {
-      console.error(`Error downloading ${croppedUrl}`);
-      return;
-    }
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
 
     // Upload to Cloudflare R2
     try {
@@ -141,7 +132,7 @@ async function uploadCardImage(croppedUrl: string, imageId: string, s3: AWS.S3, 
         Key: `official/${imageId}`,
         Body: buffer,
         ContentType: 'image/jpeg'
-      }).promise();
+      });
     } catch (e) {
       console.error(`Error uploading ${imageId}`);
       return;
