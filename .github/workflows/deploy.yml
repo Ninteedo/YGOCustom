@@ -33,8 +33,6 @@ jobs:
 
       - name: Build the project
         run: npm run build
-        env:
-          IMAGE_BASE_URL: https://images.ygo.rgh.dev
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
