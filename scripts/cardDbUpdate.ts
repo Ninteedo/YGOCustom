@@ -4,7 +4,7 @@ import AWS from "aws-sdk";
 import {ListObjectsV2Request} from "aws-sdk/clients/s3";
 
 // if (process.env.NODE_ENV !== 'production') {
-//   require('dotenv').config();
+//   dotenv.config();
 // }
 
 const DB_VERSION_FILE = "public/db/version.txt";
@@ -121,7 +121,7 @@ async function uploadCardImage(croppedUrl: string, imageId: string, s3: AWS.S3, 
         response.data.on('error', reject);
       });
     } catch (e) {
-      console.error(`Error downloading ${imageId}`);
+      console.error(`Error downloading ${croppedUrl}`);
       return;
     }
 
@@ -164,10 +164,10 @@ async function saveNewCardImages(cardDb: any): Promise<void> {
       }
 
       if (!r2Images.has(imageId)) {
-        console.log(`Downloading ${imageId}`);
+        console.log(`Downloading ${croppedUrl}`);
         await uploadCardImage(croppedUrl, imageId, s3, bucketName);
         // Wait to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 200));
       }
     }
   }
