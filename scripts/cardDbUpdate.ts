@@ -2,7 +2,8 @@ import axios from "axios";
 import fs from "fs";
 import AWS from "aws-sdk";
 import {ListObjectsV2Request} from "aws-sdk/clients/s3";
-
+// import dotenv from "dotenv";
+//
 // if (process.env.NODE_ENV !== 'production') {
 //   dotenv.config();
 // }
@@ -64,6 +65,13 @@ async function main(): Promise<void> {
 }
 
 function configureR2Client() {
+  if (!process.env.R2_ACCESS_KEY_ID)
+    throw new Error("R2_ACCESS_KEY_ID environment variable not set.");
+  if (!process.env.R2_SECRET_ACCESS_KEY)
+    throw new Error("R2_SECRET_ACCESS_KEY environment variable not set.");
+  if (!process.env.R2_ACCOUNT_ID)
+    throw new Error("R2_ACCOUNT_ID environment variable not set.");
+
   return new AWS.S3({
     accessKeyId: process.env.R2_ACCESS_KEY_ID,
     secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
