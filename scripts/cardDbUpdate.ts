@@ -34,11 +34,14 @@ async function loadCardDb(): Promise<any> {
 function saveDbByLanguages(cardDb: any): void {
   const LANGUAGES = ["en"];  // , "de", "es", "fr", "it", "pt", "ja", "ko", "zh-TW", "zh-CN"];
 
+  const db = cardDb['data'];
+  const dbNoSkills = db.filter((card: any) => !isSkillCard(card));
+
   for (const language of LANGUAGES) {
     // const db = getCardDbByLanguage(cardDb, language);
-    const db = cardDb['data'];
+
     console.log(`Saving card data for ${language}.`)
-    fs.writeFileSync(`public/db/cards.${language}.json`, JSON.stringify(db, null, 2), "utf8");
+    fs.writeFileSync(`public/db/cards.${language}.json`, JSON.stringify(dbNoSkills, null, 2), "utf8");
     console.log(`Saved public/db/cards.${language}.json`);
   }
 }
@@ -54,9 +57,10 @@ async function main(): Promise<void> {
   console.log("Database update required. " + currentDbVersion + " -> " + latestDbVersion);
 
   const cardDb = await loadCardDb();
-  await saveNewCardImages(cardDb);
   saveDbByLanguages(cardDb);
   fs.writeFileSync(DB_VERSION_FILE, latestDbVersion, "utf8");
+
+  await saveNewCardImages(cardDb);
 }
 
 function configureR2Client() {
@@ -71,6 +75,10 @@ function configureR2Client() {
 
 async function listR2Images(): Promise<Set<string>> {
   const s3 = configureR2Client();
+
+  if (!process.env.R2_BUCKET_NAME) {
+    throw new Error("R2_BUCKET_NAME environment variable not set.");
+  }
 
   const params: ListObjectsV2Request = { Bucket: process.env.R2_BUCKET_NAME };
   const imageSet = new Set<string>();
@@ -89,8 +97,10 @@ async function listR2Images(): Promise<Set<string>> {
     }
 
     params.ContinuationToken = data.NextContinuationToken;
+    console.log(`Listed ${imageSet.size} images from R2.`)
   } while (data.IsTruncated);
 
+  console.log(`Finished listing ${imageSet.size} images from R2.`);
   return imageSet;
 }
 
@@ -102,20 +112,31 @@ async function uploadCardImage(croppedUrl: string, imageId: string, s3: AWS.S3, 
       responseType: 'stream'
     });
 
-    const buffer = await new Promise<Buffer>((resolve, reject) => {
-      const chunks: Uint8Array[] = [];
-      response.data.on('data', (chunk: Uint8Array) => chunks.push(chunk));
-      response.data.on('end', () => resolve(Buffer.concat(chunks)));
-      response.data.on('error', reject);
-    });
+    let buffer;
+    try {
+      buffer = await new Promise<Buffer>((resolve, reject) => {
+        const chunks: Uint8Array[] = [];
+        response.data.on('data', (chunk: Uint8Array) => chunks.push(chunk));
+        response.data.on('end', () => resolve(Buffer.concat(chunks)));
+        response.data.on('error', reject);
+      });
+    } catch (e) {
+      console.error(`Error downloading ${imageId}`);
+      return;
+    }
 
     // Upload to Cloudflare R2
-    await s3.putObject({
-      Bucket: bucketName,
-      Key: `official/${imageId}`,
-      Body: buffer,
-      ContentType: 'image/jpeg'
-    }).promise();
+    try {
+      await s3.putObject({
+        Bucket: bucketName,
+        Key: `official/${imageId}`,
+        Body: buffer,
+        ContentType: 'image/jpeg'
+      }).promise();
+    } catch (e) {
+      console.error(`Error uploading ${imageId}`);
+      return;
+    }
 
     console.log(`Uploaded ${imageId} to R2`);
   } catch (e) {
@@ -138,6 +159,10 @@ async function saveNewCardImages(cardDb: any): Promise<void> {
       const imageId = `${dict["id"]}.jpg`;
       const croppedUrl = dict["image_url_cropped"];
 
+      if (isSkillCard(card)) {
+        continue;
+      }
+
       if (!r2Images.has(imageId)) {
         console.log(`Downloading ${imageId}`);
         await uploadCardImage(croppedUrl, imageId, s3, bucketName);
@@ -146,6 +171,10 @@ async function saveNewCardImages(cardDb: any): Promise<void> {
       }
     }
   }
+}
+
+function isSkillCard(card: any): boolean {
+  return card["type"].toLowerCase() === "skill card";
 }
 
 await main();
