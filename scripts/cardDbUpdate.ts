@@ -2,8 +2,8 @@ import axios from "axios";
 import fs from "fs";
 import AWS from "aws-sdk";
 import {ListObjectsV2Request} from "aws-sdk/clients/s3";
+
 // import dotenv from "dotenv";
-//
 // if (process.env.NODE_ENV !== 'production') {
 //   dotenv.config();
 // }
@@ -61,7 +61,6 @@ async function main(): Promise<void> {
   saveDbByLanguages(cardDb);
   fs.writeFileSync(DB_VERSION_FILE, latestDbVersion, "utf8");
 
-  await checkValidR2Client();
   await saveNewCardImages(cardDb);
 }
 
@@ -82,23 +81,13 @@ function configureR2Client() {
   })
 }
 
-async function checkValidR2Client(): Promise<void> {
-  const s3 = configureR2Client();
-  try {
-    await s3.listBuckets().promise();
-    console.log("R2 client is valid.");
-  } catch (e) {
-    console.log(`Invalid R2 client`);
-    throw e;
-  }
-}
-
 async function listR2Images(): Promise<Set<string>> {
   const s3 = configureR2Client();
 
   if (!process.env.R2_BUCKET_NAME) {
     throw new Error("R2_BUCKET_NAME environment variable not set.");
   }
+  console.log(`Listing images from ${process.env.R2_BUCKET_NAME}`);
 
   const params: ListObjectsV2Request = { Bucket: process.env.R2_BUCKET_NAME };
   const imageSet = new Set<string>();
