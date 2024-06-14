@@ -88,7 +88,8 @@ async function checkValidR2Client(): Promise<void> {
     await s3.listBuckets().promise();
     console.log("R2 client is valid.");
   } catch (e) {
-    throw new Error(`Invalid R2 client. ${e}`);
+    console.log(`Invalid R2 client`);
+    throw e;
   }
 }
 
