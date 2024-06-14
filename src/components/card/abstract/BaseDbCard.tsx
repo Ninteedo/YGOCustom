@@ -84,7 +84,7 @@ export default class BaseDbCard extends BaseCard {
         effectBlock={<p>{this.text.split("\n").map((s, index) => <Fragment key={index}>{s}<br/></Fragment>)}</p>}
         cardKind={this.kind}
         cardSubKind={this.subKind}
-        overrideArtSrc={false}
+        overrideArtSrc={true}
         statLine={this.getStatLine()}
         categoryLine={this.getCategoryLine()}
       />
@@ -93,7 +93,7 @@ export default class BaseDbCard extends BaseCard {
 }
 
 function getBucketImageLink(id: string): string {
-  return `https://images.ygo.rgh.dev/${id}.jpg`;
+  return `${process.env.IMAGE_BASE_URL}/${id}.jpg`;
 }
 
 function getDbCardKind(json: any): string {
