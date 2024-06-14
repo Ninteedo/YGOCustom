@@ -61,6 +61,7 @@ async function main(): Promise<void> {
   saveDbByLanguages(cardDb);
   fs.writeFileSync(DB_VERSION_FILE, latestDbVersion, "utf8");
 
+  await checkValidR2Client();
   await saveNewCardImages(cardDb);
 }
 
@@ -79,6 +80,16 @@ function configureR2Client() {
     s3ForcePathStyle: true,
     endpoint: new AWS.Endpoint(`https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`),
   })
+}
+
+async function checkValidR2Client(): Promise<void> {
+  const s3 = configureR2Client();
+  try {
+    await s3.listBuckets().promise();
+    console.log("R2 client is valid.");
+  } catch (e) {
+    throw new Error(`Invalid R2 client. ${e}`);
+  }
 }
 
 async function listR2Images(): Promise<Set<string>> {
