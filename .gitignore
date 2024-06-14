@@ -28,12 +28,9 @@ dist-ssr
 
 ### react ###
 .DS_*
-*.log
-logs
 **/*.backup.*
 **/*.back.*
 
-node_modules
 bower_components
 
 *.sublime*
@@ -183,5 +180,4 @@ $RECYCLE.BIN/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,webstorm,react
 
-package-lock.json
 .env
