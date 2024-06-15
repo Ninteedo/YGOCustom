@@ -2,6 +2,8 @@ import {BaseCard} from "./BaseCard.ts";
 import React, {Fragment, ReactNode} from "react";
 import CardTemplate from "./display/elements/CardTemplate.tsx";
 import StatLine from "./display/elements/StatLine.tsx";
+import EffectBlock from "./display/elements/EffectBlock.tsx";
+import {parseEffects} from "./parse/parseEffects.ts";
 
 export default class BaseDbCard extends BaseCard {
   public readonly text: string;
@@ -40,9 +42,7 @@ export default class BaseDbCard extends BaseCard {
   protected getInfoLine(): ReactNode {
     switch (this.kind) {
       case "monster":
-        const levelName = getLevelName(this.subKind, this.json);
-        const attribute = this.json.attribute;
-        return <p>{levelName} {attribute} Monster</p>
+        return <p>{getLevelName(this.subKind.toLowerCase(), this.json)} {this.json.attribute} Monster</p>
       case "spell":
         return <p>{this.subKind} Spell</p>
       case "trap":
@@ -81,7 +81,7 @@ export default class BaseDbCard extends BaseCard {
         name={this.name}
         artSrc={this.art}
         infoLine={this.getInfoLine()}
-        effectBlock={<p>{this.text.split("\n").map((s, index) => <Fragment key={index}>{s}<br/></Fragment>)}</p>}
+        effectBlock={this.getEffectBlock()}
         cardKind={this.kind}
         cardSubKind={this.subKind}
         overrideArtSrc={true}
@@ -89,6 +89,29 @@ export default class BaseDbCard extends BaseCard {
         categoryLine={this.getCategoryLine()}
       />
     );
+  }
+
+  protected getEffectBlock(): ReactNode {
+    try {
+      const materials = this.getMaterials();
+      const {restrictions, effects} = parseEffects({
+        text: materials ? this.text.substring(materials.length + 2) : this.text,
+        isFastCard: this.kind === "trap",
+        isSpellTrapCard: this.kind === "spell" || this.kind === "trap",
+        isContinuousSpellTrapCard: (this.kind === "spell" || this.kind === "trap") && this.subKind === "Continuous"
+      })
+
+      return <EffectBlock materials={materials} effectRestrictions={restrictions} effects={effects} cardId={this.id}/>;
+    } catch (e) {
+      return <p>{this.text.split("\n").map((s, index) => <Fragment key={index}>{s}<br/></Fragment>)}</p>;
+    }
+  }
+
+  protected getMaterials(): string | undefined {
+    if (this.kind === "monster" && ["Fusion", "Synchro", "Xyz", "Link"].includes(this.subKind)) {
+      return this.text.split("\r\n")[0];
+    }
+    return undefined;
   }
 }
 
