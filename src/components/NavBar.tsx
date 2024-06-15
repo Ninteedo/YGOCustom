@@ -2,6 +2,7 @@ import {ReactNode, useState} from "react";
 import "../style/NavBar.scss";
 import SearchBox from "./search/SearchBox.tsx";
 import ModalOverlay from "./ModalOverlay.tsx";
+import {Link} from "react-router-dom";
 
 export default function NavBar(): ReactNode {
   const [isSearchVisible, setSearchVisible] = useState(false);
@@ -18,7 +19,7 @@ export default function NavBar(): ReactNode {
         <img src={"vite.svg"} alt={"Logo"}/>
       </div>
       <div className={"links"}>
-        <a href={"#"}>Home</a>
+        <Link to={"/"}>Home</Link>
       </div>
       <div className={"search"}>
         <button onClick={toggleSearch}>Search</button>
