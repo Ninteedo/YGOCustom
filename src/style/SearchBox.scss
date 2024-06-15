@@ -48,13 +48,18 @@
 
     overflow-y: scroll;
 
-    > div {
+    .card {
       //margin: 0.5%;
       //width: 200px;
       //width: 20vw;
       //height: 33vh;
       //overflow: hidden;
       height: auto;
+    }
+
+    .last-ref {
+      width: min-content;
+      margin: 0 auto;
     }
   }
 }

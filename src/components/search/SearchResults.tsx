@@ -45,7 +45,7 @@ export function SearchResults({
       {results.map((result, index) => {
         if (results.length === index + 1) {
           return (
-            <div ref={lastElementRef} key={index}>
+            <div ref={lastElementRef} key={index} className={"last-ref"}>
               <SearchResult card={result} toggleSearch={toggleSearch}/>
             </div>
           );
