@@ -95,10 +95,10 @@ export default class BaseDbCard extends BaseCard {
     try {
       const materials = this.getMaterials();
       const {restrictions, effects} = parseEffects({
-        text: materials ? this.text.substring(materials.length + 2) : this.text,
+        text: materials ? this.text.substring(materials.length + 1).trim() : this.text,
         isFastCard: this.kind === "trap",
         isSpellTrapCard: this.kind === "spell" || this.kind === "trap",
-        isContinuousSpellTrapCard: (this.kind === "spell" || this.kind === "trap") && this.subKind === "Continuous"
+        isContinuousSpellTrapCard: (this.kind === "spell" || this.kind === "trap") && ["continuous", "field", "equip"].includes(this.subKind.toLowerCase())
       })
 
       return <EffectBlock materials={materials} effectRestrictions={restrictions} effects={effects} cardId={this.id}/>;
@@ -109,7 +109,7 @@ export default class BaseDbCard extends BaseCard {
 
   protected getMaterials(): string | undefined {
     if (this.kind === "monster" && ["Fusion", "Synchro", "Xyz", "Link"].includes(this.subKind)) {
-      return this.text.split("\r\n")[0];
+      return this.text.split("\n")[0];
     }
     return undefined;
   }

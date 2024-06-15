@@ -13,8 +13,8 @@ import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
 describe('parseEffects should parse', () => {
   function testParseEffects(props: ParseEffectsProps, expectedRestrictions: EffectRestriction[], expectedEffects: Effect[]) {
     const {restrictions, effects} = parseEffects(props);
-    expect(effects).toEqual(expectedEffects);
-    expect(restrictions).toEqual(expectedRestrictions);
+    expect(effects).toStrictEqual(expectedEffects);
+    expect(restrictions).toStrictEqual(expectedRestrictions);
   }
 
   test('Purrely', () => {
@@ -103,4 +103,57 @@ describe('parseEffects should parse', () => {
     ];
     testParseEffects({text, isSpellTrapCard: true, isFastCard: true, isContinuousSpellTrapCard: true}, [], effects);
   })
+
+  test('Laundry Dragonmaid', () => {
+    const text = "If this card is Normal or Special Summoned: You can send the top 3 cards of your Deck to the GY. At the start of the Battle Phase: You can return this card to the hand, and if you do, Special Summon 1 Level 7 \"Dragonmaid\" monster from your hand or GY. You can only use each effect of \"Laundry Dragonmaid\" once per turn."
+    const restrictions = [
+      new EffectRestriction("You can only use each effect of \"Laundry Dragonmaid\" once per turn.")
+    ];
+    const effects = [
+      new TriggerEffect([
+        new EffectConditionClause("If this card is Normal or Special Summoned"),
+        new EffectMainClause("You can send the top 3 cards of your Deck to the GY."),
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("At the start of the Battle Phase"),
+        new EffectMainClause("You can return this card to the hand, and if you do, Special Summon 1 Level 7 \"Dragonmaid\" monster from your hand or GY."),
+      ]),
+    ];
+    testParseEffects({text}, restrictions, effects);
+  });
+
+  test('My Friend Purrely', () => {
+    const text = "You can pay 500 LP; reveal 3 \"Purrely\" cards from your Deck, except \"My Friend Purrely\", and your opponent randomly picks 1 for you to add to your hand, also shuffle the rest into your Deck. If a face-up \"Purrely\" Xyz Monster(s) you control leaves the field because of an opponent's card, even during the Damage Step: You can add up to 3 \"Purrely\" Quick-Play Spells with different names from your GY to your hand. You can only use each effect of \"My Friend Purrely\" once per turn.";
+    const restrictions = [
+      new EffectRestriction("You can only use each effect of \"My Friend Purrely\" once per turn.")
+    ];
+    const effects = [
+      new IgnitionEffect([
+        new EffectCostClause("You can pay 500 LP"),
+        new EffectMainClause("reveal 3 \"Purrely\" cards from your Deck, except \"My Friend Purrely\", and your opponent randomly picks 1 for you to add to your hand, also shuffle the rest into your Deck."),
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("If a face-up \"Purrely\" Xyz Monster(s) you control leaves the field because of an opponent's card, even during the Damage Step"),
+        new EffectMainClause("You can add up to 3 \"Purrely\" Quick-Play Spells with different names from your GY to your hand."),
+      ])
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, restrictions, effects);
+  });
+
+  test('Stray Purrely Street', () => {
+    const text = "Your opponent cannot target \"Purrely\" monsters you control with card effects, the turn they are Special Summoned. Once per turn, if a face-up \"Purrely\" Xyz Monster(s) you control leaves the field because of an opponent's card: Special Summon 1 Level 1 \"Purrely\" monster from your Deck or GY. Once per turn, during the End Phase: You can target 1 \"Purrely\" Xyz Monster on the field; attach 1 \"Purrely\" Quick-Play Spell from your Deck or GY to that monster as material.";
+    const effects = [
+      new ContinuousEffect([new EffectMainClause("Your opponent cannot target \"Purrely\" monsters you control with card effects, the turn they are Special Summoned.")]),
+      new TriggerEffect([
+        new EffectConditionClause("Once per turn, if a face-up \"Purrely\" Xyz Monster(s) you control leaves the field because of an opponent's card"),
+        new EffectMainClause("Special Summon 1 Level 1 \"Purrely\" monster from your Deck or GY."),
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("Once per turn, during the End Phase"),
+        new EffectCostClause("You can target 1 \"Purrely\" Xyz Monster on the field"),
+        new EffectMainClause("attach 1 \"Purrely\" Quick-Play Spell from your Deck or GY to that monster as material."),
+      ])
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, [], effects);
+  });
 });

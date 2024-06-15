@@ -8,6 +8,7 @@ import TriggerEffect from "../effect/TriggerEffect.tsx";
 import EffectConditionClause from "../effect/clause/EffectConditionClause.ts";
 import EffectCostClause from "../effect/clause/EffectCostClause.ts";
 import ContinuousEffect from "../effect/ContinuousEffect.tsx";
+import EffectParseError from "./EffectParseError.ts";
 
 interface EffectData {
   restrictions: EffectRestriction[];
@@ -79,8 +80,12 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
         } else {
           effects.push(new IgnitionEffect(parseEffectClauses(sentence)));
         }
-      } else {
+      } else if (!sentence.includes(":")) {
         effects.push(new ContinuousEffect([new EffectMainClause(sentence)]));
+      } else if (sentence.startsWith("During the ") || sentence.match(/At the (start|end) of the /)) {
+        effects.push(new TriggerEffect(parseEffectClauses(sentence)));
+      } else {
+        throw new EffectParseError("Could not determine effect type for sentence: " + sentence);
       }
     }
   }
@@ -89,7 +94,7 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
 }
 
 function parseSpellTrapCardFirstEffect({isFastCard, isContinuousSpellTrapCard}: ParseEffectsProps, sentence: string, effects: Effect[]): void {
-  if (!isContinuousSpellTrapCard || sentence.includes(": ")) {
+  if (!isContinuousSpellTrapCard || sentence.includes(": ") || sentence.includes("; ")) {
     if (isFastCard) {
       effects.push(new QuickEffect(parseEffectClauses(sentence)));
     } else {
