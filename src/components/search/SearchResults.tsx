@@ -6,7 +6,6 @@ import {LoadingSpinner} from "../card/LoadingSpinner.tsx";
 interface SearchResultsProps {
   searchTerm: string;
   toggleSearch: () => void;
-  cardsPerRow: number;
 }
 
 /**
@@ -14,17 +13,13 @@ interface SearchResultsProps {
  * <p>Dynamically loads more results as the user scrolls to the bottom</p>
  * @param results The search results to display
  * @param toggleSearch Function to close the search box
- * @param displayRowsLimit The number of rows to display
- * @param setDisplayRowsLimit Function to set the number of rows to display
- * @param cardsPerRow The number of cards to display per row
- * @param isLoading Whether the search results are still loading
  * @constructor Create element
  */
 export function SearchResults({
   searchTerm,
   toggleSearch,
 }: SearchResultsProps) {
-  const [results, isLoading, loadMore] = useSearchCards(searchTerm);
+  const [results, hits, isLoading, loadMore] = useSearchCards(searchTerm);
   const observer = useRef<IntersectionObserver | null>(null);
   const lastElementRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -41,21 +36,24 @@ export function SearchResults({
   );
 
   return (
-    <div className={"results"}>
-      {results.map((result, index) => {
-        if (results.length === index + 1) {
-          return (
-            <div ref={lastElementRef} key={index}>
-              <SearchResult card={result} toggleSearch={toggleSearch}/>
-            </div>
-          );
-        } else {
-          return (
-            <SearchResult key={index} card={result} toggleSearch={toggleSearch}/>
-          );
-        }
-      })}
-      {isLoading && <LoadingSpinner/>}
-    </div>
+    <>
+      <p>Hits: {hits}</p>
+      <div className={"results"}>
+        {results.map((result, index) => {
+          if (results.length === index + 1) {
+            return (
+              <div ref={lastElementRef} key={index} className={"last-ref"}>
+                <SearchResult card={result} toggleSearch={toggleSearch}/>
+              </div>
+            );
+          } else {
+            return (
+              <SearchResult key={index} card={result} toggleSearch={toggleSearch}/>
+            );
+          }
+        })}
+        {isLoading && <LoadingSpinner/>}
+      </div>
+    </>
   );
 }

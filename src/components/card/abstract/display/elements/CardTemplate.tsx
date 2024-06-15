@@ -31,7 +31,7 @@ export default function CardTemplate({
     <div className={["card", "card-" + cardKind.toLowerCase(), "card-" + cardSubKind.toLowerCase()].join(" ")} data-card-id={id}>
       <div className={"card-content"}>
         <div className={"card-header"}>
-          <CardName name={name} id={id} link={true}/>
+          <CardName name={name} id={id} link={false}/>
           {infoLine}
           <CardArt src={artSrc} alt={`Art for ${name}`} overrideLink={overrideArtSrc} canExpand={true}/>
           {categoryLine}
