@@ -7,7 +7,7 @@ level: 3
 attribute: EARTH
 type:
   - Zombie
-art: images/Mayakashi/TsukahagiThePoisonousMayakashi.webp
+art: /images/Mayakashi/TsukahagiThePoisonousMayakashi.webp
 categories:
   - Tuner
   - Effect

@@ -7,7 +7,7 @@ level: 8
 attribute: WIND
 type:
   - Dragon
-art: images/Dragonmaid/DragonmaidLorpar.webp
+art: /images/Dragonmaid/DragonmaidLorpar.webp
 categories:
   - Effect
 effectRestrictions:

@@ -16,7 +16,7 @@ export default function NavBar(): ReactNode {
   return (
     <div className={"nav-bar"}>
       <div className={"logo"}>
-        <img src={"vite.svg"} alt={"Logo"}/>
+        <img src={"/vite.svg"} alt={"Logo"}/>
       </div>
       <div className={"links"}>
         <Link to={"/"}>Home</Link>

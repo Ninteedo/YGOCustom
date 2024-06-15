@@ -19,7 +19,7 @@ const CARD_DIR = "cards"
 
 export async function loadCard(id: string | undefined): Promise<BaseCard | null> {
   // Load card JSON from file, then create an appropriate card object, based on the card type
-  return fetch(`${CARD_DIR}/${id}.yaml`)
+  return fetch(`/${CARD_DIR}/${id}.yaml`)
     .then((response) => response.text())
     .then((response) => YAML.parse(response))
     .then((yaml) => {

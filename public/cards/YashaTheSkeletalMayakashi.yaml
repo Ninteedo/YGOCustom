@@ -7,7 +7,7 @@ level: 5
 attribute: DARK
 type:
   - Zombie
-art: images/Mayakashi/YashaTheSkeletalMayakashi.webp
+art: /images/Mayakashi/YashaTheSkeletalMayakashi.webp
 categories:
   - Effect
 effectRestrictions:
