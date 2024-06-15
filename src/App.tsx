@@ -1,6 +1,6 @@
 import "./style/App.css"
 import {
-  createHashRouter,
+  createBrowserRouter,
   Outlet,
   RouterProvider,
   ScrollRestoration,
@@ -28,7 +28,7 @@ function Layout() {
 }
 
 function App() {
-  const router = createHashRouter(([
+  const router = createBrowserRouter(([
     {
       path: "/",
       element: <Layout/>,
