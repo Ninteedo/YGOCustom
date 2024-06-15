@@ -4,8 +4,9 @@ import {useCardDbContext} from "../card/abstract/parse/cardDbUtility.ts";
 import cardManifest from "../../cardManifest.json";
 import {loadCard} from "../card/abstract/parse/cardLoader.ts";
 
-export function useSearchCards(searchTerm: string): [BaseCard[], boolean, () => void] {
+export function useSearchCards(searchTerm: string): [BaseCard[], number, boolean, () => void] {
   const [results, setResults] = useState<BaseCard[]>([]);
+  const [filteredResults, setFilteredResults] = useState<BaseCard[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -32,8 +33,6 @@ export function useSearchCards(searchTerm: string): [BaseCard[], boolean, () => 
       if (!hasMore || fetchedPages.has(page)) return;
       setLoading(true);
 
-      const newResults: BaseCard[] = [];
-
       // Fetch from card database
       const dbResults: BaseCard[] = cardDb.filter((c) =>
         c.toText().toLowerCase().includes(searchTerm.toLowerCase())
@@ -45,23 +44,20 @@ export function useSearchCards(searchTerm: string): [BaseCard[], boolean, () => 
       );
 
       const manifestResults = await Promise.all(
-        manifestEntries.slice((page - 1) * pageLength, page * pageLength).map((entry) => loadCard(entry))
+        manifestEntries.map((entry) => loadCard(entry))
       );
 
-      if (manifestResults === null) {
-        setHasMore(false);
-        setLoading(false);
-        return;
-      }
-
       const filtered: BaseCard[] = manifestResults.filter(card => card !== null) as BaseCard[];
-      newResults.push(...dbResults.slice((page - 1) * pageLength, page * pageLength), ...filtered);
 
-      if (newResults.length < pageLength) {
+      // Combine dbResults and filtered, and remove duplicates
+      const combinedResults = Array.from(new Set([...dbResults, ...filtered]));
+
+      if (combinedResults.length < pageLength) {
         setHasMore(false);
       }
 
-      setResults((prevResults) => [...prevResults, ...newResults]);
+      setFilteredResults(combinedResults);
+      setResults((prevResults) => [...prevResults, ...combinedResults.slice((page - 1) * pageLength, page * pageLength)]);
       setFetchedPages((prevPages) => new Set(prevPages).add(page));
       setLoading(false);
     };
@@ -69,5 +65,5 @@ export function useSearchCards(searchTerm: string): [BaseCard[], boolean, () => 
     fetchResults();
   }, [searchTerm, page, cardDb, hasMore, fetchedPages]);
 
-  return [results, loading, loadMore];
+  return [results, filteredResults.length, loading, loadMore];
 }

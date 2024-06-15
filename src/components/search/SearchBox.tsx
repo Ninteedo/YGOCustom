@@ -23,7 +23,6 @@ export default function SearchBox({toggleSearch}: SearchBoxProps): ReactNode {
       <SearchResults
         searchTerm={searchTerm}
         toggleSearch={toggleSearch}
-        cardsPerRow={4}
       />
     </div>
   )
