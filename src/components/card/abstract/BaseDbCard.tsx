@@ -96,7 +96,7 @@ export default class BaseDbCard extends BaseCard {
       const materials = this.getMaterials();
       const {restrictions, effects} = parseEffects({
         text: materials ? this.text.substring(materials.length + 1).trim() : this.text,
-        isFastCard: this.kind === "trap",
+        isFastCard: this.kind === "trap" || this.subKind === "Quick-Play",
         isSpellTrapCard: this.kind === "spell" || this.kind === "trap",
         isContinuousSpellTrapCard: (this.kind === "spell" || this.kind === "trap") && ["continuous", "field", "equip"].includes(this.subKind.toLowerCase())
       })

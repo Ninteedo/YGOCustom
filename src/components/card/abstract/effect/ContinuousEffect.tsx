@@ -6,9 +6,9 @@ import EffectClause from "./clause/EffectClause.ts";
 export default class ContinuousEffect extends Effect {
   public readonly clause: EffectClause;
 
-  constructor(clauses: EffectClause[]) {
+  constructor(clause: EffectClause) {
     super();
-    this.clause = clauses[0];
+    this.clause = clause;
   }
 
   public render(): ReactNode {
