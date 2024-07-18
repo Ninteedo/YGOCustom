@@ -180,7 +180,7 @@ function isSummoningCondition(sentence: string): boolean {
     summoningTypes.some((type) => sentence.match(new RegExp("you can (also)? " + type + " Summon (this card|\")"))) ||
     sentence.startsWith("Cannot be Normal Summoned/Set") ||
     sentence.startsWith("Cannot be Special Summoned") ||
-    sentence.match(/^Must first be (\w)+ Summoned/)
+    sentence.match(/^Must (first )?be (\w)+ Summoned/)
   );
 }
 
