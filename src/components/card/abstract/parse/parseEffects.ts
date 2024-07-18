@@ -99,14 +99,14 @@ function parseSentence(
   } else {
     if (isSpellTrapCard && i === 0) {
       parseSpellTrapCardFirstEffect(props, sentence, effects);
-    } else if (sentence.includes("(Quick Effect):") || sentence.toLowerCase().includes("during either player's turn")) {
+    } else if (hasQuickEffectMention(sentence)) {
       effects.push(createQuickEffect(sentence));
-    } else if (hasTimedCondition(sentence)) {
+    } else if (hasTimedCondition(sentence) && !duringMainPhase(sentence)) {
       effects.push(createTriggerEffect(sentence));
     } else if (!isSpellTrapCard && isSummoningCondition(sentence)) {
       effects.push(createSummoningCondition(sentence));
     } else if (hasActivationWindowMention(sentence)) {
-      if (duringNonMainPhase(sentence) || hasTimedCondition(sentence)) {
+      if (duringNonMainPhase(sentence) || (hasTimedCondition(sentence) && !duringMainPhase(sentence))) {
         effects.push(createTriggerEffect(sentence));
       } else {
         if (isFastCard) {
@@ -141,6 +141,10 @@ function duringNonMainPhase(sentence: string): boolean {
   return !!sentence.match(/[Dd]uring the (Draw|Standby|Battle|End) Phase/) || !!sentence.match(/At the (start|end) of the /);
 }
 
+function duringMainPhase(sentence: string): boolean {
+  return sentence.startsWith("During your Main Phase, ");
+}
+
 function hasCondition(sentence: string): boolean {
   return sentence.includes(": ");
 }
@@ -160,6 +164,14 @@ function hasActivationWindowMention(sentence: string): boolean {
     sentence.startsWith("During your Main Phase") ||
     sentence.startsWith("You can ") ||
     sentence.startsWith("Once per Chain");
+}
+
+function hasQuickEffectMention(sentence: string): boolean {
+  return !!(
+    sentence.includes("(Quick Effect):")
+    || sentence.toLowerCase().includes("during either player's turn")
+    || sentence.toLowerCase().match(/if this card is (treated as )?a continuous trap/)
+  );
 }
 
 function isSummoningCondition(sentence: string): boolean {

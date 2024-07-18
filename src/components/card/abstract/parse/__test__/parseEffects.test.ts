@@ -225,5 +225,65 @@ describe('parseEffects should parse', () => {
       ])
     ];
     testParseEffects({text}, [], effects);
-  })
+  });
+
+  test('Red-Eyes Black Dragon Sword', () => {
+    const text = "Must be Special Summoned with \"The Claw of Hermos\", using a Dragon monster. If this card is Special Summoned: Target 1 other face-up monster on the field; equip this card to it. It gains 1000 ATK, and 500 ATK/DEF for each Dragon monster on the field and in the GYs.";
+    const effects = [
+      new SummoningCondition(new EffectMainClause("Must be Special Summoned with \"The Claw of Hermos\", using a Dragon monster.")),
+      new TriggerEffect([
+        new EffectConditionClause("If this card is Special Summoned"),
+        new EffectCostClause("Target 1 other face-up monster on the field"),
+        new EffectMainClause("equip this card to it.")
+      ]),
+      new ContinuousEffect(new EffectMainClause("It gains 1000 ATK, and 500 ATK/DEF for each Dragon monster on the field and in the GYs."))
+    ];
+    testParseEffects({text}, [], effects);
+  });
+
+  test('Centur-Ion Primera', () => {
+    const text = "While this card is a Continuous Trap, Level 5 or higher \"Centur-Ion\" monsters you control cannot be destroyed by card effects. You can only use each of the following effects of \"Centur-Ion Primera\" once per turn. If this card is Normal or Special Summoned: You can add 1 \"Centur-Ion\" card from your Deck to your hand, except \"Centur-Ion Primera\", also you cannot Special Summon \"Centur-Ion Primera\" for the rest of this turn. During the Main Phase, if this card is a Continuous Trap: You can Special Summon this card.";
+    const restrictions = [new EffectRestriction("You can only use each of the following effects of \"Centur-Ion Primera\" once per turn.")];
+    const effects = [
+      new ContinuousEffect(new EffectMainClause("While this card is a Continuous Trap, Level 5 or higher \"Centur-Ion\" monsters you control cannot be destroyed by card effects.")),
+      new TriggerEffect([
+        new EffectConditionClause("If this card is Normal or Special Summoned"),
+        new EffectMainClause("You can add 1 \"Centur-Ion\" card from your Deck to your hand, except \"Centur-Ion Primera\", also you cannot Special Summon \"Centur-Ion Primera\" for the rest of this turn.")
+      ]),
+      new QuickEffect([
+        new EffectConditionClause("During the Main Phase, if this card is a Continuous Trap"),
+        new EffectMainClause("You can Special Summon this card.")
+      ])
+    ];
+    testParseEffects({text}, restrictions, effects);
+  });
+
+  test('Mystical Space Typhoon', () => {
+    const text = "Target 1 Spell/Trap on the field; destroy that target.";
+    const effects = [
+      new QuickEffect([
+        new EffectCostClause("Target 1 Spell/Trap on the field"),
+        new EffectMainClause("destroy that target.")
+      ])
+    ];
+    testParseEffects({text, isFastCard: true, isSpellTrapCard: true}, [], effects);
+  });
+
+  test('Stand Up Centur-Ion', () => {
+    const text = "Cannot be destroyed by your opponent's card effects while you control a \"Centur-Ion\" Monster Card. You can only use each of the following effects of \"Stand Up Centur-Ion!\" once per turn. During your Main Phase, if this card was activated this turn: You can send 1 card from your hand to the GY; place 1 \"Centur-Ion\" monster from your Deck in your Spell & Trap Zone as a face-up Continuous Trap. If a monster(s) is Special Summoned, you can: Immediately after this effect resolves, Synchro Summon 1 Synchro Monster, using monsters you control as material, including a \"Centur-Ion\" monster.";
+    const restrictions = [new EffectRestriction("You can only use each of the following effects of \"Stand Up Centur-Ion!\" once per turn.")];
+    const effects = [
+      new ContinuousEffect(new EffectMainClause("Cannot be destroyed by your opponent's card effects while you control a \"Centur-Ion\" Monster Card.")),
+      new IgnitionEffect([
+        new EffectConditionClause("During your Main Phase, if this card was activated this turn"),
+        new EffectCostClause("You can send 1 card from your hand to the GY"),
+        new EffectMainClause("place 1 \"Centur-Ion\" monster from your Deck in your Spell & Trap Zone as a face-up Continuous Trap.")
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("If a monster(s) is Special Summoned, you can"),
+        new EffectMainClause("Immediately after this effect resolves, Synchro Summon 1 Synchro Monster, using monsters you control as material, including a \"Centur-Ion\" monster.")
+      ])
+    ];
+    testParseEffects({text}, restrictions, effects);
+  });
 });
