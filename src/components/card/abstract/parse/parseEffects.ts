@@ -9,6 +9,7 @@ import EffectConditionClause from "../effect/clause/EffectConditionClause.ts";
 import EffectCostClause from "../effect/clause/EffectCostClause.ts";
 import ContinuousEffect from "../effect/ContinuousEffect.tsx";
 import EffectParseError from "./EffectParseError.ts";
+import SummoningCondition from "../effect/SummoningCondition.tsx";
 
 interface EffectData {
   restrictions: EffectRestriction[];
@@ -65,6 +66,11 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
       sentences.splice(i, 1);
       i--;
     }
+    if (hasIncompleteDoubleQuotes(sentence)) {
+      // Merge the sentence with the previous one
+      sentences[i] += " " + sentences[i + 1];
+      sentences.splice(i + 1, 1);
+    }
   }
 
   for (let i = 0; i < sentences.length; i++) {
@@ -76,10 +82,12 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
         parseSpellTrapCardFirstEffect(props, sentence, effects);
       } else if (sentence.includes("(Quick Effect):") || sentence.toLowerCase().includes("during either player's turn")) {
         effects.push(createQuickEffect(sentence));
-      } else if (hasIfOrWhenCondition(sentence)) {
+      } else if (hasTimedCondition(sentence)) {
         effects.push(createTriggerEffect(sentence));
-      } else if (sentence.startsWith("Once per turn") || sentence.startsWith("During your Main Phase") || sentence.startsWith("You can ")) {
-        if (duringNonMainPhase(sentence) || hasIfOrWhenCondition(sentence)) {
+      } else if (!isSpellTrapCard && isSummoningCondition(sentence)) {
+        effects.push(createSummoningCondition(sentence));
+      } else if (hasActivationWindowMention(sentence)) {
+        if (duringNonMainPhase(sentence) || hasTimedCondition(sentence)) {
           effects.push(createTriggerEffect(sentence));
         } else {
           if (isFastCard) {
@@ -121,13 +129,31 @@ function hasCondition(sentence: string): boolean {
   return sentence.includes(": ");
 }
 
-// function hasCost(sentence: string): boolean {
-//   return sentence.includes("; ");
-// }
+function hasCost(sentence: string): boolean {
+  return sentence.includes("; ");
+}
 
-function hasIfOrWhenCondition(sentence: string): boolean {
+function hasTimedCondition(sentence: string): boolean {
   const condition = getCondition(sentence);
-  return !!condition.match(/ ?[Ii]f /) || !!condition.match(/ ?[Ww]hen /);
+  const keywords = ["if", "when", "each time"];
+  return keywords.some((keyword) => condition.toLowerCase().includes(keyword + " "));
+}
+
+function hasActivationWindowMention(sentence: string): boolean {
+  return sentence.startsWith("Once per turn") ||
+    sentence.startsWith("During your Main Phase") ||
+    sentence.startsWith("You can ") ||
+    sentence.startsWith("Once per Chain");
+}
+
+function isSummoningCondition(sentence: string): boolean {
+  const summoningTypes = ["Fusion", "Synchro", "Xyz", "Link", "Special", "Tribute"];
+  return !!(
+    summoningTypes.some((type) => sentence.match(new RegExp("you can (also)? " + type + " Summon (this card|\")"))) ||
+    sentence.startsWith("Cannot be Normal Summoned/Set") ||
+    sentence.startsWith("Cannot be Special Summoned") ||
+    sentence.match(/^Must first be (\w)+ Summoned/)
+  );
 }
 
 function createIgnitionEffect(sentence: string): IgnitionEffect {
@@ -143,7 +169,14 @@ function createTriggerEffect(sentence: string): TriggerEffect {
 }
 
 function createContinuousEffect(sentence: string): ContinuousEffect {
-  return new ContinuousEffect(parseEffectClauses(sentence));
+  if (hasCondition(sentence) || hasCost(sentence)) {
+    throw new EffectParseError("Continuous effect should not contain a condition or cost: " + sentence);
+  }
+  return new ContinuousEffect(parseEffectClauses(sentence)[0]);
+}
+
+function createSummoningCondition(sentence: string): SummoningCondition {
+  return new SummoningCondition(new EffectMainClause(sentence));
 }
 
 function getCondition(sentence: string): string {
@@ -160,6 +193,11 @@ function isBrokenBracketedSentence(sentence: string): boolean {
   const openBrackets = sentence.match(/\(/g);
   const closeBrackets = sentence.match(/\)/g);
   return !!openBrackets && openBrackets.length !== (closeBrackets || []).length;
+}
+
+function hasIncompleteDoubleQuotes(sentence: string): boolean {
+  const openQuotes = sentence.match(/"/g);
+  return !!openQuotes && openQuotes.length % 2 === 1;
 }
 
 // function getCost(sentence: string): string {

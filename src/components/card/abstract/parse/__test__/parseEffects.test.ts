@@ -9,6 +9,7 @@ import Effect from "../../effect/Effect.tsx";
 import QuickEffect from "../../effect/QuickEffect.tsx";
 import EffectCostClause from "../../effect/clause/EffectCostClause.ts";
 import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
+import SummoningCondition from "../../effect/SummoningCondition.tsx";
 
 describe('parseEffects should parse', () => {
   function testParseEffects(props: ParseEffectsProps, expectedRestrictions: EffectRestriction[], expectedEffects: Effect[]) {
@@ -94,12 +95,12 @@ describe('parseEffects should parse', () => {
   test('Skill Drain', () => {
     const text = "Activate this card by paying 1000 LP. Negate the effects of all face-up monsters while they are face-up on the field (but their effects can still be activated).";
     const effects = [
-      new ContinuousEffect([
+      new ContinuousEffect(
         new EffectMainClause("Activate this card by paying 1000 LP.")
-      ]),
-      new ContinuousEffect([
+      ),
+      new ContinuousEffect(
         new EffectMainClause("Negate the effects of all face-up monsters while they are face-up on the field (but their effects can still be activated)."),
-      ]),
+      ),
     ];
     testParseEffects({text, isSpellTrapCard: true, isFastCard: true, isContinuousSpellTrapCard: true}, [], effects);
   })
@@ -143,7 +144,7 @@ describe('parseEffects should parse', () => {
   test('Stray Purrely Street', () => {
     const text = "Your opponent cannot target \"Purrely\" monsters you control with card effects, the turn they are Special Summoned. Once per turn, if a face-up \"Purrely\" Xyz Monster(s) you control leaves the field because of an opponent's card: Special Summon 1 Level 1 \"Purrely\" monster from your Deck or GY. Once per turn, during the End Phase: You can target 1 \"Purrely\" Xyz Monster on the field; attach 1 \"Purrely\" Quick-Play Spell from your Deck or GY to that monster as material.";
     const effects = [
-      new ContinuousEffect([new EffectMainClause("Your opponent cannot target \"Purrely\" monsters you control with card effects, the turn they are Special Summoned.")]),
+      new ContinuousEffect(new EffectMainClause("Your opponent cannot target \"Purrely\" monsters you control with card effects, the turn they are Special Summoned.")),
       new TriggerEffect([
         new EffectConditionClause("Once per turn, if a face-up \"Purrely\" Xyz Monster(s) you control leaves the field because of an opponent's card"),
         new EffectMainClause("Special Summon 1 Level 1 \"Purrely\" monster from your Deck or GY."),
@@ -170,6 +171,43 @@ describe('parseEffects should parse', () => {
       new IgnitionEffect([
         new EffectCostClause("You can target 1 \"Purrely\" Quick-Play Spell in your GY"),
         new EffectMainClause("Special Summon 1 Xyz Monster from your Extra Deck that mentions that card, by using this card you control as material, and if you do, attach that Spell to the Summoned monster. (This is treated as an Xyz Summon.)"),
+      ])
+    ];
+    testParseEffects({text}, restrictions, effects);
+  });
+
+  test('Kashtira Arise-Heart', () => {
+    const text = "Once per turn, you can also Xyz Summon \"Kashtira Arise-Heart\" by using 1 \"Kashtira\" monster you control, if an effect of \"Kashtira Shangri-Ira\" was successfully activated this turn. (Transfer its materials to this card.) Any card sent to the GY is banished instead. Once per Chain, each time a card(s) is banished: Attach 1 banished card to this card as material. Once per turn (Quick Effect): You can detach 3 materials from this card, then target 1 card on the field; banish it face-down.";
+    const effects = [
+      new SummoningCondition(
+        new EffectMainClause("Once per turn, you can also Xyz Summon \"Kashtira Arise-Heart\" by using 1 \"Kashtira\" monster you control, if an effect of \"Kashtira Shangri-Ira\" was successfully activated this turn. (Transfer its materials to this card.)")
+      ),
+      new ContinuousEffect(
+        new EffectMainClause("Any card sent to the GY is banished instead.")
+      ),
+      new TriggerEffect([
+        new EffectConditionClause("Once per Chain, each time a card(s) is banished"),
+        new EffectMainClause("Attach 1 banished card to this card as material.")
+      ]),
+      new QuickEffect([
+        new EffectConditionClause("Once per turn (Quick Effect)"),
+        new EffectCostClause("You can detach 3 materials from this card, then target 1 card on the field"),
+        new EffectMainClause("banish it face-down.")
+      ])
+    ];
+    testParseEffects({text}, [], effects);
+  });
+
+  test('Red-Eyes Alternative Black Dragon', () => {
+    const text = "Cannot be Normal Summoned/Set. Must first be Special Summoned (from your hand) by Tributing 1 \"Red-Eyes\" monster from your hand or field. You can only Special Summon \"Red-Eyes Alternative Black Dragon\" once per turn this way. If this card is destroyed by battle, or if this card in its owner's possession is destroyed by an opponent's card effect: You can target 1 Level 7 or lower \"Red-Eyes\" monster in your GY, except \"Red-Eyes Alternative Black Dragon\"; Special Summon it, and if it was a \"Red-Eyes B. Dragon\" that was Special Summoned, its original ATK becomes doubled.";
+    const restrictions = [new EffectRestriction("You can only Special Summon \"Red-Eyes Alternative Black Dragon\" once per turn this way.")];
+    const effects = [
+      new SummoningCondition(new EffectMainClause("Cannot be Normal Summoned/Set.")),
+      new SummoningCondition(new EffectMainClause("Must first be Special Summoned (from your hand) by Tributing 1 \"Red-Eyes\" monster from your hand or field.")),
+      new TriggerEffect([
+        new EffectConditionClause("If this card is destroyed by battle, or if this card in its owner's possession is destroyed by an opponent's card effect"),
+        new EffectCostClause("You can target 1 Level 7 or lower \"Red-Eyes\" monster in your GY, except \"Red-Eyes Alternative Black Dragon\""),
+        new EffectMainClause("Special Summon it, and if it was a \"Red-Eyes B. Dragon\" that was Special Summoned, its original ATK becomes doubled.")
       ])
     ];
     testParseEffects({text}, restrictions, effects);
