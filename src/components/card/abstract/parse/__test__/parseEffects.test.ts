@@ -10,6 +10,7 @@ import QuickEffect from "../../effect/QuickEffect.tsx";
 import EffectCostClause from "../../effect/clause/EffectCostClause.ts";
 import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
 import SummoningCondition from "../../effect/SummoningCondition.tsx";
+import GeminiEffect from "../../effect/GeminiEffect.tsx";
 
 describe('parseEffects should parse', () => {
   function testParseEffects(props: ParseEffectsProps, expectedRestrictions: EffectRestriction[], expectedEffects: Effect[]) {
@@ -212,4 +213,17 @@ describe('parseEffects should parse', () => {
     ];
     testParseEffects({text}, restrictions, effects);
   });
+
+  test('Red-Eyes Archfiend of Lightning', () => {
+    const text = "This card is treated as a Normal Monster while face-up on the field or in the Graveyard. While this card is a Normal Monster on the field, you can Normal Summon it to have it become an Effect Monster with this effect.\n● Once per turn: You can destroy all face-up monsters your opponent controls with DEF lower than this card's ATK.";
+    const effects = [
+      new GeminiEffect([
+        new IgnitionEffect([
+          new EffectConditionClause("Once per turn"),
+          new EffectMainClause("You can destroy all face-up monsters your opponent controls with DEF lower than this card's ATK.")
+        ])
+      ])
+    ];
+    testParseEffects({text}, [], effects);
+  })
 });

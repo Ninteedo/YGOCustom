@@ -10,6 +10,7 @@ import EffectCostClause from "../effect/clause/EffectCostClause.ts";
 import ContinuousEffect from "../effect/ContinuousEffect.tsx";
 import EffectParseError from "./EffectParseError.ts";
 import SummoningCondition from "../effect/SummoningCondition.tsx";
+import GeminiEffect from "../effect/GeminiEffect.tsx";
 
 interface EffectData {
   restrictions: EffectRestriction[];
@@ -46,9 +47,9 @@ export interface ParseEffectsProps {
 }
 
 export function parseEffects(props: ParseEffectsProps): EffectData {
-  const {text, isSpellTrapCard = false, isFastCard = false} = props;
+  const {text} = props;
   const sentences = (text + " ")
-    .split(/\.[ )]/)
+    .split(/\.[ )\n]/)
     .map((sentence) => sentence.trim())
     .map((sentence) => isBrokenBracketedSentence(sentence) ? sentence + ".)" : sentence + ".")
     .filter((sentence) => sentence.length > 1);
@@ -73,40 +74,55 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
     }
   }
 
+  if (isGeminiCard(sentences)) {
+    return {restrictions, effects: [parseGeminiCard(sentences, props)]};
+  }
+
   for (let i = 0; i < sentences.length; i++) {
     const sentence = sentences[i];
-    if (sentence.startsWith("You can only ")) {
-      restrictions.push(new EffectRestriction(sentence));
-    } else {
-      if (isSpellTrapCard && i === 0) {
-        parseSpellTrapCardFirstEffect(props, sentence, effects);
-      } else if (sentence.includes("(Quick Effect):") || sentence.toLowerCase().includes("during either player's turn")) {
-        effects.push(createQuickEffect(sentence));
-      } else if (hasTimedCondition(sentence)) {
-        effects.push(createTriggerEffect(sentence));
-      } else if (!isSpellTrapCard && isSummoningCondition(sentence)) {
-        effects.push(createSummoningCondition(sentence));
-      } else if (hasActivationWindowMention(sentence)) {
-        if (duringNonMainPhase(sentence) || hasTimedCondition(sentence)) {
-          effects.push(createTriggerEffect(sentence));
-        } else {
-          if (isFastCard) {
-            effects.push(createQuickEffect(sentence));
-          } else {
-            effects.push(createIgnitionEffect(sentence));
-          }
-        }
-      } else if (!sentence.includes(":")) {
-        effects.push(createContinuousEffect(sentence));
-      } else if (duringNonMainPhase(sentence)) {
-        effects.push(createTriggerEffect(sentence));
-      } else {
-        throw new EffectParseError("Could not determine effect type for sentence: " + sentence);
-      }
-    }
+    parseSentence(sentence, restrictions, effects, i, props);
   }
 
   return {restrictions, effects};
+}
+
+function parseSentence(
+  sentence: string,
+  restrictions: EffectRestriction[],
+  effects: Effect[],
+  i: number,
+  props: ParseEffectsProps,
+): void {
+  const {isSpellTrapCard = false, isFastCard = false} = props;
+  if (sentence.startsWith("You can only ")) {
+    restrictions.push(new EffectRestriction(sentence));
+  } else {
+    if (isSpellTrapCard && i === 0) {
+      parseSpellTrapCardFirstEffect(props, sentence, effects);
+    } else if (sentence.includes("(Quick Effect):") || sentence.toLowerCase().includes("during either player's turn")) {
+      effects.push(createQuickEffect(sentence));
+    } else if (hasTimedCondition(sentence)) {
+      effects.push(createTriggerEffect(sentence));
+    } else if (!isSpellTrapCard && isSummoningCondition(sentence)) {
+      effects.push(createSummoningCondition(sentence));
+    } else if (hasActivationWindowMention(sentence)) {
+      if (duringNonMainPhase(sentence) || hasTimedCondition(sentence)) {
+        effects.push(createTriggerEffect(sentence));
+      } else {
+        if (isFastCard) {
+          effects.push(createQuickEffect(sentence));
+        } else {
+          effects.push(createIgnitionEffect(sentence));
+        }
+      }
+    } else if (!sentence.includes(":")) {
+      effects.push(createContinuousEffect(sentence));
+    } else if (duringNonMainPhase(sentence)) {
+      effects.push(createTriggerEffect(sentence));
+    } else {
+      throw new EffectParseError("Could not determine effect type for sentence: " + sentence);
+    }
+  }
 }
 
 function parseSpellTrapCardFirstEffect({isFastCard, isContinuousSpellTrapCard}: ParseEffectsProps, sentence: string, effects: Effect[]): void {
@@ -198,6 +214,22 @@ function isBrokenBracketedSentence(sentence: string): boolean {
 function hasIncompleteDoubleQuotes(sentence: string): boolean {
   const openQuotes = sentence.match(/"/g);
   return !!openQuotes && openQuotes.length % 2 === 1;
+}
+
+function isGeminiCard(sentences: string[]): boolean {
+  return (
+    sentences[0] === "This card is treated as a Normal Monster while face-up on the field or in the Graveyard." &&
+    sentences[1] === "While this card is a Normal Monster on the field, you can Normal Summon it to have it become an Effect Monster with this effect."
+  )
+}
+
+function parseGeminiCard(sentences: string[], props: ParseEffectsProps): GeminiEffect {
+  const effectSentences = sentences.slice(2).map((sentence) => sentence.substring(2));
+  const effects: Effect[] = [];
+  for (let i = 0; i < effectSentences.length; i++) {
+    parseSentence(effectSentences[i], [], effects, 0, props);
+  }
+  return new GeminiEffect(effects);
 }
 
 // function getCost(sentence: string): string {
