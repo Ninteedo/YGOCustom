@@ -13,7 +13,6 @@ interface SearchResultsProps {
  * <p>Dynamically loads more results as the user scrolls to the bottom</p>
  * @param results The search results to display
  * @param toggleSearch Function to close the search box
- * @constructor Create element
  */
 export function SearchResults({
   searchTerm,

@@ -22,48 +22,42 @@ export function useSearchCards(searchTerm: string): [BaseCard[], number, boolean
   }, [loading, hasMore]);
 
   useEffect(() => {
-    setResults([]);
-    setPage(1);
-    setHasMore(true);
-    setFetchedPages(new Set());
-  }, [searchTerm]);
-
-  useEffect(() => {
-    const fetchResults = async () => {
-      if (!hasMore || fetchedPages.has(page)) return;
-      setLoading(true);
-
-      // Fetch from card database
-      const dbResults: BaseCard[] = cardDb.filter((c) =>
+    setLoading(true);
+    let dbResults: BaseCard[] = [];
+    if (searchTerm === '') {
+      dbResults = cardDb;
+    } else {
+      dbResults = cardDb.filter((c) =>
         c.toText().toLowerCase().includes(searchTerm.toLowerCase())
       );
+    }
 
-      // Fetch from manifest
-      const manifestEntries = cardManifest.entries.filter((entry: string) =>
-        entry.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+    const manifestEntries = cardManifest.entries.filter((entry: string) =>
+      entry.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
-      const manifestResults = await Promise.all(
-        manifestEntries.map((entry) => loadCard(entry))
-      );
+    Promise.all(manifestEntries.map((entry) => loadCard(entry)))
+      .then((manifestResults) => {
+        const filtered: BaseCard[] = manifestResults.filter(card => card !== null) as BaseCard[];
+        const combinedResults = Array.from(new Set([...dbResults, ...filtered]));
+        setFilteredResults(combinedResults);
+        setResults(combinedResults.slice(0, page * pageLength)); // Update to display initial results
+        setHasMore(combinedResults.length > page * pageLength);
+        setLoading(false);
+      });
+  }, [searchTerm, cardDb, page]);
 
-      const filtered: BaseCard[] = manifestResults.filter(card => card !== null) as BaseCard[];
+  useEffect(() => {
+    if (!hasMore || fetchedPages.has(page)) return;
 
-      // Combine dbResults and filtered, and remove duplicates
-      const combinedResults = Array.from(new Set([...dbResults, ...filtered]));
-
-      if (combinedResults.length < pageLength) {
-        setHasMore(false);
-      }
-
-      setFilteredResults(combinedResults);
-      setResults((prevResults) => [...prevResults, ...combinedResults.slice((page - 1) * pageLength, page * pageLength)]);
-      setFetchedPages((prevPages) => new Set(prevPages).add(page));
-      setLoading(false);
-    };
-
-    fetchResults();
-  }, [searchTerm, page, cardDb, hasMore, fetchedPages]);
+    setResults((prevResults) => [
+      ...prevResults,
+      ...filteredResults.slice((page - 1) * pageLength, page * pageLength)
+    ]);
+    setFetchedPages((prevPages) => new Set(prevPages).add(page));
+    setHasMore(filteredResults.length > page * pageLength);
+    setLoading(false);
+  }, [page, hasMore, fetchedPages, filteredResults]);
 
   return [results, filteredResults.length, loading, loadMore];
 }
