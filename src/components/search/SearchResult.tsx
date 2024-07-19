@@ -11,11 +11,7 @@ export function SearchResult({card, toggleSearch}: { card: BaseCard, toggleSearc
   }
 
   return <CardSmall
-    id={card.id}
-    name={card.name}
-    art={card.art}
-    cardKind={card.kind}
-    cardSubKind={card.subKind}
+    card={card}
     clickAction={clickAction}
   />
 }
