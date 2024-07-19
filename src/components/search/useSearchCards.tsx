@@ -23,14 +23,9 @@ export function useSearchCards(searchTerm: string): [BaseCard[], number, boolean
 
   useEffect(() => {
     setLoading(true);
-    let dbResults: BaseCard[] = [];
-    if (searchTerm === '') {
-      dbResults = cardDb;
-    } else {
-      dbResults = cardDb.filter((c) =>
-        c.toText().toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
+    const dbResults: BaseCard[] = cardDb.filter((c) =>
+      c.toText().toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const manifestEntries = cardManifest.entries.filter((entry: string) =>
       entry.toLowerCase().includes(searchTerm.toLowerCase())
