@@ -11,7 +11,6 @@ interface CardSmallProps {
 
 export default function CardSmall({card, clickAction}: CardSmallProps) {
   const [isHovering, setIsHovering] = useState(false);
-  const [isHoveringPreview, setIsHoveringPreview] = useState(false);
   const [mousePos, setMousePos] = useState({x: 0, y: 0});
 
   const {id, name, art, kind, subKind} = card;
@@ -48,7 +47,7 @@ export default function CardSmall({card, clickAction}: CardSmallProps) {
       </div>
     </div>
       {(isHovering) && (
-        <CardHoverPreview card={card} setIsHovering={setIsHoveringPreview} mousePos={mousePos}/>
+        <CardHoverPreview card={card} mousePos={mousePos}/>
       )}
     </>
   )

@@ -5,13 +5,11 @@ import {useEffect, useRef, useState} from "react";
 
 interface CardHoverPreviewProps {
   card: BaseCard;
-  setIsHovering: (isHovering: boolean) => void;
   mousePos: {x: number, y: number};
 }
 
-export default function CardHoverPreview({card, setIsHovering, mousePos}: CardHoverPreviewProps) {
+export default function CardHoverPreview({card, mousePos}: CardHoverPreviewProps) {
   const [position, setPosition] = useState({top: 0, left: 0});
-  const [show, setShow] = useState(true);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,30 +37,12 @@ export default function CardHoverPreview({card, setIsHovering, mousePos}: CardHo
     updatePosition();
   }, [mousePos, ref]);
 
-  useEffect(() => {
-    if (!show) {
-      const timeoutId = setTimeout(() => setIsHovering(false), 300);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [show, setIsHovering]);
-
-  const handleMouseEnter = () => {
-    setShow(true);
-    setIsHovering(true);
-  }
-
-  const handleMouseLeave = () => {
-    setShow(false);
-    setIsHovering(false);
-  }
-
   return (
     <div
-      className={`card-hover-preview ${show ? 'fade-in' : 'fade-out'}`}
+      className={`card-hover-preview`}
       style={{top: position.top + 'px', left: position.left + 'px'}}
       ref={ref}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}>
+    >
       <CardDetail card={card}/>
     </div>
   )
