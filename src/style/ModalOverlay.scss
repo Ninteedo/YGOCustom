@@ -5,6 +5,10 @@
     animation: fadeOut 0.3s;
     opacity: 0;
     pointer-events: none;
+
+    * {
+      pointer-events: none;
+    }
   }
 
   @keyframes fadeIn {
