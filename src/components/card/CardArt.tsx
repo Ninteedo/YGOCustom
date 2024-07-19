@@ -65,16 +65,25 @@ export function CardArt({src, alt, canExpand}: CardArtProps): ReactNode {
     };
   }, [src]);
 
+  let imgElement;
+  if (isLoading) {
+    imgElement = <LoadingSpinner />;
+  } else if (error) {
+    imgElement = <div>Error loading image</div>;
+  } else {
+    imgElement = (
+      <img
+        className={`card-art ${isExpanded ? "expanded" : ""}`}
+        src={imageSrc}
+        alt={alt}
+        onClick={toggleExpand}
+      />
+    );
+  }
+
   return (
     <div className={"card-art-box"}>
-      {isLoading ? <LoadingSpinner /> :
-        error ? <div>Error loading image</div> : // Display error message when an error occurs
-        <img
-          className={`card-art ${isExpanded ? "expanded" : ""}`}
-          src={imageSrc}
-          alt={alt}
-          onClick={toggleExpand}/>
-      }
+      {imgElement}
       {isExpanded && canExpand && <div className={"overlay"} onClick={toggleExpand}>
           <img src={imageSrc} alt={alt}/>
       </div>}

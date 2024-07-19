@@ -38,8 +38,8 @@ export default function CardSmall({card, clickAction}: CardSmallProps) {
       className={rootClasses.join(" ")}
       data-card-id={id}
       onClick={handleClick}
-      onMouseOver={handleMouseEnter}
-      onMouseOut={handleMouseLeave}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <div className={"card-content"}>
         <SmallCardName name={name}/>
@@ -47,7 +47,7 @@ export default function CardSmall({card, clickAction}: CardSmallProps) {
       </div>
     </div>
       {(isHovering) && (
-        <CardHoverPreview card={card} mousePos={mousePos}/>
+        <CardHoverPreview card={card} mousePos={mousePos} />
       )}
     </>
   )
