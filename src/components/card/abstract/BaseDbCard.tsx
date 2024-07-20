@@ -4,6 +4,8 @@ import CardTemplate from "./display/elements/CardTemplate.tsx";
 import StatLine from "./display/elements/StatLine.tsx";
 import EffectBlock from "./display/elements/EffectBlock.tsx";
 import {parseEffects} from "./parse/parseEffects.ts";
+import {CardKind, isSpellTrapCard, readCardKind} from "./CardKind.ts";
+import {CardSubKind, isContinuousLike, isExtraDeck, readCardSubKind} from "./CardSubKind.ts";
 
 export default class BaseDbCard extends BaseCard {
   public readonly text: string;
@@ -41,11 +43,11 @@ export default class BaseDbCard extends BaseCard {
 
   protected getInfoLine(): ReactNode {
     switch (this.kind) {
-      case "monster":
-        return <p>{getLevelName(this.subKind.toLowerCase(), this.json)} {this.json.attribute} Monster</p>
-      case "spell":
+      case CardKind.MONSTER:
+        return <p>{getLevelName(this.subKind, this.json)} {this.json.attribute} Monster</p>
+      case CardKind.SPELL:
         return <p>{this.subKind} Spell</p>
-      case "trap":
+      case CardKind.TRAP:
         return <p>{this.subKind} Trap</p>
       default:
         return <p>Unknown</p>
@@ -53,7 +55,7 @@ export default class BaseDbCard extends BaseCard {
   }
 
   protected getCategoryLine(): ReactNode {
-    if (this.kind === "monster") {
+    if (this.kind === CardKind.MONSTER) {
       return <p>[{this.json.race}]</p>;
     } else {
       return undefined;
@@ -61,7 +63,7 @@ export default class BaseDbCard extends BaseCard {
   }
 
   protected getStatLine(): ReactNode {
-    if (this.kind === "monster") {
+    if (this.kind === CardKind.MONSTER) {
       const atk = this.json.atk;
       let def = 0;
       if (this.json.def) {
@@ -93,12 +95,19 @@ export default class BaseDbCard extends BaseCard {
 
   protected getEffectBlock(): ReactNode {
     try {
+      if (this.kind == CardKind.TOKEN || (this.kind == CardKind.MONSTER && this.subKind == CardSubKind.NORMAL)) {
+        return <p>{this.text}</p>
+      }
+
       const materials = this.getMaterials();
       const {restrictions, effects} = parseEffects({
         text: materials ? this.text.substring(materials.length + 1).trim() : this.text,
-        isFastCard: this.kind === "trap" || this.subKind === "Quick-Play",
-        isSpellTrapCard: this.kind === "spell" || this.kind === "trap",
-        isContinuousSpellTrapCard: (this.kind === "spell" || this.kind === "trap") && ["continuous", "field", "equip"].includes(this.subKind.toLowerCase())
+        isFastCard: this.kind === CardKind.TRAP || this.subKind === CardSubKind.QUICK_PLAY,
+        isSpellTrapCard: isSpellTrapCard(this.kind),
+        isContinuousSpellTrapCard: (
+          isSpellTrapCard(this.kind)
+          && isContinuousLike(this.subKind)
+        )
       })
 
       return <EffectBlock materials={materials} effectRestrictions={restrictions} effects={effects} cardId={this.id}/>;
@@ -108,7 +117,7 @@ export default class BaseDbCard extends BaseCard {
   }
 
   protected getMaterials(): string | undefined {
-    if (this.kind === "monster" && ["Fusion", "Synchro", "Xyz", "Link"].includes(this.subKind)) {
+    if (this.kind === CardKind.MONSTER && isExtraDeck(this.subKind)) {
       return this.text.split("\n")[0];
     }
     return undefined;
@@ -119,51 +128,23 @@ function getBucketImageLink(id: string): string {
   return `${process.env.IMAGE_BASE_URL}/${id}.jpg`;
 }
 
-function getDbCardKind(json: any): string {
-  const typeString = json.type.toLowerCase();
-
-  if (typeString.includes("monster")) {
-    return "monster";
-  } else if (typeString.includes("spell")) {
-    return "spell";
-  } else if (typeString.includes("trap")) {
-    return "trap";
-  } else {
-    return "unknown";
-  }
+function getDbCardKind(json: any): CardKind {
+  return readCardKind(json.type.toLowerCase());
 }
 
-function getDbCardSubKind(json: any): string {
+function getDbCardSubKind(json: any): CardSubKind {
   const typeString = json.type.toLowerCase();
   const kind = getDbCardKind(json);
 
-  if (kind == "monster") {
-    if (typeString.includes("link")) {
-      return "Link";
-    } else if (typeString.includes("xyz")) {
-      return "Xyz";
-    } else if (typeString.includes("synchro")) {
-      return "Synchro";
-    } else if (typeString.includes("fusion")) {
-      return "Fusion";
-    } else if (typeString.includes("ritual")) {
-      return "Ritual";
-    } else if (typeString.includes("effect")) {
-      return "Effect";
-    } else {
-      return "Normal";
-    }
-  } else {
-    return json.race;
-  }
+  return readCardSubKind(kind, typeString, json.race);
 }
 
-function getLevelName(monsterSubKind: string, json: any): string {
+function getLevelName(monsterSubKind: CardSubKind, json: any): string {
   const levelNumber = json.level;
-  if (monsterSubKind === "link") {
+  if (monsterSubKind === CardSubKind.LINK) {
     const linkRating = json.linkval;
     return `Link-${linkRating}`;
-  } else if (monsterSubKind === "xyz") {
+  } else if (monsterSubKind === CardSubKind.XYZ) {
     return `Rank ${levelNumber}`;
   } else {
     return `Level ${levelNumber}`;
