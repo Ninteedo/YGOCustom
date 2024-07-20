@@ -5,6 +5,7 @@ import {MonsterType, parseMonsterTypes} from "../MonsterType.ts";
 import Effect from "../../effect/Effect.tsx";
 import {parseEffects} from "../../effect/EffectCard.ts";
 import EffectRestriction, {parseEffectRestrictions} from "../../effect/EffectRestriction.tsx";
+import {CardSubKind} from "../../CardSubKind.ts";
 
 export class RegularEffectMonster extends EffectMonster {
   constructor(
@@ -20,7 +21,7 @@ export class RegularEffectMonster extends EffectMonster {
     monsterTypes: MonsterType[],
     level: number,
   ) {
-    super(art, attribute, categories, effectRestrictions, effects, id, level, monsterTypes, name, atk, def, "regular");
+    super(art, attribute, categories, effectRestrictions, effects, id, level, monsterTypes, name, atk, def, CardSubKind.EFFECT);
   }
 
   public static fromJson(json: any): RegularEffectMonster {

@@ -5,6 +5,7 @@ import {MonsterType, parseMonsterTypes} from "../MonsterType.ts";
 import Effect from "../../effect/Effect.tsx";
 import {parseEffects} from "../../effect/EffectCard.ts";
 import EffectRestriction, {parseEffectRestrictions} from "../../effect/EffectRestriction.tsx";
+import {CardSubKind} from "../../CardSubKind.ts";
 
 export class SynchroMonster extends EffectMonster implements MaterialedMonster {
   public readonly materials: string;
@@ -23,7 +24,7 @@ export class SynchroMonster extends EffectMonster implements MaterialedMonster {
     monsterTypes: MonsterType[],
     level: number,
   ) {
-    super(art, attribute, categories, effectRestrictions, effects, id, level, monsterTypes, name, atk, def, "synchro");
+    super(art, attribute, categories, effectRestrictions, effects, id, level, monsterTypes, name, atk, def, CardSubKind.SYNCHRO);
     this.materials = materials;
     this.addMaterials(materials);
   }

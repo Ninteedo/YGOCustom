@@ -3,6 +3,7 @@ import {MonsterAttribute} from "../MonsterAttribute.ts";
 import {MonsterType} from "../MonsterType.ts";
 import {MonsterCategory} from "../MonsterCategory.ts";
 import React from "react";
+import {CardSubKind} from "../../CardSubKind.ts";
 
 export class NormalMonster extends BaseMonsterCard {
   public readonly lore: string;
@@ -20,7 +21,7 @@ export class NormalMonster extends BaseMonsterCard {
     def: number,
     lore: string,
   ) {
-    super(art, attribute, categories, id, monsterType, name, atk, def, "normal");
+    super(art, attribute, categories, id, monsterType, name, atk, def, CardSubKind.NORMAL);
     this.lore = lore;
     this.level = level;
   }
