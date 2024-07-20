@@ -16,23 +16,27 @@ export enum CardSubKind {
   TOKEN = 'Token',
 }
 
-export function readCardSubKind(kind: CardKind, typeString: string, race: string): CardSubKind {
+export function readCardSubKind(kind: CardKind, typeString: string, race: string, frameType: string | undefined): CardSubKind {
   typeString = typeString.toLowerCase();
   race = race.toLowerCase();
+  if (frameType) {
+    frameType = frameType.toLowerCase();
+  }
+
   if (kind === CardKind.TOKEN) {
     return CardSubKind.TOKEN;
-  } else if (kind == CardKind.MONSTER) {
-    if (typeString.includes("link")) {
+  } else if (kind == CardKind.MONSTER && frameType) {
+    if (frameType.includes("link")) {
       return CardSubKind.LINK;
-    } else if (typeString.includes("xyz")) {
+    } else if (frameType.includes("xyz")) {
       return CardSubKind.XYZ;
-    } else if (typeString.includes("synchro")) {
+    } else if (frameType.includes("synchro")) {
       return CardSubKind.SYNCHRO;
-    } else if (typeString.includes("fusion")) {
+    } else if (frameType.includes("fusion")) {
       return CardSubKind.FUSION;
-    } else if (typeString.includes("ritual")) {
+    } else if (frameType.includes("ritual")) {
       return CardSubKind.RITUAL;
-    } else if (typeString.includes("effect")) {
+    } else if (frameType.includes("effect")) {
       return CardSubKind.EFFECT;
     } else {
       return CardSubKind.NORMAL;

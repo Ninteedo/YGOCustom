@@ -146,8 +146,9 @@ function getDbCardKind(json: any): CardKind {
 function getDbCardSubKind(json: any): CardSubKind {
   const typeString = json.type.toLowerCase();
   const kind = getDbCardKind(json);
+  const frameType = json.frameType || undefined;
 
-  return readCardSubKind(kind, typeString, json.race);
+  return readCardSubKind(kind, typeString, json.race, frameType);
 }
 
 function getLevelName(monsterSubKind: CardSubKind, json: any): string {
