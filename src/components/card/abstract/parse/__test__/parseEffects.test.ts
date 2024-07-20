@@ -288,7 +288,7 @@ describe('parseEffects should parse', () => {
   });
 
   test('Dragonmaid Lorpar', () => {
-    const text = "Cannot be destroyed by card effects while you control a Fusion Monster. You can only use each of the following effects of \"Dragonmaid Lorpar\" once per turn.\n● You can discard this card, then target 1 face-up monster on the field; players cannot activate that target's effects on the field this turn.\n● At the end of the Battle Phase: You can return this card to the hand, and if you do, Special Summon 1 Level 3 \"Dragonmaid\" monster from your hand.";
+    const text = "Cannot be destroyed by card effects while you control a Fusion Monster. You can only use each of the following effects of \"Dragonmaid Lorpar\" once per turn.\r\n● You can discard this card, then target 1 face-up monster on the field; players cannot activate that target's effects on the field this turn.\r\n● At the end of the Battle Phase: You can return this card to the hand, and if you do, Special Summon 1 Level 3 \"Dragonmaid\" monster from your hand.";
     const restrictions = [new EffectRestriction("You can only use each of the following effects of \"Dragonmaid Lorpar\" once per turn.")];
     const effects = [
       new ContinuousEffect(new EffectMainClause("Cannot be destroyed by card effects while you control a Fusion Monster.")),
@@ -313,4 +313,20 @@ describe('parseEffects should parse', () => {
     ];
     testParseEffects({text}, [], effects);
   });
+
+  test('Dragonmaid Sheou', () => {
+    const text = "During each Standby Phase: You can Special Summon 1 Level 9 or lower \"Dragonmaid\" monster from your hand or GY. When your opponent activates a card or effect (Quick Effect): You can negate the activation, and if you do, destroy that card, also, after that, return this card to the Extra Deck, and if you do, Special Summon 1 \"House Dragonmaid\" from your Extra Deck. You can only use each effect of \"Dragonmaid Sheou\" once per turn.";
+    const restrictions = [new EffectRestriction("You can only use each effect of \"Dragonmaid Sheou\" once per turn.")];
+    const effects = [
+      new TriggerEffect([
+        new EffectConditionClause("During each Standby Phase"),
+        new EffectMainClause("You can Special Summon 1 Level 9 or lower \"Dragonmaid\" monster from your hand or GY.")
+      ]),
+      new QuickEffect([
+        new EffectConditionClause("When your opponent activates a card or effect (Quick Effect)"),
+        new EffectMainClause("You can negate the activation, and if you do, destroy that card, also, after that, return this card to the Extra Deck, and if you do, Special Summon 1 \"House Dragonmaid\" from your Extra Deck.")
+      ])
+    ];
+    testParseEffects({text}, restrictions, effects);
+  })
 });

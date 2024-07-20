@@ -49,7 +49,7 @@ export interface ParseEffectsProps {
 export function parseEffects(props: ParseEffectsProps): EffectData {
   const {text} = props;
   const sentences = (text + " ")
-    .split(/\.[ )\n]/)
+    .split(/\.[ )\n\r]/)
     .map((sentence) => sentence.trim())
     .map((sentence) => isBrokenBracketedSentence(sentence) ? sentence + ".)" : sentence + ".")
     .filter((sentence) => sentence.length > 1);
@@ -141,7 +141,7 @@ function parseSpellTrapCardFirstEffect({isFastCard, isContinuousSpellTrapCard}: 
 }
 
 function duringNonMainPhase(sentence: string): boolean {
-  return !!sentence.match(/[Dd]uring the (Draw|Standby|Battle|End) Phase/) || !!sentence.match(/At the (start|end) of the /);
+  return !!sentence.match(/[Dd]uring (each|the) (Draw|Standby|Battle|End) Phase/) || !!sentence.match(/At the (start|end) of the /);
 }
 
 function duringMainPhase(sentence: string): boolean {
