@@ -9,6 +9,7 @@ import {CardSubKind, isContinuousLike, isExtraDeck, readCardSubKind} from "./Car
 import PendulumEffectBlock from "./display/elements/PendulumEffectBlock.tsx";
 import {parsePendulumText} from "./parse/parsePendulum.ts";
 import NormalEffectLore from "./effect/NormalEffectLore.tsx";
+import {getMonsterSpecialKinds} from "./MonsterSpecialKind.ts";
 
 export default class BaseDbCard extends BaseCard {
   public readonly text: string;
@@ -61,7 +62,9 @@ export default class BaseDbCard extends BaseCard {
 
   protected getCategoryLine(): ReactNode {
     if (this.kind === CardKind.MONSTER) {
-      return <p>[{this.json.race} / {this.subKind}]</p>;
+      const specialKinds = getMonsterSpecialKinds(this.json.type);
+      const categories: string[] = [this.json.race.toString()].concat(specialKinds.map(k => k.toString())).concat([this.subKind]);
+      return <p>[{categories.join(" / ")}]</p>;
     } else {
       return undefined;
     }
