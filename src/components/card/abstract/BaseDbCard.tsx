@@ -102,7 +102,7 @@ export default class BaseDbCard extends BaseCard {
   protected getEffectBlock(): ReactNode {
     try {
       if (this.kind == CardKind.MONSTER && this.isPendulum) {
-        const {pendulumEffects, monsterEffects} = parsePendulumText(this.text, this.isPendulum);
+        const {pendulumEffects, monsterEffects} = parsePendulumText(this.text, this.subKind === CardSubKind.NORMAL);
         return <PendulumEffectBlock pendulumEffects={pendulumEffects} monsterEffects={monsterEffects} cardId={this.id} />;
       }
 
