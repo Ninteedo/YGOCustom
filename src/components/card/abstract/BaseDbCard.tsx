@@ -8,6 +8,7 @@ import {CardKind, isSpellTrapCard, readCardKind} from "./CardKind.ts";
 import {CardSubKind, isContinuousLike, isExtraDeck, readCardSubKind} from "./CardSubKind.ts";
 import PendulumEffectBlock from "./display/elements/PendulumEffectBlock.tsx";
 import {parsePendulumText} from "./parse/parsePendulum.ts";
+import NormalEffectLore from "./effect/NormalEffectLore.tsx";
 
 export default class BaseDbCard extends BaseCard {
   public readonly text: string;
@@ -100,13 +101,13 @@ export default class BaseDbCard extends BaseCard {
 
   protected getEffectBlock(): ReactNode {
     try {
-      if (this.kind == CardKind.TOKEN || (this.kind == CardKind.MONSTER && this.subKind == CardSubKind.NORMAL)) {
-        return <p>{this.text}</p>
+      if (this.kind == CardKind.MONSTER && this.isPendulum) {
+        const {pendulumEffects, monsterEffects} = parsePendulumText(this.text, this.isPendulum);
+        return <PendulumEffectBlock pendulumEffects={pendulumEffects} monsterEffects={monsterEffects} cardId={this.id} />;
       }
 
-      if (this.kind == CardKind.MONSTER && this.isPendulum) {
-        const {pendulumEffects, monsterEffects} = parsePendulumText(this.text);
-        return <PendulumEffectBlock pendulumEffects={pendulumEffects} monsterEffects={monsterEffects} cardId={this.id} />;
+      if (this.kind == CardKind.TOKEN || (this.kind == CardKind.MONSTER && this.subKind == CardSubKind.NORMAL)) {
+        return new NormalEffectLore(this.text).render()
       }
 
       const materials = this.getMaterials();

@@ -1,5 +1,6 @@
 import {ReactNode} from "react";
 import EffectClause from "./clause/EffectClause.ts";
+import "../../../../style/EffectRender.scss";
 
 export default abstract class Effect {
   abstract render(): ReactNode;
