@@ -2,14 +2,15 @@ import EffectRestriction from "../../effect/EffectRestriction.tsx";
 import Effect from "../../effect/Effect.tsx";
 import {ReactNode} from "react";
 
-export default function EffectBlock({materials, effectRestrictions, effects, cardId}: {
+export default function EffectBlock({materials, effectRestrictions, effects, cardId, isPendulum}: {
   materials?: string,
   effectRestrictions: EffectRestriction[],
   effects: Effect[],
   cardId: string,
+  isPendulum?: boolean,
 }): ReactNode {
   return (
-    <div className="effect-block">
+    <div className={"effect-block" + (isPendulum ? " pendulum-effect-block" : "")}>
       {materials && <p className={"card-materials"}>{materials}</p>}
       <p>{effectRestrictions.map(((r, index) => r.render(index, cardId)))}</p>
       <ol className="effect-list">

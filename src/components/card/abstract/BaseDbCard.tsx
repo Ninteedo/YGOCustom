@@ -6,11 +6,15 @@ import EffectBlock from "./display/elements/EffectBlock.tsx";
 import {parseEffects} from "./parse/parseEffects.ts";
 import {CardKind, isSpellTrapCard, readCardKind} from "./CardKind.ts";
 import {CardSubKind, isContinuousLike, isExtraDeck, readCardSubKind} from "./CardSubKind.ts";
+import PendulumEffectBlock from "./display/elements/PendulumEffectBlock.tsx";
+import {parsePendulumText} from "./parse/parsePendulum.ts";
 
 export default class BaseDbCard extends BaseCard {
   public readonly text: string;
 
   private readonly json: any;
+
+  private readonly isPendulum: boolean;
 
   constructor(json: any) {
     const id = json.id;
@@ -23,6 +27,7 @@ export default class BaseDbCard extends BaseCard {
 
     this.text = json.desc;
     this.json = json;
+    this.isPendulum = json.type.toLowerCase().includes("pendulum");
   }
 
   toCardDetail(): React.ReactNode {
@@ -97,6 +102,11 @@ export default class BaseDbCard extends BaseCard {
     try {
       if (this.kind == CardKind.TOKEN || (this.kind == CardKind.MONSTER && this.subKind == CardSubKind.NORMAL)) {
         return <p>{this.text}</p>
+      }
+
+      if (this.kind == CardKind.MONSTER && this.isPendulum) {
+        const {pendulumEffects, monsterEffects} = parsePendulumText(this.text);
+        return <PendulumEffectBlock pendulumEffects={pendulumEffects} monsterEffects={monsterEffects} cardId={this.id} />;
       }
 
       const materials = this.getMaterials();
