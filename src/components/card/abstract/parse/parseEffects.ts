@@ -112,7 +112,13 @@ function parseSentence(
     } else if (!isSpellTrapCard && isSummoningCondition(sentence)) {
       effects.push(createSummoningCondition(sentence));
     } else if (hasActivationWindowMention(sentence)) {
-      if (duringNonMainPhase(sentence) || (hasTimedCondition(sentence) && !duringMainPhase(sentence))) {
+      if (duringNonMainPhase(sentence)) {
+        if (isFastCard) {
+          effects.push(createQuickEffect(sentence));
+        } else {
+          effects.push(createTriggerEffect(sentence));
+        }
+      } else if (hasTimedCondition(sentence) && !duringMainPhase(sentence)) {
         effects.push(createTriggerEffect(sentence));
       } else if (isFastCard) {
         effects.push(createQuickEffect(sentence));
@@ -122,7 +128,11 @@ function parseSentence(
     } else if (!sentence.includes(":")) {
       effects.push(createContinuousEffect(sentence));
     } else if (duringNonMainPhase(sentence)) {
-      effects.push(createTriggerEffect(sentence));
+      if (isFastCard) {
+        effects.push(createQuickEffect(sentence));
+      } else {
+        effects.push(createTriggerEffect(sentence));
+      }
     } else {
       throw new EffectParseError("Could not determine effect type for sentence: " + sentence);
     }
