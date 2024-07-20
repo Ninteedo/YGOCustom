@@ -72,6 +72,9 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
       sentences[i] += " " + sentences[i + 1];
       sentences.splice(i + 1, 1);
     }
+    if (sentence.startsWith("●")) {
+      sentences[i] = sentence.substring(1).trimStart();
+    }
   }
 
   if (isGeminiCard(sentences)) {
@@ -231,12 +234,18 @@ function hasIncompleteDoubleQuotes(sentence: string): boolean {
 function isGeminiCard(sentences: string[]): boolean {
   return (
     sentences[0] === "This card is treated as a Normal Monster while face-up on the field or in the Graveyard." &&
-    sentences[1] === "While this card is a Normal Monster on the field, you can Normal Summon it to have it become an Effect Monster with this effect."
-  )
+    (
+      sentences[1].startsWith("While this card is a Normal Monster on the field, you can Normal Summon it to have it become an Effect Monster with this effect")
+      || sentences[1].startsWith("While this card is face-up on the field, you can Normal Summon it to have it be treated as an Effect Monster with this effect")
+    )
+  );
 }
 
 function parseGeminiCard(sentences: string[], props: ParseEffectsProps): GeminiEffect {
-  const effectSentences = sentences.slice(2).map((sentence) => sentence.substring(2));
+  let effectSentences = sentences.slice(2);
+  if (sentences[1].startsWith("While this card is face-up on the field, you can Normal Summon it to have it be treated as an Effect Monster with this effect:\n●")) {
+    effectSentences = [sentences[1].substring(sentences[1].indexOf("●") + 1, sentences[1].length - 1).trimStart()].concat(effectSentences);
+  }
   const effects: Effect[] = [];
   for (let i = 0; i < effectSentences.length; i++) {
     parseSentence(effectSentences[i], [], effects, 0, props);

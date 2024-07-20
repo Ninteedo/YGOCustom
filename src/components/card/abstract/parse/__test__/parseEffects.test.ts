@@ -286,4 +286,31 @@ describe('parseEffects should parse', () => {
     ];
     testParseEffects({text}, restrictions, effects);
   });
+
+  test('Dragonmaid Lorpar', () => {
+    const text = "Cannot be destroyed by card effects while you control a Fusion Monster. You can only use each of the following effects of \"Dragonmaid Lorpar\" once per turn.\n● You can discard this card, then target 1 face-up monster on the field; players cannot activate that target's effects on the field this turn.\n● At the end of the Battle Phase: You can return this card to the hand, and if you do, Special Summon 1 Level 3 \"Dragonmaid\" monster from your hand.";
+    const restrictions = [new EffectRestriction("You can only use each of the following effects of \"Dragonmaid Lorpar\" once per turn.")];
+    const effects = [
+      new ContinuousEffect(new EffectMainClause("Cannot be destroyed by card effects while you control a Fusion Monster.")),
+      new IgnitionEffect([
+        new EffectCostClause("You can discard this card, then target 1 face-up monster on the field"),
+        new EffectMainClause("players cannot activate that target's effects on the field this turn.")
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("At the end of the Battle Phase"),
+        new EffectMainClause("You can return this card to the hand, and if you do, Special Summon 1 Level 3 \"Dragonmaid\" monster from your hand.")
+      ])
+    ];
+    testParseEffects({text}, restrictions, effects);
+  });
+
+  test('Gemini Lancer', () => {
+    const text = "This card is treated as a Normal Monster while face-up on the field or in the Graveyard. While this card is face-up on the field, you can Normal Summon it to have it be treated as an Effect Monster with this effect:\n● During battle between this attacking card and a Defense Position monster whose DEF is lower than the ATK of this card, inflict the difference as Battle Damage to your opponent.";
+    const effects = [
+      new GeminiEffect([
+        new ContinuousEffect(new EffectMainClause("During battle between this attacking card and a Defense Position monster whose DEF is lower than the ATK of this card, inflict the difference as Battle Damage to your opponent"))
+      ])
+    ];
+    testParseEffects({text}, [], effects);
+  });
 });
