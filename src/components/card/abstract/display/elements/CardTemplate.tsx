@@ -12,7 +12,8 @@ interface CardTemplateProps {
   statLine?: ReactNode;
   cardKind: string;
   cardSubKind: string;
-  overrideArtSrc?: boolean
+  overrideArtSrc?: boolean;
+  isPendulum?: boolean;
 }
 
 export default function CardTemplate({
@@ -25,10 +26,15 @@ export default function CardTemplate({
   statLine,
   cardKind,
   cardSubKind,
-  overrideArtSrc
+  overrideArtSrc,
+  isPendulum
 }: CardTemplateProps) {
+  const classes = ["card", "card-" + cardKind.toLowerCase(), "card-" + cardSubKind.toLowerCase()];
+  if (isPendulum) {
+    classes.push("card-pendulum");
+  }
   return (
-    <div className={["card", "card-" + cardKind.toLowerCase(), "card-" + cardSubKind.toLowerCase()].join(" ")} data-card-id={id}>
+    <div className={classes.join(" ")} data-card-id={id}>
       <div className={"card-content"}>
         <div className={"card-header"}>
           <CardName name={name} id={id} link={false}/>

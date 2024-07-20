@@ -9,26 +9,60 @@
   background-blend-mode: overlay;
 }
 
+$spell-colour-light: rgb(29, 158, 116);
+$spell-colour-dark: rgb(18, 99, 72);
+
+@mixin pendulum-background($base-colour-light, $base-colour-dark) {
+  background: linear-gradient(to bottom,
+      $base-colour-light, $base-colour-dark 50%,
+      $spell-colour-light 50%,
+      $spell-colour-dark 100%);
+  background-blend-mode: multiply;
+}
+
+@mixin border-background($base-colour-light, $base-colour-dark) {
+  @include textured-background($base-colour-light, $base-colour-dark);
+  &.card-pendulum {
+    @include pendulum-background($base-colour-light, $base-colour-dark);
+  }
+}
+
 .card {
   background: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   border: 2px solid #ccc;
   border-radius: 10px;
 
+  &.card-ritual {
+    $ritual-colour-light: rgb(157, 181, 204);
+    $ritual-colour-dark: rgb(94, 109, 122);
+
+    @include border-background($ritual-colour-light, $ritual-colour-dark);
+  }
+
   &.card-fusion {
-    @include textured-background(rgb(143, 63, 213), rgb(90, 52, 126));
+    $fusion-colour-light: rgb(143, 63, 213);
+    $fusion-colour-dark: rgb(90, 52, 126);
+
+    @include border-background($fusion-colour-light, $fusion-colour-dark);
   }
 
   &.card-regular, &.card-effect.card-monster {
-    @include textured-background(rgb(218, 124, 30), rgb(128, 70, 12));
+    $effect-colour-light: rgb(218, 124, 30);
+    $effect-colour-dark: rgb(128, 70, 12);
+
+    @include border-background($effect-colour-light, $effect-colour-dark);
   }
 
   &.card-normal {
-    @include textured-background(rgb(253, 230, 138), rgb(159, 142, 74));
+    $normal-colour-light: rgb(253, 230, 138);
+    $normal-colour-dark: rgb(159, 142, 74);
+
+    @include border-background($normal-colour-light, $normal-colour-dark);
   }
 
   &.card-spell {
-    @include textured-background(rgb(29, 158, 116), rgb(18, 99, 72));
+    @include textured-background($spell-colour-light, $spell-colour-dark);
   }
 
   &.card-trap {
@@ -36,7 +70,10 @@
   }
 
   &.card-synchro {
-    @include textured-background(rgb(204, 204, 204), rgb(102, 102, 102));
+    $synchro-colour-light: rgb(204, 204, 204);
+    $synchro-colour-dark: rgb(102, 102, 102);
+
+    @include border-background($synchro-colour-light, $synchro-colour-dark);
   }
 
   &.card-token {
@@ -44,11 +81,17 @@
   }
 
   &.card-xyz {
-    @include textured-background(rgb(100, 100, 100), rgb(0, 0, 0));
+    $xyz-colour-light: rgb(100, 100, 100);
+    $xyz-colour-dark: rgb(0, 0, 0);
+
+    @include border-background($xyz-colour-light, $xyz-colour-dark);
   }
 
   &.card-link {
-    @include textured-background(rgb(22, 38, 189), rgb(15, 42, 170));
+    $link-colour-light: rgb(22, 38, 189);
+    $link-colour-dark: rgb(15, 42, 170);
+
+    @include border-background($link-colour-light, $link-colour-dark);
   }
 
   .card-content {

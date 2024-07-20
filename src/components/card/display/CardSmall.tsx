@@ -7,6 +7,7 @@ import CardHoverPreview from "./CardHoverPreview.tsx";
 interface CardSmallProps {
   card: BaseCard;
   clickAction?: () => void;
+  isPendulum?: boolean;
 }
 
 export default function CardSmall({card, clickAction}: CardSmallProps) {
@@ -31,21 +32,24 @@ export default function CardSmall({card, clickAction}: CardSmallProps) {
   if (clickAction) {
     rootClasses.push("has-click-action");
   }
+  if (card.isPendulum) {
+    rootClasses.push("card-pendulum");
+  }
 
   return (
     <>
-    <div
-      className={rootClasses.join(" ")}
-      data-card-id={id}
-      onClick={handleClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <div className={"card-content"}>
-        <SmallCardName name={name}/>
-        <SmallCardArt name={name} art={art}/>
+      <div
+        className={rootClasses.join(" ")}
+        data-card-id={id}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className={"card-content"}>
+          <SmallCardName name={name}/>
+          <SmallCardArt name={name} art={art}/>
+        </div>
       </div>
-    </div>
       {(isHovering) && (
         <CardHoverPreview card={card} mousePos={mousePos} />
       )}

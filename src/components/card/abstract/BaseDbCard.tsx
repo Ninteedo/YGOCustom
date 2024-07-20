@@ -14,8 +14,6 @@ export default class BaseDbCard extends BaseCard {
 
   private readonly json: any;
 
-  private readonly isPendulum: boolean;
-
   constructor(json: any) {
     const id = json.id;
     const name = json.name;
@@ -23,11 +21,12 @@ export default class BaseDbCard extends BaseCard {
     const cardKind = getDbCardKind(json);
     const subKind = getDbCardSubKind(json);
 
-    super(id, name, artSrc, cardKind, subKind);
+    const isPendulum = json.type.toLowerCase().includes("pendulum");
+
+    super(id, name, artSrc, cardKind, subKind, isPendulum);
 
     this.text = json.desc;
     this.json = json;
-    this.isPendulum = json.type.toLowerCase().includes("pendulum");
   }
 
   toCardDetail(): React.ReactNode {
@@ -94,6 +93,7 @@ export default class BaseDbCard extends BaseCard {
         overrideArtSrc={true}
         statLine={this.getStatLine()}
         categoryLine={this.getCategoryLine()}
+        isPendulum={this.isPendulum}
       />
     );
   }
