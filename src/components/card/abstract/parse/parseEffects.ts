@@ -11,6 +11,7 @@ import ContinuousEffect from "../effect/ContinuousEffect.tsx";
 import EffectParseError from "./EffectParseError.ts";
 import SummoningCondition from "../effect/SummoningCondition.tsx";
 import GeminiEffect from "../effect/GeminiEffect.tsx";
+import FlipEffect from "../effect/FlipEffect.tsx";
 
 interface EffectData {
   restrictions: EffectRestriction[];
@@ -102,6 +103,8 @@ function parseSentence(
   } else {
     if (isSpellTrapCard && i === 0) {
       parseSpellTrapCardFirstEffect(props, sentence, effects);
+    } else if (isFlipEffect(sentence)) {
+      effects.push(createFlipEffect(sentence));
     } else if (hasQuickEffectMention(sentence)) {
       effects.push(createQuickEffect(sentence));
     } else if (hasTimedCondition(sentence) && !duringMainPhase(sentence)) {
@@ -111,12 +114,10 @@ function parseSentence(
     } else if (hasActivationWindowMention(sentence)) {
       if (duringNonMainPhase(sentence) || (hasTimedCondition(sentence) && !duringMainPhase(sentence))) {
         effects.push(createTriggerEffect(sentence));
+      } else if (isFastCard) {
+        effects.push(createQuickEffect(sentence));
       } else {
-        if (isFastCard) {
-          effects.push(createQuickEffect(sentence));
-        } else {
-          effects.push(createIgnitionEffect(sentence));
-        }
+        effects.push(createIgnitionEffect(sentence));
       }
     } else if (!sentence.includes(":")) {
       effects.push(createContinuousEffect(sentence));
@@ -185,6 +186,14 @@ function isSummoningCondition(sentence: string): boolean {
     sentence.startsWith("Cannot be Special Summoned") ||
     sentence.match(/^Must (first )?be (\w)+ Summoned/)
   );
+}
+
+function isFlipEffect(sentence: string): boolean {
+  return sentence.startsWith("FLIP:");
+}
+
+function createFlipEffect(sentence: string): FlipEffect {
+  return new FlipEffect(parseEffectClauses(sentence));
 }
 
 function createIgnitionEffect(sentence: string): IgnitionEffect {

@@ -7,6 +7,7 @@ import Effect from "../effect/Effect.tsx";
 import {MonsterType} from "./MonsterType.ts";
 import React from "react";
 import {MonsterCard, MonsterCardProps} from "../display/MonsterCardDisplayElement.tsx";
+import {CardSubKind} from "../CardSubKind.ts";
 
 export abstract class EffectMonster extends BaseMonsterCard implements EffectCard {
   public readonly effectRestrictions: EffectRestriction[];
@@ -27,7 +28,7 @@ export abstract class EffectMonster extends BaseMonsterCard implements EffectCar
     name: string,
     atk: number,
     def: number,
-    subKind: string,
+    subKind: CardSubKind,
   ) {
     super(art, attribute, categories, id, monsterTypes, name, atk, def, subKind);
     this.effectRestrictions = effectRestrictions;

@@ -3,6 +3,8 @@ import {BaseCard} from "../BaseCard.ts";
 import {MonsterType} from "./MonsterType.ts";
 import {MonsterCategory} from "./MonsterCategory.ts";
 import React from "react";
+import {CardKind} from "../CardKind.ts";
+import {CardSubKind} from "../CardSubKind.ts";
 
 export abstract class BaseMonsterCard extends BaseCard {
   public readonly attribute: MonsterAttribute;
@@ -20,9 +22,9 @@ export abstract class BaseMonsterCard extends BaseCard {
     name: string,
     atk: number,
     def: number,
-    subKind: string,
+    subKind: CardSubKind,
   ) {
-    super(id, name, art, "monster", subKind);
+    super(id, name, art, CardKind.MONSTER, subKind, false);
     this.attribute = attribute;
     this.categories = categories;
     this.monsterTypes = monsterTypes;

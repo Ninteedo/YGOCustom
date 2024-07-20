@@ -61,7 +61,7 @@ export default class BaseDbCard extends BaseCard {
 
   protected getCategoryLine(): ReactNode {
     if (this.kind === CardKind.MONSTER) {
-      return <p>[{this.json.race}]</p>;
+      return <p>[{this.json.race} / {this.subKind}]</p>;
     } else {
       return undefined;
     }
