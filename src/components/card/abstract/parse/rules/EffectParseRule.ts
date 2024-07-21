@@ -10,11 +10,12 @@ export interface EffectParseProps {
   isFastCard: boolean;
   isContinuous: boolean;
   isFirstSentence: boolean;
+  lastEffect: Effect | null;
 }
 
 export abstract class EffectParseRule {
   public abstract match(props: EffectParseProps): boolean;
-  public abstract parse(props: EffectParseProps): Effect;
+  public abstract parse(props: EffectParseProps): Effect | null;
 
   /**
    * Check if the sentence starts with "During your Main Phase".

@@ -4,7 +4,6 @@ import {ReactNode} from "react";
 
 export default function EffectBlock({materials, effects, isPendulum}: {
   materials?: string,
-  effectRestrictions: EffectRestriction[],
   effects: Effect[],
   cardId: string,
   isPendulum?: boolean,

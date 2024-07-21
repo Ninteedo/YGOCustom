@@ -1,5 +1,4 @@
 import Effect from "../effect/Effect.tsx";
-import EffectRestriction from "../effect/EffectRestriction.tsx";
 import EffectMainClause from "../effect/clause/EffectMainClause.ts";
 import EffectClause from "../effect/clause/EffectClause.ts";
 import EffectConditionClause from "../effect/clause/EffectConditionClause.ts";
@@ -20,11 +19,7 @@ import FastCardActivationWindowParseRule from "./rules/FastCardActivationWindowP
 import TimedConditionParseRule from "./rules/TimedConditionParseRule.ts";
 import ActivationWindowFallbackParseRule from "./rules/ActivationWindowFallbackParseRule.ts";
 import AlwaysTreatedAsParseRule from "./rules/AlwaysTreatedAsParseRule.ts";
-
-interface EffectData {
-  restrictions: EffectRestriction[];
-  effects: Effect[];
-}
+import ExtraEffectSentenceParseRule from "./rules/ExtraEffectSentenceParseRule.ts";
 
 export function parseEffectClauses(sentence: string): EffectClause[] {
   // return [new EffectMainClause(sentence)];
@@ -62,6 +57,7 @@ const parsers: EffectParseRule[] = [
   new FlipParseRule(),
   new ExplicitQuickEffectParseRule(),
   new SummoningConditionParseRule(),
+  new ExtraEffectSentenceParseRule(),
   new TimedTriggerParseRule(),
   new TimedConditionParseRule(),
   new FastCardActivationWindowParseRule(),
@@ -71,7 +67,7 @@ const parsers: EffectParseRule[] = [
   new ActivationWindowFallbackParseRule(),
 ];
 
-export function parseEffects(props: ParseEffectsProps): EffectData {
+export function parseEffects(props: ParseEffectsProps): Effect[] {
   const {text} = props;
   const sentences = (text + " ")
     .split(/\.[ )\n\r]/)
@@ -79,7 +75,6 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
     .map((sentence) => sentence + (isBrokenBracketedSentence(sentence) ? ".)" : "."))
     .filter((sentence) => sentence.length > 1);
   const effects: Effect[] = [];
-  const restrictions: EffectRestriction[] = [];
 
   for (let i = 1; i < sentences.length; i++) {
     let sentence = sentences[i];
@@ -103,7 +98,7 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
   }
 
   if (isGeminiCard(sentences)) {
-    return {restrictions, effects: [parseGeminiCard(sentences, props, parsers)]};
+    return [parseGeminiCard(sentences, props, parsers)];
   }
 
   for (let i = 0; i < sentences.length; i++) {
@@ -111,7 +106,7 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
     parseSentenceNew(sentence, effects, props, parsers);
   }
 
-  return {restrictions, effects};
+  return effects;
 }
 
 function parseSentenceNew(
@@ -127,12 +122,16 @@ function parseSentenceNew(
     isFastCard: props.isFastCard || false,
     isContinuous: props.isContinuousSpellTrapCard || false,
     isFirstSentence: !effects.find(effect => effect.isProperEffect()),
+    lastEffect: effects.length > 0 ? effects[effects.length - 1] : null,
   };
   const matchingRule = parsers.find((rule) => rule.match(parseProps));
   if (!matchingRule) {
     throw new EffectParseError("No matching rule found for sentence: " + sentence);
   }
-  effects.push(matchingRule.parse(parseProps));
+  const parsedEffect = matchingRule.parse(parseProps);
+  if (parsedEffect) {
+    effects.push(parsedEffect);
+  }
 }
 
 function isBrokenBracketedSentence(sentence: string): boolean {

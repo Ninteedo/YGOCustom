@@ -18,7 +18,7 @@ import SubEffectClause from "../../effect/clause/SubEffectClause.tsx";
 
 describe('parseEffects should parse', () => {
   function testParseEffects(props: ParseEffectsProps, expectedEffects: Effect[]) {
-    const {effects} = parseEffects(props);
+    const effects = parseEffects(props);
     expect(effects).toStrictEqual(expectedEffects);
   }
 
@@ -385,13 +385,12 @@ describe('parseEffects should parse', () => {
       "During your Main Phase: You can Special Summon this card from your hand to your opponent's field in face-down Defense Position. If this card is Normal or Special Summoned: You can change 1 face-down monster on the field to face-up Attack or Defense Position. You can only use each effect of \"Mimighoul Archfiend\" once per turn."
     const effects = [
       new FlipEffect([
-        new EffectConditionClause("FLIP: If it is the Main Phase"),
+        new EffectConditionClause("FLIP"),
+        new EffectConditionClause("If it is the Main Phase"),
         new EffectMainClause("Apply these effects in sequence."),
-        new SubEffectClause([
-          new EffectMainClause("Your opponent draws 1 card."),
-          new EffectMainClause("Send 1 card from your hand to the GY."),
-          new EffectMainClause("Give control of this card to your opponent.")
-        ]),
+        new SubEffectClause([new EffectMainClause("Your opponent draws 1 card.")]),
+        new SubEffectClause([new EffectMainClause("Send 1 card from your hand to the GY.")]),
+        new SubEffectClause([new EffectMainClause("Give control of this card to your opponent.")]),
       ]),
       new IgnitionEffect([
         new EffectConditionClause("During your Main Phase"),
@@ -417,5 +416,61 @@ describe('parseEffects should parse', () => {
       new EffectRestriction("You can only use each effect of \"Welcome Labrynth\" once per turn.")
     ];
     testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
+  });
+
+  test('Triple Tactics Talent', () => {
+    const text = "If your opponent has activated a monster effect during your Main Phase this turn: Activate 1 of these effects;\n" +
+      "● Draw 2 cards.\n" +
+      "● Take control of 1 monster your opponent controls until the End Phase.\n" +
+      "● Look at your opponent's hand, and choose 1 card from it to shuffle into the Deck.\n" +
+      "You can only activate 1 \"Triple Tactics Talent\" per turn.";
+    const effects = [
+      new IgnitionEffect([
+        new EffectConditionClause("If your opponent has activated a monster effect during your Main Phase this turn"),
+        new EffectCostClause("Activate 1 of these effects"),
+        new SubEffectClause([new EffectMainClause("Draw 2 cards.")]),
+        new SubEffectClause([new EffectMainClause("Take control of 1 monster your opponent controls until the End Phase.")]),
+        new SubEffectClause([new EffectMainClause("Look at your opponent's hand, and choose 1 card from it to shuffle into the Deck.")])
+      ]),
+      new EffectRestriction("You can only activate 1 \"Triple Tactics Talent\" per turn.")
+    ];
+    testParseEffects({text, isSpellTrapCard: true}, effects);
+  });
+
+  test('Starry Knight Arrival', () => {
+    const text = "During the Main Phase: You can activate 1 of these effects;\n" +
+      "● Target 1 Level 7 LIGHT Dragon monster you control; return it to the hand.\n" +
+      "● Special Summon 1 Level 7 LIGHT Dragon monster from your hand.\n" +
+      "You can only use this effect of \"Starry Knight Arrival\" once per turn.";
+    const effects = [
+      new QuickEffect([
+        new EffectConditionClause("During the Main Phase"),
+        new EffectCostClause("You can activate 1 of these effects;"),
+        new SubEffectClause([
+          new EffectCostClause("Target 1 Level 7 LIGHT Dragon monster you control"),
+          new EffectMainClause("return it to the hand."),
+        ]),
+        new SubEffectClause([new EffectMainClause("Special Summon 1 Level 7 LIGHT Dragon monster from your hand.")]),
+      ]),
+    ];
+    testParseEffects({text, isFastCard: true, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, effects);
+  });
+
+  test('Paleozoic Anomalocaris', () => {
+    const text = "This card is unaffected by other monsters' effects. Once per turn, if a Trap Card(s) is sent from your Spell & Trap Zone to the Graveyard (except during the Damage Step): You can excavate the top card of your Deck, and if it is a Trap Card, add it to your hand. Otherwise, send it to the Graveyard. Once per turn, during either player's turn, if this card has a Trap Card as Xyz Material: You can detach 1 Xyz Material from this card, then target 1 card on the field; destroy it.";
+    const effects = [
+      new ContinuousEffect(new EffectMainClause("This card is unaffected by other monsters' effects.")),
+      new TriggerEffect([
+        new EffectConditionClause("Once per turn, if a Trap Card(s) is sent from your Spell & Trap Zone to the Graveyard (except during the Damage Step)"),
+        new EffectMainClause("You can excavate the top card of your Deck, and if it is a Trap Card, add it to your hand."),
+        new EffectMainClause("Otherwise, send it to the Graveyard."),
+      ]),
+      new QuickEffect([
+        new EffectConditionClause("Once per turn, during either player's turn, if this card has a Trap Card as Xyz Material"),
+        new EffectCostClause("You can detach 1 Xyz Material from this card, then target 1 card on the field"),
+        new EffectMainClause("destroy it."),
+      ]),
+    ];
+    testParseEffects({text}, effects);
   });
 });

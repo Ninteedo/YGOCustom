@@ -122,7 +122,7 @@ export default class BaseDbCard extends BaseCard {
       }
 
       const materials = this.getMaterials();
-      const {restrictions, effects} = parseEffects({
+      const effects = parseEffects({
         text: materials ? this.text.substring(materials.length + 2).trim() : this.text,
         isFastCard: this.kind === CardKind.TRAP || this.subKind === CardSubKind.QUICK_PLAY,
         isSpellTrapCard: isSpellTrapCard(this.kind),
@@ -132,7 +132,7 @@ export default class BaseDbCard extends BaseCard {
         )
       })
 
-      return <EffectBlock materials={materials} effectRestrictions={restrictions} effects={effects} cardId={this.id}/>;
+      return <EffectBlock materials={materials} effects={effects} cardId={this.id}/>;
     } catch (e) {
       return <p>{this.text.split("\n").map((s, index) => <Fragment key={index}>{s}<br/></Fragment>)}</p>;
     }

@@ -9,8 +9,8 @@ export function parsePendulumText(text: string, isNormalMonster: boolean): {
 } {
   let materials: string | undefined = undefined;
 
-  let pendulumEffectData: {effects: Effect[]} | undefined = undefined;
-  let monsterEffectData: {effects: Effect[]} | undefined = undefined;
+  let pendulumEffectData: Effect[] | undefined = undefined;
+  let monsterEffectData: Effect[] | undefined = undefined;
 
   const pendulumDelimiter = "[ Pendulum Effect ]";
   const monsterDelimiter = "[ Monster Effect ]";
@@ -23,7 +23,7 @@ export function parsePendulumText(text: string, isNormalMonster: boolean): {
     pendulumEffectData = parseEffects({text: pendulumEffectText});
   } if (monsterIndex > -1) {
     if (isNormalMonster) {
-      monsterEffectData = {effects: [new NormalEffectLore(text.slice(monsterIndex + monsterDelimiter.length))]};
+      monsterEffectData = [new NormalEffectLore(text.slice(monsterIndex + monsterDelimiter.length))];
     } else {
       const monsterEffectText = text.slice(monsterIndex + monsterDelimiter.length);
       monsterEffectData = parseEffects({text: monsterEffectText});
@@ -33,7 +33,7 @@ export function parsePendulumText(text: string, isNormalMonster: boolean): {
 
   return {
     materials,
-    pendulumEffects: pendulumEffectData ? pendulumEffectData.effects : [],
-    monsterEffects: monsterEffectData ? monsterEffectData.effects : []
+    pendulumEffects: pendulumEffectData ? pendulumEffectData : [],
+    monsterEffects: monsterEffectData ? monsterEffectData : []
   };
 }
