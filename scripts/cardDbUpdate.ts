@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 import fs from "fs";
 import { ListObjectsV2CommandInput, S3 } from "@aws-sdk/client-s3";
+import {compressDbCardJson} from "../src/dbCompression";
 
 // import dotenv from "dotenv";
 // if (process.env.NODE_ENV !== 'production') {
@@ -40,12 +41,13 @@ function saveDbByLanguages(cardDb: any): void {
 
   const db = cardDb['data'];
   const dbNoSkills = db.filter((card: any) => !isSkillCard(card));
+  const compressedDb = dbNoSkills.map((card: any) => compressCard(card));
 
   for (const language of LANGUAGES) {
     // const db = getCardDbByLanguage(cardDb, language);
 
     console.log(`Saving card data for ${language}.`)
-    fs.writeFileSync(`public/db/cards.${language}.json`, JSON.stringify(dbNoSkills, null, 2), "utf8");
+    fs.writeFileSync(`public/db/cards.${language}.json`, JSON.stringify(compressedDb, null, 2), "utf8");
     console.log(`Saved public/db/cards.${language}.json`);
   }
 }
@@ -175,6 +177,10 @@ async function saveNewCardImages(cardDb: any): Promise<void> {
 
 function isSkillCard(card: any): boolean {
   return card["type"].toLowerCase() === "skill card";
+}
+
+function compressCard(card: any): any {
+  return compressDbCardJson(card);
 }
 
 await main();

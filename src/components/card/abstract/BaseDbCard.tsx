@@ -10,25 +10,28 @@ import PendulumEffectBlock from "./display/elements/PendulumEffectBlock.tsx";
 import {parsePendulumText} from "./parse/parsePendulum.ts";
 import NormalEffectLore from "./effect/NormalEffectLore.tsx";
 import {getMonsterSpecialKinds} from "./MonsterSpecialKind.ts";
+import {CardJsonEntry} from "../../../dbCompression.ts";
 
 export default class BaseDbCard extends BaseCard {
   public readonly text: string;
 
-  private readonly json: any;
+  private readonly json: CardJsonEntry;
 
   constructor(json: any) {
-    const id = json.id;
-    const name = json.name;
-    const artSrc = getBucketImageLink(json["card_images"][0]["id"]);
-    const cardKind = getDbCardKind(json);
-    const subKind = getDbCardSubKind(json);
+    const cardEntry = new CardJsonEntry(json, true);
 
-    const isPendulum = json.type.toLowerCase().includes("pendulum");
+    const id = cardEntry.id;
+    const name = cardEntry.name;
+    const artSrc = getBucketImageLink(cardEntry.imageId);
+    const cardKind = getDbCardKind(cardEntry);
+    const subKind = getDbCardSubKind(cardEntry);
+
+    const isPendulum = cardEntry.type.toLowerCase().includes("pendulum");
 
     super(id, name, artSrc, cardKind, subKind, isPendulum);
 
-    this.text = json.desc;
-    this.json = json;
+    this.text = cardEntry.desc;
+    this.json = cardEntry;
   }
 
   toCardDetail(): React.ReactNode {
@@ -63,6 +66,11 @@ export default class BaseDbCard extends BaseCard {
   protected getCategoryLine(): ReactNode {
     if (this.kind === CardKind.MONSTER) {
       const specialKinds = getMonsterSpecialKinds(this.json.type);
+
+      if (!this.json.race) {
+        throw new Error(`Missing race for card ${this.id} "${this.name}"`);
+      }
+
       const categories: string[] = [this.json.race.toString()].concat(specialKinds.map(k => k.toString())).concat([this.subKind]);
       return <p>[{categories.join(" / ")}]</p>;
     } else {
@@ -71,11 +79,11 @@ export default class BaseDbCard extends BaseCard {
   }
 
   protected getStatLine(): ReactNode {
-    if (this.kind === CardKind.MONSTER) {
-      const atk = this.json.atk;
+    if (this.kind === CardKind.MONSTER && this.json.atk) {
+      const atk = parseInt(this.json.atk);
       let def = 0;
       if (this.json.def) {
-        def = this.json.def;
+        def = parseInt(this.json.def);
       }
 
       return <StatLine atk={atk} def={def}/>
@@ -145,19 +153,23 @@ function getBucketImageLink(id: string): string {
   return `${process.env.IMAGE_BASE_URL}/${id}.jpg`;
 }
 
-function getDbCardKind(json: any): CardKind {
+function getDbCardKind(json: CardJsonEntry): CardKind {
   return readCardKind(json.type.toLowerCase());
 }
 
-function getDbCardSubKind(json: any): CardSubKind {
+function getDbCardSubKind(json: CardJsonEntry): CardSubKind {
   const typeString = json.type.toLowerCase();
   const kind = getDbCardKind(json);
   const frameType = json.frameType || undefined;
 
+  if (!json.race) {
+    throw new Error(`Missing race for card ${json.id} "${json.name}"`);
+  }
+
   return readCardSubKind(kind, typeString, json.race, frameType);
 }
 
-function getLevelName(monsterSubKind: CardSubKind, json: any): string {
+function getLevelName(monsterSubKind: CardSubKind, json: CardJsonEntry): string {
   const levelNumber = json.level;
   if (monsterSubKind === CardSubKind.LINK) {
     const linkRating = json.linkval;
