@@ -11,12 +11,23 @@ import EffectCostClause from "../../effect/clause/EffectCostClause.ts";
 import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
 import SummoningCondition from "../../effect/SummoningCondition.tsx";
 import GeminiEffect from "../../effect/GeminiEffect.tsx";
+import {parsePendulumText} from "../parsePendulum.ts";
 
 describe('parseEffects should parse', () => {
   function testParseEffects(props: ParseEffectsProps, expectedRestrictions: EffectRestriction[], expectedEffects: Effect[]) {
     const {restrictions, effects} = parseEffects(props);
     expect(effects).toStrictEqual(expectedEffects);
     expect(restrictions).toStrictEqual(expectedRestrictions);
+  }
+
+  function testParsePendulumEffects(
+    props: ParseEffectsProps,
+    expectedPendulumEffects: Effect[],
+    expectedMonsterEffects: Effect[]
+  ) {
+    const {pendulumEffects, monsterEffects} = parsePendulumText(props.text, false);
+    expect(pendulumEffects).toStrictEqual(expectedPendulumEffects);
+    expect(monsterEffects).toStrictEqual(expectedMonsterEffects);
   }
 
   test('Purrely', () => {
@@ -328,5 +339,39 @@ describe('parseEffects should parse', () => {
       ])
     ];
     testParseEffects({text}, restrictions, effects);
-  })
+  });
+
+  test('Odd-Eyes Pendulum Dragon', () => {
+    const text = "[ Pendulum Effect ]\n" +
+      "You can reduce the battle damage you take from an attack involving a Pendulum Monster you control to 0. During your End Phase: You can destroy this card, and if you do, add 1 Pendulum Monster with 1500 or less ATK from your Deck to your hand. You can only use each Pendulum Effect of \"Odd-Eyes Pendulum Dragon\" once per turn.\n" +
+      "[ Monster Effect ]\n" +
+      "If this card battles an opponent's monster, any battle damage this card inflicts to your opponent is doubled."
+    const pendulumEffects = [
+      new ContinuousEffect(new EffectMainClause("You can reduce the battle damage you take from an attack involving a Pendulum Monster you control to 0.")),
+      new TriggerEffect([
+        new EffectConditionClause("During your End Phase"),
+        new EffectMainClause("You can destroy this card, and if you do, add 1 Pendulum Monster with 1500 or less ATK from your Deck to your hand.")
+      ])
+    ];
+    const monsterEffects = [
+      new ContinuousEffect(new EffectMainClause("If this card battles an opponent's monster, any battle damage this card inflicts to your opponent is doubled."))
+    ];
+    testParsePendulumEffects({text}, pendulumEffects, monsterEffects);
+  });
+
+  test('Revolution Synchron', () => {
+    const text = "If you Synchro Summon a \"Power Tool\" monster or a Level 7 or 8 Dragon monster, this card in your hand can also be used as material. You can only use this effect of \"Revolution Synchron\" once per turn. If you control a Level 7 or higher Synchro Monster while this card is in your GY: You can send the top card of your Deck to the GY, and if you do, Special Summon this card, also its Level becomes 1. You can only use this effect of \"Revolution Synchron\" once per Duel.";
+    const restrictions = [
+      new EffectRestriction("You can only use this effect of \"Revolution Synchron\" once per turn."),
+      new EffectRestriction("You can only use this effect of \"Revolution Synchron\" once per Duel.")
+    ];
+    const effects = [
+      new ContinuousEffect(new EffectMainClause("If you Synchro Summon a \"Power Tool\" monster or a Level 7 or 8 Dragon monster, this card in your hand can also be used as material.")),
+      new IgnitionEffect([
+        new EffectConditionClause("If you control a Level 7 or higher Synchro Monster while this card is in your GY"),
+        new EffectMainClause("You can send the top card of your Deck to the GY, and if you do, Special Summon this card, also its Level becomes 1.")
+      ])
+    ];
+    testParseEffects({text}, restrictions, effects);
+  });
 });

@@ -108,7 +108,11 @@ function parseSentence(
     } else if (hasQuickEffectMention(sentence)) {
       effects.push(createQuickEffect(sentence));
     } else if (hasTimedCondition(sentence) && !duringMainPhase(sentence)) {
-      effects.push(createTriggerEffect(sentence));
+      if (isSlowCondition(sentence)) {
+        effects.push(createIgnitionEffect(sentence));
+      } else {
+        effects.push(createTriggerEffect(sentence));
+      }
     } else if (!isSpellTrapCard && isSummoningCondition(sentence)) {
       effects.push(createSummoningCondition(sentence));
     } else if (hasActivationWindowMention(sentence)) {
@@ -119,11 +123,17 @@ function parseSentence(
           effects.push(createTriggerEffect(sentence));
         }
       } else if (hasTimedCondition(sentence) && !duringMainPhase(sentence)) {
-        effects.push(createTriggerEffect(sentence));
+        if (isSlowCondition(sentence)) {
+          effects.push(createIgnitionEffect(sentence));
+        } else {
+          effects.push(createTriggerEffect(sentence));
+        }
       } else if (isFastCard) {
         effects.push(createQuickEffect(sentence));
-      } else {
+      } else if (hasCondition(sentence) || hasCost(sentence)) {
         effects.push(createIgnitionEffect(sentence));
+      } else {
+        effects.push(createContinuousEffect(sentence));
       }
     } else if (!sentence.includes(":")) {
       effects.push(createContinuousEffect(sentence));
@@ -152,7 +162,7 @@ function parseSpellTrapCardFirstEffect({isFastCard, isContinuousSpellTrapCard}: 
 }
 
 function duringNonMainPhase(sentence: string): boolean {
-  return !!sentence.match(/[Dd]uring (each|the) (Draw|Standby|Battle|End) Phase/) || !!sentence.match(/At the (start|end) of the /);
+  return !!sentence.toLowerCase().match(/during (each|the|your|your opponent's) (draw|standby|battle|end) phase/) || !!sentence.match(/At the (start|end) of the /);
 }
 
 function duringMainPhase(sentence: string): boolean {
@@ -171,6 +181,10 @@ function hasTimedCondition(sentence: string): boolean {
   const condition = getCondition(sentence);
   const keywords = ["if", "when", "each time"];
   return keywords.some((keyword) => condition.toLowerCase().includes(keyword + " "));
+}
+
+function isSlowCondition(sentence: string): boolean {
+  return sentence.startsWith("If you control ");
 }
 
 function hasActivationWindowMention(sentence: string): boolean {
