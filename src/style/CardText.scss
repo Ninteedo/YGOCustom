@@ -7,3 +7,28 @@
   //background-color: rgba(255, 165, 0, 0.1);
   color: #ffdbb4;
 }
+
+ol.effect-list {
+  counter-reset: item;
+  list-style-type: none;
+  padding-left: 0;
+
+  > li:not(.restriction) {
+    counter-increment: item;
+
+    &::before {
+      content: counter(item) ".";
+      //color: #eae9e7;
+      //font-weight: bold;
+      margin-right: 0.5em;
+    }
+  }
+
+  > li.restriction {
+    color: #9c9c9c;
+    &::before {
+      content: "";
+      margin-right: 0.5em;
+    }
+  }
+}
