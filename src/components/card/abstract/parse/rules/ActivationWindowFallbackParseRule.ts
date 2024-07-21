@@ -6,6 +6,11 @@ import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
 import EffectMainClause from "../../effect/clause/EffectMainClause.ts";
 import QuickEffect from "../../effect/QuickEffect.tsx";
 
+/**
+ * Parses a sentence that mentions an activation window.
+ *
+ * Low priority, only used if no other activation window rules match.
+ */
 export default class ActivationWindowFallbackParseRule extends EffectParseRule {
   match({sentence}: EffectParseProps): boolean {
     return this.hasActivationWindowMention(sentence);

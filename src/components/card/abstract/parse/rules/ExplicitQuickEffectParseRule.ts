@@ -3,6 +3,13 @@ import Effect from "../../effect/Effect.tsx";
 import {parseEffectClauses} from "../parseEffects.ts";
 import QuickEffect from "../../effect/QuickEffect.tsx";
 
+/**
+ * Parses an explicit Quick Effect.
+ *
+ * This rule matches if the sentence contains "(Quick Effect):" or "During either player's turn".
+ *
+ * Also matches if the sentence contains "If this card is treated as a Continuous Trap".
+ */
 export default class ExplicitQuickEffectParseRule extends EffectParseRule {
   match({sentence}: EffectParseProps): boolean {
     return !!(

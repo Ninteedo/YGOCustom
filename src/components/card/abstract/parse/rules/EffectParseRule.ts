@@ -16,25 +16,66 @@ export abstract class EffectParseRule {
   public abstract match(props: EffectParseProps): boolean;
   public abstract parse(props: EffectParseProps): Effect;
 
+  /**
+   * Check if the sentence starts with "During your Main Phase".
+   * @param sentence the sentence to check
+   */
   protected duringMainPhase(sentence: string): boolean {
     return sentence.startsWith("During your Main Phase, ");
   }
 
-  protected duringNonMainPhase(sentence: string): boolean {
-    return !!sentence.match(/during (each|the|your|your opponent's) (draw|standby|battle|end) phase/i) || !!sentence.match(/At the (start|end) of the /);
+  /**
+   * Check if the sentence mentions during a phase other than the Main Phase.
+   * @param sentence the sentence to check
+   */
+  protected duringOtherPhase(sentence: string): boolean {
+    return !!(
+      sentence.match(/during (each|the|your|your opponent's) (?!Main) phase/i)
+      || sentence.match(/^At the (start|end) of the (?!Main)/)
+    );
   }
 
+  /**
+   * Check if the sentence has a timed condition.
+   *
+   * A timed condition is a condition that starts includes "If", "When", or "Each time".
+   *
+   * This may match some sentences that are not actually timed conditions.
+   * @param sentence the sentence to check
+   */
   protected hasTimedCondition(sentence: string): boolean {
     const condition = this.getCondition(sentence);
-    const keywords = ["if", "when", "each time"];
-    return keywords.some((keyword) => condition.toLowerCase().includes(keyword + " "));
+    return !!condition.match(/(if|when|each time)/i);
   }
 
+  /**
+   * Check if the sentence has an activation window mention.
+   *
+   * An activation window mention is a phrase that indicates that an effect can be activated.
+   * This is very broad.
+   * @param sentence the sentence to check
+   * @protected
+   */
   protected hasActivationWindowMention(sentence: string): boolean {
-    return sentence.startsWith("Once per turn") ||
-      sentence.startsWith("During your Main Phase") ||
-      sentence.startsWith("You can ") ||
-      sentence.startsWith("Once per Chain");
+    const condition = this.getCondition(sentence);
+    const cost = this.getCost(sentence);
+    return condition.startsWith("Once per turn")
+      || condition.startsWith("During your Main Phase")
+      || condition.startsWith("You can ")
+      || condition.startsWith("Once per Chain")
+      || cost.toLowerCase().startsWith("you can ");
+  }
+
+  /**
+   * Check if the sentence is a slow condition.
+   *
+   * A slow condition is not a timed condition.
+   * This is for when an effect includes a condition that mentions "if" but is actually something like "if you control".
+   * @param sentence
+   * @protected
+   */
+  protected isSlowCondition(sentence: string): boolean {
+    return sentence.startsWith("If you control ");
   }
 
   protected getTriggerOrIgnition(sentence: string, isTrigger: boolean): Effect {
@@ -44,10 +85,6 @@ export abstract class EffectParseRule {
     } else {
       return new TriggerEffect(clauses);
     }
-  }
-
-  protected isSlowCondition(sentence: string): boolean {
-    return sentence.startsWith("If you control ");
   }
 
   protected getCondition(sentence: string): string {
@@ -61,7 +98,9 @@ export abstract class EffectParseRule {
     if (!this.hasCost(sentence)) {
       return "";
     }
-    const remaining = sentence.substring(this.getCondition(sentence).length + 2);
+    const condition = this.getCondition(sentence);
+    const startIndex = condition.length > 0 ? condition.length + 2 : 0;
+    const remaining = sentence.substring(startIndex);
     return remaining.split("; ")[0];
   }
 

@@ -6,7 +6,7 @@ export default class TimedConditionParseRule extends EffectParseRule {
     return (
       this.hasActivationWindowMention(sentence)
       && !this.duringMainPhase(sentence)
-      && !this.duringNonMainPhase(sentence)
+      && !this.duringOtherPhase(sentence)
       && this.hasTimedCondition(sentence)
     );
   }

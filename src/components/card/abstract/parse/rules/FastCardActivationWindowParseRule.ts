@@ -3,6 +3,9 @@ import {parseEffectClauses} from "../parseEffects.ts";
 import Effect from "../../effect/Effect.tsx";
 import QuickEffect from "../../effect/QuickEffect.tsx";
 
+/**
+ * Parses a fast card effect that
+ */
 export default class FastCardActivationWindowParseRule extends EffectParseRule {
   match({sentence, isFastCard}: EffectParseProps): boolean {
     return (

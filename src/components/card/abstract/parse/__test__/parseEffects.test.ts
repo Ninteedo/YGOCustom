@@ -1,4 +1,4 @@
-import {describe, expect, test} from '@jest/globals';
+import {describe, expect, test} from "@jest/globals";
 import {parseEffects, ParseEffectsProps} from "../parseEffects";
 import EffectRestriction from "../../effect/EffectRestriction.tsx";
 import TriggerEffect from "../../effect/TriggerEffect.tsx";
@@ -13,6 +13,8 @@ import SummoningCondition from "../../effect/SummoningCondition.tsx";
 import GeminiEffect from "../../effect/GeminiEffect.tsx";
 import {parsePendulumText} from "../parsePendulum.ts";
 import AlwaysTreatedAs from "../../effect/AlwaysTreatedAs.tsx";
+import FlipEffect from "../../effect/FlipEffect.tsx";
+import SubEffectClause from "../../effect/clause/SubEffectClause.tsx";
 
 describe('parseEffects should parse', () => {
   function testParseEffects(props: ParseEffectsProps, expectedEffects: Effect[]) {
@@ -373,6 +375,46 @@ describe('parseEffects should parse', () => {
         new EffectMainClause("Add 1 \"Rescue-ACE\" monster from your GY to your hand, or if you control \"Rescue-ACE Hydrant\", you can add 1 \"Rescue-ACE\" monster from your Deck to your hand instead.")
       ]),
       new EffectRestriction("You can only activate 1 \"ALERT!\" per turn."),
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
+  });
+
+  test('Mimighoul Archfiend', () => {
+    const text = "FLIP: If it is the Main Phase: Apply these effects in sequence.\n" +
+      "● Your opponent draws 1 card. ● Send 1 card from your hand to the GY. ● Give control of this card to your opponent.\n" +
+      "During your Main Phase: You can Special Summon this card from your hand to your opponent's field in face-down Defense Position. If this card is Normal or Special Summoned: You can change 1 face-down monster on the field to face-up Attack or Defense Position. You can only use each effect of \"Mimighoul Archfiend\" once per turn."
+    const effects = [
+      new FlipEffect([
+        new EffectConditionClause("FLIP: If it is the Main Phase"),
+        new EffectMainClause("Apply these effects in sequence."),
+        new SubEffectClause([
+          new EffectMainClause("Your opponent draws 1 card."),
+          new EffectMainClause("Send 1 card from your hand to the GY."),
+          new EffectMainClause("Give control of this card to your opponent.")
+        ]),
+      ]),
+      new IgnitionEffect([
+        new EffectConditionClause("During your Main Phase"),
+        new EffectMainClause("You can Special Summon this card from your hand to your opponent's field in face-down Defense Position.")
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("If this card is Normal or Special Summoned"),
+        new EffectMainClause("You can change 1 face-down monster on the field to face-up Attack or Defense Position.")
+      ]),
+      new EffectRestriction("You can only use each effect of \"Mimighoul Archfiend\" once per turn.")
+    ];
+    testParseEffects({text}, effects);
+  });
+
+  test('Welcome Labrynth', () => {
+    const text = "Special Summon 1 \"Labrynth\" monster from your Deck, also until the end of the next turn after this card resolves, you cannot Special Summon monsters from the Deck or Extra Deck, except Fiend monsters. If a monster leaves the field by your Normal Trap effect, while this card is in your GY, except the turn it was sent there: You can Set this card. You can only use each effect of \"Welcome Labrynth\" once per turn.";
+    const effects = [
+      new QuickEffect([new EffectMainClause("Special Summon 1 \"Labrynth\" monster from your Deck, also until the end of the next turn after this card resolves, you cannot Special Summon monsters from the Deck or Extra Deck, except Fiend monsters.")]),
+      new TriggerEffect([
+        new EffectConditionClause("If a monster leaves the field by your Normal Trap effect, while this card is in your GY, except the turn it was sent there"),
+        new EffectMainClause("You can Set this card.")
+      ]),
+      new EffectRestriction("You can only use each effect of \"Welcome Labrynth\" once per turn.")
     ];
     testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
   });

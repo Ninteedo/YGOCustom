@@ -3,6 +3,9 @@ import Effect from "../../effect/Effect.tsx";
 import SummoningCondition from "../../effect/SummoningCondition.tsx";
 import EffectMainClause from "../../effect/clause/EffectMainClause.ts";
 
+/**
+ * Parses a summoning condition.
+ */
 export default class SummoningConditionParseRule extends EffectParseRule {
   match({sentence, isSpellTrap}: EffectParseProps): boolean {
     if (isSpellTrap) {

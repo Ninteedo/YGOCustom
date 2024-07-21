@@ -55,6 +55,22 @@ export interface ParseEffectsProps {
   isContinuousSpellTrapCard?: boolean;
 }
 
+const parsers: EffectParseRule[] = [
+  new EffectRestrictionParseRule(),
+  new AlwaysTreatedAsParseRule(),
+  new SpellTrapActivationParseRule(),
+  new FlipParseRule(),
+  new ExplicitQuickEffectParseRule(),
+  new SummoningConditionParseRule(),
+  new TimedTriggerParseRule(),
+  new TimedConditionParseRule(),
+  new FastCardActivationWindowParseRule(),
+  new ConditionalIgnitionParseRule(),
+  new ContinuousEffectParseRule(),
+  new DuringNonMainPhaseParseRule(),
+  new ActivationWindowFallbackParseRule(),
+];
+
 export function parseEffects(props: ParseEffectsProps): EffectData {
   const {text} = props;
   const sentences = (text + " ")
@@ -85,22 +101,6 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
       sentences[i] = sentence.substring(1).trimStart();
     }
   }
-
-  const parsers: EffectParseRule[] = [
-    new EffectRestrictionParseRule(),
-    new AlwaysTreatedAsParseRule(),
-    new SpellTrapActivationParseRule(),
-    new FlipParseRule(),
-    new ExplicitQuickEffectParseRule(),
-    new SummoningConditionParseRule(),
-    new TimedTriggerParseRule(),
-    new TimedConditionParseRule(),
-    new FastCardActivationWindowParseRule(),
-    new ConditionalIgnitionParseRule(),
-    new ContinuousEffectParseRule(),
-    new DuringNonMainPhaseParseRule(),
-    new ActivationWindowFallbackParseRule(),
-  ]
 
   if (isGeminiCard(sentences)) {
     return {restrictions, effects: [parseGeminiCard(sentences, props, parsers)]};

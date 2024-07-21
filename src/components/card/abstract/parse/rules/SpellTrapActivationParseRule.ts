@@ -5,6 +5,13 @@ import QuickEffect from "../../effect/QuickEffect.tsx";
 import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
 import IgnitionEffect from "../../effect/IgnitionEffect.tsx";
 
+/**
+ * Parses the activation effect of a Spell or Trap card.
+ *
+ * This is the first sentence of the card text.
+ *
+ * This can also apply to Continuous Spell/Trap cards if the sentence starts with "When this card is activated".
+ */
 export default class SpellTrapActivationParseRule extends EffectParseRule {
   match({sentence, isSpellTrap, isFirstSentence, isContinuous}: EffectParseProps): boolean {
     return isSpellTrap && isFirstSentence && (

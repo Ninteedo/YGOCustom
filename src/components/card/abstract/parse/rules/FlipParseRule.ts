@@ -3,6 +3,9 @@ import Effect from "../../effect/Effect.tsx";
 import {parseEffectClauses} from "../parseEffects.ts";
 import FlipEffect from "../../effect/FlipEffect.tsx";
 
+/**
+ * Parses a FLIP effect.
+ */
 export default class FlipParseRule extends EffectParseRule {
   match({sentence}: EffectParseProps): boolean {
     return sentence.startsWith("FLIP:");

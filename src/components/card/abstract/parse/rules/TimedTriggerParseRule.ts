@@ -3,14 +3,16 @@ import {parseEffectClauses} from "../parseEffects.ts";
 import Effect from "../../effect/Effect.tsx";
 import TriggerEffect from "../../effect/TriggerEffect.tsx";
 
+/**
+ * Parses a timed trigger effect.
+ *
+ * This is a trigger effect that has a condition that triggered with "If", "When", or equivalent for a timed event.
+ */
 export default class TimedTriggerParseRule extends EffectParseRule {
-  match({sentence, isFastCard}: EffectParseProps): boolean {
+  match({sentence}: EffectParseProps): boolean {
     return (
-      !isFastCard && !this.duringMainPhase(sentence)
-      && (
-        (this.hasTimedCondition(sentence) && !this.isSlowCondition(sentence))
-        // || hasActivationWindowMention(sentence)
-      )
+      !this.duringMainPhase(sentence)
+      && (this.hasTimedCondition(sentence) && !this.isSlowCondition(sentence))
     );
   }
 

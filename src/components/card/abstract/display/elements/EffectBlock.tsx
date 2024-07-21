@@ -15,9 +15,8 @@ export default function EffectBlock({materials, effects, isPendulum}: {
       <ol className="effect-list">
         {effects.map((effect, index) => {
           const isRestriction = effect instanceof EffectRestriction;
-          return <li key={index} data-effect-index={index + 1} className={isRestriction ? "restriction" : ""}>{effect.render()}</li>;
-        }
-        )}
+          return <li key={index} data-effect-index={index + 1} className={isRestriction ? "restriction" : ""}><div>{effect.render()}</div></li>;
+        })}
       </ol>
     </div>
   );

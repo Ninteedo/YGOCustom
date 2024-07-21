@@ -2,6 +2,9 @@ import {EffectParseProps, EffectParseRule} from "./EffectParseRule.ts";
 import Effect from "../../effect/Effect.tsx";
 import AlwaysTreatedAs from "../../effect/AlwaysTreatedAs.tsx";
 
+/**
+ * Parses a sentence that indicates that a card is always treated as another card.
+ */
 export default class AlwaysTreatedAsParseRule extends EffectParseRule {
   match({sentence, isFirstSentence}: EffectParseProps): boolean {
     return (
