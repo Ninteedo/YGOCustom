@@ -34,8 +34,8 @@ $spell-colour-dark: rgb(18, 99, 72);
   border-radius: 10px;
 
   &.card-ritual {
-    $ritual-colour-light: rgb(157, 181, 204);
-    $ritual-colour-dark: rgb(94, 109, 122);
+    $ritual-colour-light: rgb(98, 155, 207);
+    $ritual-colour-dark: rgb(27, 72, 108);
 
     @include border-background($ritual-colour-light, $ritual-colour-dark);
   }
@@ -81,7 +81,7 @@ $spell-colour-dark: rgb(18, 99, 72);
   }
 
   &.card-xyz {
-    $xyz-colour-light: rgb(100, 100, 100);
+    $xyz-colour-light: rgb(35, 35, 35);
     $xyz-colour-dark: rgb(0, 0, 0);
 
     @include border-background($xyz-colour-light, $xyz-colour-dark);
