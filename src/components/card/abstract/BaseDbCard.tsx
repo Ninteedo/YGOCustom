@@ -115,7 +115,7 @@ export default class BaseDbCard extends BaseCard {
 
       const materials = this.getMaterials();
       const {restrictions, effects} = parseEffects({
-        text: materials ? this.text.substring(materials.length + 1).trim() : this.text,
+        text: materials ? this.text.substring(materials.length + 2).trim() : this.text,
         isFastCard: this.kind === CardKind.TRAP || this.subKind === CardSubKind.QUICK_PLAY,
         isSpellTrapCard: isSpellTrapCard(this.kind),
         isContinuousSpellTrapCard: (
@@ -132,7 +132,10 @@ export default class BaseDbCard extends BaseCard {
 
   protected getMaterials(): string | undefined {
     if (this.kind === CardKind.MONSTER && isExtraDeck(this.subKind)) {
-      return this.text.split("\n")[0];
+      const res = this.text.match(/([^\n\r/]+?)(?=(:?\r?\n| \/ ).+)/);
+      if (res) {
+        return res[0];
+      }
     }
     return undefined;
   }
