@@ -12,6 +12,7 @@ import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
 import SummoningCondition from "../../effect/SummoningCondition.tsx";
 import GeminiEffect from "../../effect/GeminiEffect.tsx";
 import {parsePendulumText} from "../parsePendulum.ts";
+import AlwaysTreatedAs from "../../effect/AlwaysTreatedAs.tsx";
 
 describe('parseEffects should parse', () => {
   function testParseEffects(props: ParseEffectsProps, expectedEffects: Effect[]) {
@@ -361,5 +362,18 @@ describe('parseEffects should parse', () => {
       new EffectRestriction("You can only use this effect of \"Revolution Synchron\" once per Duel."),
     ];
     testParseEffects({text}, effects);
+  });
+
+  test('ALERT!', () => {
+    const text = "(This card is always treated as a \"Rescue-ACE\" card.)\n" +
+      "Add 1 \"Rescue-ACE\" monster from your GY to your hand, or if you control \"Rescue-ACE Hydrant\", you can add 1 \"Rescue-ACE\" monster from your Deck to your hand instead. You can only activate 1 \"ALERT!\" per turn."
+    const effects = [
+      new AlwaysTreatedAs("This card is always treated as a \"Rescue-ACE\" card."),
+      new QuickEffect([
+        new EffectMainClause("Add 1 \"Rescue-ACE\" monster from your GY to your hand, or if you control \"Rescue-ACE Hydrant\", you can add 1 \"Rescue-ACE\" monster from your Deck to your hand instead.")
+      ]),
+      new EffectRestriction("You can only activate 1 \"ALERT!\" per turn."),
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
   });
 });

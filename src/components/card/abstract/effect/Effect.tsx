@@ -8,4 +8,8 @@ export default abstract class Effect {
   protected renderClauses(clauses: EffectClause[]): ReactNode {
     return clauses.map(((c, index) => <span key={index}>{c.render()}</span>));
   }
+
+  public isProperEffect(): boolean {
+    return true;
+  }
 }

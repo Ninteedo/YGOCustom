@@ -21,6 +21,7 @@ import IgnitionEffect from "../effect/IgnitionEffect.tsx";
 import FastCardActivationWindowParseRule from "./rules/FastCardActivationWindowParseRule.ts";
 import TimedConditionParseRule from "./rules/TimedConditionParseRule.ts";
 import ActivationWindowFallbackParseRule from "./rules/ActivationWindowFallbackParseRule.ts";
+import AlwaysTreatedAsParseRule from "./rules/AlwaysTreatedAsParseRule.ts";
 
 interface EffectData {
   restrictions: EffectRestriction[];
@@ -89,6 +90,7 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
 
   const parsers: EffectParseRule[] = [
     new EffectRestrictionParseRule(),
+    new AlwaysTreatedAsParseRule(),
     new SpellTrapActivationParseRule(),
     new FlipParseRule(),
     new ExplicitQuickEffectParseRule(),
@@ -108,7 +110,7 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
 
   for (let i = 0; i < sentences.length; i++) {
     const sentence = sentences[i];
-    parseSentenceNew(sentence, effects, i, props, parsers);
+    parseSentenceNew(sentence, effects, props, parsers);
   }
 
   return {restrictions, effects};
@@ -117,7 +119,6 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
 function parseSentenceNew(
   sentence: string,
   effects: Effect[],
-  i: number,
   props: ParseEffectsProps,
   parsers: EffectParseRule[],
 ): void {
@@ -127,7 +128,7 @@ function parseSentenceNew(
     isSpellTrap: props.isSpellTrapCard || false,
     isFastCard: props.isFastCard || false,
     isContinuous: props.isContinuousSpellTrapCard || false,
-    isFirstSentence: i === 0,
+    isFirstSentence: !effects.find(effect => effect.isProperEffect()),
   };
   const matchingRule = parsers.find((rule) => rule.match(parseProps));
   if (!matchingRule) {
@@ -203,7 +204,7 @@ function parseGeminiCard(sentences: string[], props: ParseEffectsProps, parsers:
   }
   const effects: Effect[] = [];
   for (let i = 0; i < effectSentences.length; i++) {
-    parseSentenceNew(effectSentences[i], effects, 0, props, parsers);
+    parseSentenceNew(effectSentences[i], effects, props, parsers);
   }
   return new GeminiEffect(effects);
 }

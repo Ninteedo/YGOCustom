@@ -12,4 +12,8 @@ export default class NormalEffectLore extends Effect {
   render(): ReactNode {
     return <p className={"normal-lore"}>{this.lore}</p>;
   }
+
+  public isProperEffect(): boolean {
+    return false;
+  }
 }

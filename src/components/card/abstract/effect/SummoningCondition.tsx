@@ -18,4 +18,8 @@ export default class SummoningCondition extends Effect {
       </>
     )
   }
+
+  public isProperEffect(): boolean {
+    return false;
+  }
 }

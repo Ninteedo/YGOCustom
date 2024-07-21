@@ -17,6 +17,10 @@ export default class EffectRestriction extends Effect {
   render(): ReactNode {
     return <span className="effect-restriction">{this.content}</span>;
   }
+
+  public isProperEffect(): boolean {
+    return false;
+  }
 }
 
 // /**
