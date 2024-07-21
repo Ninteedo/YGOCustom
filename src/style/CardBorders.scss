@@ -14,8 +14,8 @@ $spell-colour-dark: rgb(18, 99, 72);
 
 @mixin pendulum-background($base-colour-light, $base-colour-dark) {
   background: linear-gradient(to bottom,
-      $base-colour-light, $base-colour-dark 50%,
-      $spell-colour-light 50%,
+      $base-colour-light, $base-colour-dark 40%,
+      $spell-colour-light 60%,
       $spell-colour-dark 100%);
   background-blend-mode: multiply;
 }
