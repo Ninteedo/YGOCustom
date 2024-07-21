@@ -1,24 +1,33 @@
 import Effect from "../effect/Effect.tsx";
 import EffectRestriction from "../effect/EffectRestriction.tsx";
 import EffectMainClause from "../effect/clause/EffectMainClause.ts";
-import IgnitionEffect from "../effect/IgnitionEffect.tsx";
-import QuickEffect from "../effect/QuickEffect.tsx";
 import EffectClause from "../effect/clause/EffectClause.ts";
-import TriggerEffect from "../effect/TriggerEffect.tsx";
 import EffectConditionClause from "../effect/clause/EffectConditionClause.ts";
 import EffectCostClause from "../effect/clause/EffectCostClause.ts";
-import ContinuousEffect from "../effect/ContinuousEffect.tsx";
 import EffectParseError from "./EffectParseError.ts";
-import SummoningCondition from "../effect/SummoningCondition.tsx";
 import GeminiEffect from "../effect/GeminiEffect.tsx";
-import FlipEffect from "../effect/FlipEffect.tsx";
+import {EffectParseProps, EffectParseRule} from "./rules/EffectParseRule.ts";
+import SpellTrapActivationParseRule from "./rules/SpellTrapActivationParseRule.ts";
+import FlipParseRule from "./rules/FlipParseRule.ts";
+import ExplicitQuickEffectParseRule from "./rules/ExplicitQuickEffectParseRule.ts";
+import SummoningConditionParseRule from "./rules/SummoningConditionParseRule.ts";
+import ContinuousEffectParseRule from "./rules/ContinuousEffectParseRule.ts";
+import DuringNonMainPhaseParseRule from "./rules/DuringNonMainPhaseParseRule.ts";
+import ConditionalIgnitionParseRule from "./rules/ConditionalIgnitionParseRule.ts";
+import TimedTriggerParseRule from "./rules/TimedTriggerParseRule.ts";
+import EffectRestrictionParseRule from "./rules/EffectRestrictionParseRule.ts";
+import TriggerEffect from "../effect/TriggerEffect.tsx";
+import IgnitionEffect from "../effect/IgnitionEffect.tsx";
+import FastCardActivationWindowParseRule from "./rules/FastCardActivationWindowParseRule.ts";
+import TimedConditionParseRule from "./rules/TimedConditionParseRule.ts";
+import ActivationWindowFallbackParseRule from "./rules/ActivationWindowFallbackParseRule.ts";
 
 interface EffectData {
   restrictions: EffectRestriction[];
   effects: Effect[];
 }
 
-function parseEffectClauses(sentence: string): EffectClause[] {
+export function parseEffectClauses(sentence: string): EffectClause[] {
   // return [new EffectMainClause(sentence)];
 
   const hasCondition = sentence.includes(": ");
@@ -78,94 +87,60 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
     }
   }
 
+  const parsers: EffectParseRule[] = [
+    new EffectRestrictionParseRule(),
+    new SpellTrapActivationParseRule(),
+    new FlipParseRule(),
+    new ExplicitQuickEffectParseRule(),
+    new SummoningConditionParseRule(),
+    new TimedTriggerParseRule(),
+    new TimedConditionParseRule(),
+    new FastCardActivationWindowParseRule(),
+    new ConditionalIgnitionParseRule(),
+    new ContinuousEffectParseRule(),
+    new DuringNonMainPhaseParseRule(),
+    new ActivationWindowFallbackParseRule(),
+  ]
+
   if (isGeminiCard(sentences)) {
-    return {restrictions, effects: [parseGeminiCard(sentences, props)]};
+    return {restrictions, effects: [parseGeminiCard(sentences, props, parsers)]};
   }
 
   for (let i = 0; i < sentences.length; i++) {
     const sentence = sentences[i];
-    parseSentence(sentence, restrictions, effects, i, props);
+    parseSentenceNew(sentence, effects, i, props, parsers);
   }
 
   return {restrictions, effects};
 }
 
-function parseSentence(
+function parseSentenceNew(
   sentence: string,
-  restrictions: EffectRestriction[],
   effects: Effect[],
   i: number,
   props: ParseEffectsProps,
+  parsers: EffectParseRule[],
 ): void {
-  const {isSpellTrapCard = false, isFastCard = false} = props;
-  if (sentence.startsWith("You can only ")) {
-    restrictions.push(new EffectRestriction(sentence));
-  } else {
-    if (isSpellTrapCard && i === 0) {
-      parseSpellTrapCardFirstEffect(props, sentence, effects);
-    } else if (isFlipEffect(sentence)) {
-      effects.push(createFlipEffect(sentence));
-    } else if (hasQuickEffectMention(sentence)) {
-      effects.push(createQuickEffect(sentence));
-    } else if (hasTimedCondition(sentence) && !duringMainPhase(sentence)) {
-      if (isSlowCondition(sentence)) {
-        effects.push(createIgnitionEffect(sentence));
-      } else {
-        effects.push(createTriggerEffect(sentence));
-      }
-    } else if (!isSpellTrapCard && isSummoningCondition(sentence)) {
-      effects.push(createSummoningCondition(sentence));
-    } else if (hasActivationWindowMention(sentence)) {
-      if (duringNonMainPhase(sentence)) {
-        if (isFastCard) {
-          effects.push(createQuickEffect(sentence));
-        } else {
-          effects.push(createTriggerEffect(sentence));
-        }
-      } else if (hasTimedCondition(sentence) && !duringMainPhase(sentence)) {
-        if (isSlowCondition(sentence)) {
-          effects.push(createIgnitionEffect(sentence));
-        } else {
-          effects.push(createTriggerEffect(sentence));
-        }
-      } else if (isFastCard) {
-        effects.push(createQuickEffect(sentence));
-      } else if (hasCondition(sentence) || hasCost(sentence)) {
-        effects.push(createIgnitionEffect(sentence));
-      } else {
-        effects.push(createContinuousEffect(sentence));
-      }
-    } else if (!sentence.includes(":")) {
-      effects.push(createContinuousEffect(sentence));
-    } else if (duringNonMainPhase(sentence)) {
-      if (isFastCard) {
-        effects.push(createQuickEffect(sentence));
-      } else {
-        effects.push(createTriggerEffect(sentence));
-      }
-    } else {
-      throw new EffectParseError("Could not determine effect type for sentence: " + sentence);
-    }
+  const parseProps: EffectParseProps = {
+    text: props.text,
+    sentence,
+    isSpellTrap: props.isSpellTrapCard || false,
+    isFastCard: props.isFastCard || false,
+    isContinuous: props.isContinuousSpellTrapCard || false,
+    isFirstSentence: i === 0,
+  };
+  const matchingRule = parsers.find((rule) => rule.match(parseProps));
+  if (!matchingRule) {
+    throw new EffectParseError("No matching rule found for sentence: " + sentence);
   }
+  effects.push(matchingRule.parse(parseProps));
 }
 
-function parseSpellTrapCardFirstEffect({isFastCard, isContinuousSpellTrapCard}: ParseEffectsProps, sentence: string, effects: Effect[]): void {
-  if (!isContinuousSpellTrapCard || sentence.includes(": ") || sentence.includes("; ")) {
-    if (isFastCard) {
-      effects.push(createQuickEffect(sentence));
-    } else {
-      effects.push(createIgnitionEffect(sentence));
-    }
-  } else {
-    effects.push(createContinuousEffect(sentence));
-  }
-}
-
-function duringNonMainPhase(sentence: string): boolean {
+export function duringNonMainPhase(sentence: string): boolean {
   return !!sentence.toLowerCase().match(/during (each|the|your|your opponent's) (draw|standby|battle|end) phase/) || !!sentence.match(/At the (start|end) of the /);
 }
 
-function duringMainPhase(sentence: string): boolean {
+export function duringMainPhase(sentence: string): boolean {
   return sentence.startsWith("During your Main Phase, ");
 }
 
@@ -173,74 +148,21 @@ function hasCondition(sentence: string): boolean {
   return sentence.includes(": ");
 }
 
-function hasCost(sentence: string): boolean {
-  return sentence.includes("; ");
-}
-
-function hasTimedCondition(sentence: string): boolean {
+export function hasTimedCondition(sentence: string): boolean {
   const condition = getCondition(sentence);
   const keywords = ["if", "when", "each time"];
   return keywords.some((keyword) => condition.toLowerCase().includes(keyword + " "));
 }
 
-function isSlowCondition(sentence: string): boolean {
+export function isSlowCondition(sentence: string): boolean {
   return sentence.startsWith("If you control ");
 }
 
-function hasActivationWindowMention(sentence: string): boolean {
+export function hasActivationWindowMention(sentence: string): boolean {
   return sentence.startsWith("Once per turn") ||
     sentence.startsWith("During your Main Phase") ||
     sentence.startsWith("You can ") ||
     sentence.startsWith("Once per Chain");
-}
-
-function hasQuickEffectMention(sentence: string): boolean {
-  return !!(
-    sentence.includes("(Quick Effect):")
-    || sentence.toLowerCase().includes("during either player's turn")
-    || sentence.toLowerCase().match(/if this card is (treated as )?a continuous trap/)
-  );
-}
-
-function isSummoningCondition(sentence: string): boolean {
-  const summoningTypes = ["Fusion", "Synchro", "Xyz", "Link", "Special", "Tribute"];
-  return !!(
-    summoningTypes.some((type) => sentence.match(new RegExp("you can (also)? " + type + " Summon (this card|\")"))) ||
-    sentence.startsWith("Cannot be Normal Summoned/Set") ||
-    sentence.startsWith("Cannot be Special Summoned") ||
-    sentence.match(/^Must (first )?be (\w)+ Summoned/)
-  );
-}
-
-function isFlipEffect(sentence: string): boolean {
-  return sentence.startsWith("FLIP:");
-}
-
-function createFlipEffect(sentence: string): FlipEffect {
-  return new FlipEffect(parseEffectClauses(sentence));
-}
-
-function createIgnitionEffect(sentence: string): IgnitionEffect {
-  return new IgnitionEffect(parseEffectClauses(sentence));
-}
-
-function createQuickEffect(sentence: string): QuickEffect {
-  return new QuickEffect(parseEffectClauses(sentence));
-}
-
-function createTriggerEffect(sentence: string): TriggerEffect {
-  return new TriggerEffect(parseEffectClauses(sentence));
-}
-
-function createContinuousEffect(sentence: string): ContinuousEffect {
-  if (hasCondition(sentence) || hasCost(sentence)) {
-    throw new EffectParseError("Continuous effect should not contain a condition or cost: " + sentence);
-  }
-  return new ContinuousEffect(parseEffectClauses(sentence)[0]);
-}
-
-function createSummoningCondition(sentence: string): SummoningCondition {
-  return new SummoningCondition(new EffectMainClause(sentence));
 }
 
 function getCondition(sentence: string): string {
@@ -274,16 +196,25 @@ function isGeminiCard(sentences: string[]): boolean {
   );
 }
 
-function parseGeminiCard(sentences: string[], props: ParseEffectsProps): GeminiEffect {
+function parseGeminiCard(sentences: string[], props: ParseEffectsProps, parsers: EffectParseRule[]): GeminiEffect {
   let effectSentences = sentences.slice(2);
   if (sentences[1].startsWith("While this card is face-up on the field, you can Normal Summon it to have it be treated as an Effect Monster with this effect:\n●")) {
     effectSentences = [sentences[1].substring(sentences[1].indexOf("●") + 1, sentences[1].length - 1).trimStart()].concat(effectSentences);
   }
   const effects: Effect[] = [];
   for (let i = 0; i < effectSentences.length; i++) {
-    parseSentence(effectSentences[i], [], effects, 0, props);
+    parseSentenceNew(effectSentences[i], effects, 0, props, parsers);
   }
   return new GeminiEffect(effects);
+}
+
+export function getTriggerOrIgnition(sentence: string, isTrigger: boolean): Effect {
+  const clauses = parseEffectClauses(sentence);
+  if (isTrigger) {
+    return new IgnitionEffect(clauses);
+  } else {
+    return new TriggerEffect(clauses);
+  }
 }
 
 // function getCost(sentence: string): string {

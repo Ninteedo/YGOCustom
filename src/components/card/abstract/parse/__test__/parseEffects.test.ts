@@ -14,10 +14,9 @@ import GeminiEffect from "../../effect/GeminiEffect.tsx";
 import {parsePendulumText} from "../parsePendulum.ts";
 
 describe('parseEffects should parse', () => {
-  function testParseEffects(props: ParseEffectsProps, expectedRestrictions: EffectRestriction[], expectedEffects: Effect[]) {
-    const {restrictions, effects} = parseEffects(props);
+  function testParseEffects(props: ParseEffectsProps, expectedEffects: Effect[]) {
+    const {effects} = parseEffects(props);
     expect(effects).toStrictEqual(expectedEffects);
-    expect(restrictions).toStrictEqual(expectedRestrictions);
   }
 
   function testParsePendulumEffects(
@@ -32,7 +31,7 @@ describe('parseEffects should parse', () => {
 
   test('Purrely', () => {
     const text = "If this card is Normal or Special Summoned: You can excavate the top 3 cards of your Deck, and if you do, you can add 1 excavated \"Purrely\" Spell/Trap to your hand, also place the rest on the bottom of the Deck in any order. Once per turn: You can reveal 1 \"Purrely\" Quick-Play Spell in your hand, and if you do, Special Summon 1 Xyz Monster that mentions it from your Extra Deck, by using this face-up card you control as material, and if you do, attach the revealed card to the Summoned monster as additional material. (This is treated as an Xyz Summon.)";
-    const expectedEffects = [
+    const effects = [
       new TriggerEffect([
         new EffectConditionClause("If this card is Normal or Special Summoned"),
         new EffectMainClause("You can excavate the top 3 cards of your Deck, and if you do, you can add 1 excavated \"Purrely\" Spell/Trap to your hand, also place the rest on the bottom of the Deck in any order."),
@@ -42,14 +41,11 @@ describe('parseEffects should parse', () => {
         new EffectMainClause("You can reveal 1 \"Purrely\" Quick-Play Spell in your hand, and if you do, Special Summon 1 Xyz Monster that mentions it from your Extra Deck, by using this face-up card you control as material, and if you do, attach the revealed card to the Summoned monster as additional material. (This is treated as an Xyz Summon.)"),
       ])
     ];
-    testParseEffects({text}, [], expectedEffects);
+    testParseEffects({text}, effects);
   });
 
   test('Big Welcome Labrynth', () => {
     const text = "Special Summon 1 \"Labrynth\" monster from your hand, Deck, or GY, then return 1 monster you control to the hand. You can banish this card from your GY, then target 1 Fiend monster you control, or, if you control a Level 8 or higher Fiend monster, you can target 1 card your opponent controls instead; return that card to the hand. You can only use 1 \"Big Welcome Labrynth\" effect per turn, and only once that turn.";
-    const restrictions = [
-      new EffectRestriction("You can only use 1 \"Big Welcome Labrynth\" effect per turn, and only once that turn.")
-    ];
     const effects = [
       new QuickEffect([
         new EffectMainClause("Special Summon 1 \"Labrynth\" monster from your hand, Deck, or GY, then return 1 monster you control to the hand."),
@@ -57,9 +53,10 @@ describe('parseEffects should parse', () => {
       new QuickEffect([
         new EffectCostClause("You can banish this card from your GY, then target 1 Fiend monster you control, or, if you control a Level 8 or higher Fiend monster, you can target 1 card your opponent controls instead"),
         new EffectMainClause("return that card to the hand."),
-      ])
+      ]),
+      new EffectRestriction("You can only use 1 \"Big Welcome Labrynth\" effect per turn, and only once that turn."),
     ];
-    testParseEffects({text, isFastCard: true, isSpellTrapCard: true}, restrictions, effects);
+    testParseEffects({text, isFastCard: true, isSpellTrapCard: true}, effects);
   });
 
   test('Dimension Shifter', () => {
@@ -71,15 +68,12 @@ describe('parseEffects should parse', () => {
         new EffectMainClause("until the end of the next turn, any card sent to the GY is banished instead."),
       ])
     ];
-    testParseEffects({text}, [], effects);
+    testParseEffects({text}, effects);
   });
 
   test('Snake-Eye Ash', () => {
     const text = "If this card is Normal or Special Summoned: You can add 1 Level 1 FIRE monster from your Deck to your hand. You can send 2 face-up cards you control to the GY, including this card; Special Summon 1 \"Snake-Eye\" monster from your hand or Deck, except \"Snake-Eye Ash\". You can only use each effect of \"Snake-Eye Ash\" once per turn.";
-    const expectedRestrictions = [
-      new EffectRestriction("You can only use each effect of \"Snake-Eye Ash\" once per turn.")
-    ];
-    const expectedEffects = [
+    const effects = [
       new TriggerEffect([
         new EffectConditionClause("If this card is Normal or Special Summoned"),
         new EffectMainClause("You can add 1 Level 1 FIRE monster from your Deck to your hand."),
@@ -87,9 +81,10 @@ describe('parseEffects should parse', () => {
       new IgnitionEffect([
         new EffectCostClause("You can send 2 face-up cards you control to the GY, including this card"),
         new EffectMainClause("Special Summon 1 \"Snake-Eye\" monster from your hand or Deck, except \"Snake-Eye Ash\"."),
-      ])
+      ]),
+      new EffectRestriction("You can only use each effect of \"Snake-Eye Ash\" once per turn."),
     ];
-    testParseEffects({text}, expectedRestrictions, expectedEffects);
+    testParseEffects({text}, effects);
   });
 
   test('Personal Spoofing', () => {
@@ -101,7 +96,7 @@ describe('parseEffects should parse', () => {
         new EffectMainClause("add 1 \"Altergeist\" monster from your Deck to your hand."),
       ]),
     ];
-    testParseEffects({text, isFastCard: true, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, [], effects);
+    testParseEffects({text, isFastCard: true, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, effects);
   });
 
   test('Skill Drain', () => {
@@ -114,14 +109,11 @@ describe('parseEffects should parse', () => {
         new EffectMainClause("Negate the effects of all face-up monsters while they are face-up on the field (but their effects can still be activated)."),
       ),
     ];
-    testParseEffects({text, isSpellTrapCard: true, isFastCard: true, isContinuousSpellTrapCard: true}, [], effects);
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true, isContinuousSpellTrapCard: true}, effects);
   })
 
   test('Laundry Dragonmaid', () => {
     const text = "If this card is Normal or Special Summoned: You can send the top 3 cards of your Deck to the GY. At the start of the Battle Phase: You can return this card to the hand, and if you do, Special Summon 1 Level 7 \"Dragonmaid\" monster from your hand or GY. You can only use each effect of \"Laundry Dragonmaid\" once per turn."
-    const restrictions = [
-      new EffectRestriction("You can only use each effect of \"Laundry Dragonmaid\" once per turn.")
-    ];
     const effects = [
       new TriggerEffect([
         new EffectConditionClause("If this card is Normal or Special Summoned"),
@@ -131,15 +123,13 @@ describe('parseEffects should parse', () => {
         new EffectConditionClause("At the start of the Battle Phase"),
         new EffectMainClause("You can return this card to the hand, and if you do, Special Summon 1 Level 7 \"Dragonmaid\" monster from your hand or GY."),
       ]),
+      new EffectRestriction("You can only use each effect of \"Laundry Dragonmaid\" once per turn."),
     ];
-    testParseEffects({text}, restrictions, effects);
+    testParseEffects({text}, effects);
   });
 
   test('My Friend Purrely', () => {
     const text = "You can pay 500 LP; reveal 3 \"Purrely\" cards from your Deck, except \"My Friend Purrely\", and your opponent randomly picks 1 for you to add to your hand, also shuffle the rest into your Deck. If a face-up \"Purrely\" Xyz Monster(s) you control leaves the field because of an opponent's card, even during the Damage Step: You can add up to 3 \"Purrely\" Quick-Play Spells with different names from your GY to your hand. You can only use each effect of \"My Friend Purrely\" once per turn.";
-    const restrictions = [
-      new EffectRestriction("You can only use each effect of \"My Friend Purrely\" once per turn.")
-    ];
     const effects = [
       new IgnitionEffect([
         new EffectCostClause("You can pay 500 LP"),
@@ -148,9 +138,10 @@ describe('parseEffects should parse', () => {
       new TriggerEffect([
         new EffectConditionClause("If a face-up \"Purrely\" Xyz Monster(s) you control leaves the field because of an opponent's card, even during the Damage Step"),
         new EffectMainClause("You can add up to 3 \"Purrely\" Quick-Play Spells with different names from your GY to your hand."),
-      ])
+      ]),
+      new EffectRestriction("You can only use each effect of \"My Friend Purrely\" once per turn.")
     ];
-    testParseEffects({text, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, restrictions, effects);
+    testParseEffects({text, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, effects);
   });
 
   test('Stray Purrely Street', () => {
@@ -167,14 +158,11 @@ describe('parseEffects should parse', () => {
         new EffectMainClause("attach 1 \"Purrely\" Quick-Play Spell from your Deck or GY to that monster as material."),
       ])
     ];
-    testParseEffects({text, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, [], effects);
+    testParseEffects({text, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, effects);
   });
 
   test('Purrelyly', () => {
     const text = "If this card is Normal or Special Summoned: You can add 1 \"Purrely\" card from your Deck to your hand, except a Quick-Play Spell. You can target 1 \"Purrely\" Quick-Play Spell in your GY; Special Summon 1 Xyz Monster from your Extra Deck that mentions that card, by using this card you control as material, and if you do, attach that Spell to the Summoned monster. (This is treated as an Xyz Summon.) You can only use each effect of \"Purrelyly\" once per turn.";
-    const restrictions = [
-      new EffectRestriction("You can only use each effect of \"Purrelyly\" once per turn.")
-    ];
     const effects = [
       new TriggerEffect([
         new EffectConditionClause("If this card is Normal or Special Summoned"),
@@ -183,9 +171,10 @@ describe('parseEffects should parse', () => {
       new IgnitionEffect([
         new EffectCostClause("You can target 1 \"Purrely\" Quick-Play Spell in your GY"),
         new EffectMainClause("Special Summon 1 Xyz Monster from your Extra Deck that mentions that card, by using this card you control as material, and if you do, attach that Spell to the Summoned monster. (This is treated as an Xyz Summon.)"),
-      ])
+      ]),
+      new EffectRestriction("You can only use each effect of \"Purrelyly\" once per turn.")
     ];
-    testParseEffects({text}, restrictions, effects);
+    testParseEffects({text}, effects);
   });
 
   test('Kashtira Arise-Heart', () => {
@@ -207,22 +196,22 @@ describe('parseEffects should parse', () => {
         new EffectMainClause("banish it face-down.")
       ])
     ];
-    testParseEffects({text}, [], effects);
+    testParseEffects({text}, effects);
   });
 
   test('Red-Eyes Alternative Black Dragon', () => {
     const text = "Cannot be Normal Summoned/Set. Must first be Special Summoned (from your hand) by Tributing 1 \"Red-Eyes\" monster from your hand or field. You can only Special Summon \"Red-Eyes Alternative Black Dragon\" once per turn this way. If this card is destroyed by battle, or if this card in its owner's possession is destroyed by an opponent's card effect: You can target 1 Level 7 or lower \"Red-Eyes\" monster in your GY, except \"Red-Eyes Alternative Black Dragon\"; Special Summon it, and if it was a \"Red-Eyes B. Dragon\" that was Special Summoned, its original ATK becomes doubled.";
-    const restrictions = [new EffectRestriction("You can only Special Summon \"Red-Eyes Alternative Black Dragon\" once per turn this way.")];
     const effects = [
       new SummoningCondition(new EffectMainClause("Cannot be Normal Summoned/Set.")),
       new SummoningCondition(new EffectMainClause("Must first be Special Summoned (from your hand) by Tributing 1 \"Red-Eyes\" monster from your hand or field.")),
+      new EffectRestriction("You can only Special Summon \"Red-Eyes Alternative Black Dragon\" once per turn this way."),
       new TriggerEffect([
         new EffectConditionClause("If this card is destroyed by battle, or if this card in its owner's possession is destroyed by an opponent's card effect"),
         new EffectCostClause("You can target 1 Level 7 or lower \"Red-Eyes\" monster in your GY, except \"Red-Eyes Alternative Black Dragon\""),
         new EffectMainClause("Special Summon it, and if it was a \"Red-Eyes B. Dragon\" that was Special Summoned, its original ATK becomes doubled.")
       ])
     ];
-    testParseEffects({text}, restrictions, effects);
+    testParseEffects({text}, effects);
   });
 
   test('Red-Eyes Archfiend of Lightning', () => {
@@ -235,7 +224,7 @@ describe('parseEffects should parse', () => {
         ])
       ])
     ];
-    testParseEffects({text}, [], effects);
+    testParseEffects({text}, effects);
   });
 
   test('Red-Eyes Black Dragon Sword', () => {
@@ -249,14 +238,14 @@ describe('parseEffects should parse', () => {
       ]),
       new ContinuousEffect(new EffectMainClause("It gains 1000 ATK, and 500 ATK/DEF for each Dragon monster on the field and in the GYs."))
     ];
-    testParseEffects({text}, [], effects);
+    testParseEffects({text}, effects);
   });
 
   test('Centur-Ion Primera', () => {
     const text = "While this card is a Continuous Trap, Level 5 or higher \"Centur-Ion\" monsters you control cannot be destroyed by card effects. You can only use each of the following effects of \"Centur-Ion Primera\" once per turn. If this card is Normal or Special Summoned: You can add 1 \"Centur-Ion\" card from your Deck to your hand, except \"Centur-Ion Primera\", also you cannot Special Summon \"Centur-Ion Primera\" for the rest of this turn. During the Main Phase, if this card is a Continuous Trap: You can Special Summon this card.";
-    const restrictions = [new EffectRestriction("You can only use each of the following effects of \"Centur-Ion Primera\" once per turn.")];
     const effects = [
       new ContinuousEffect(new EffectMainClause("While this card is a Continuous Trap, Level 5 or higher \"Centur-Ion\" monsters you control cannot be destroyed by card effects.")),
+      new EffectRestriction("You can only use each of the following effects of \"Centur-Ion Primera\" once per turn."),
       new TriggerEffect([
         new EffectConditionClause("If this card is Normal or Special Summoned"),
         new EffectMainClause("You can add 1 \"Centur-Ion\" card from your Deck to your hand, except \"Centur-Ion Primera\", also you cannot Special Summon \"Centur-Ion Primera\" for the rest of this turn.")
@@ -266,7 +255,7 @@ describe('parseEffects should parse', () => {
         new EffectMainClause("You can Special Summon this card.")
       ])
     ];
-    testParseEffects({text}, restrictions, effects);
+    testParseEffects({text}, effects);
   });
 
   test('Mystical Space Typhoon', () => {
@@ -277,14 +266,14 @@ describe('parseEffects should parse', () => {
         new EffectMainClause("destroy that target.")
       ])
     ];
-    testParseEffects({text, isFastCard: true, isSpellTrapCard: true}, [], effects);
+    testParseEffects({text, isFastCard: true, isSpellTrapCard: true}, effects);
   });
 
   test('Stand Up Centur-Ion', () => {
     const text = "Cannot be destroyed by your opponent's card effects while you control a \"Centur-Ion\" Monster Card. You can only use each of the following effects of \"Stand Up Centur-Ion!\" once per turn. During your Main Phase, if this card was activated this turn: You can send 1 card from your hand to the GY; place 1 \"Centur-Ion\" monster from your Deck in your Spell & Trap Zone as a face-up Continuous Trap. If a monster(s) is Special Summoned, you can: Immediately after this effect resolves, Synchro Summon 1 Synchro Monster, using monsters you control as material, including a \"Centur-Ion\" monster.";
-    const restrictions = [new EffectRestriction("You can only use each of the following effects of \"Stand Up Centur-Ion!\" once per turn.")];
     const effects = [
       new ContinuousEffect(new EffectMainClause("Cannot be destroyed by your opponent's card effects while you control a \"Centur-Ion\" Monster Card.")),
+      new EffectRestriction("You can only use each of the following effects of \"Stand Up Centur-Ion!\" once per turn."),
       new IgnitionEffect([
         new EffectConditionClause("During your Main Phase, if this card was activated this turn"),
         new EffectCostClause("You can send 1 card from your hand to the GY"),
@@ -295,14 +284,14 @@ describe('parseEffects should parse', () => {
         new EffectMainClause("Immediately after this effect resolves, Synchro Summon 1 Synchro Monster, using monsters you control as material, including a \"Centur-Ion\" monster.")
       ])
     ];
-    testParseEffects({text}, restrictions, effects);
+    testParseEffects({text}, effects);
   });
 
   test('Dragonmaid Lorpar', () => {
     const text = "Cannot be destroyed by card effects while you control a Fusion Monster. You can only use each of the following effects of \"Dragonmaid Lorpar\" once per turn.\r\n● You can discard this card, then target 1 face-up monster on the field; players cannot activate that target's effects on the field this turn.\r\n● At the end of the Battle Phase: You can return this card to the hand, and if you do, Special Summon 1 Level 3 \"Dragonmaid\" monster from your hand.";
-    const restrictions = [new EffectRestriction("You can only use each of the following effects of \"Dragonmaid Lorpar\" once per turn.")];
     const effects = [
       new ContinuousEffect(new EffectMainClause("Cannot be destroyed by card effects while you control a Fusion Monster.")),
+      new EffectRestriction("You can only use each of the following effects of \"Dragonmaid Lorpar\" once per turn."),
       new IgnitionEffect([
         new EffectCostClause("You can discard this card, then target 1 face-up monster on the field"),
         new EffectMainClause("players cannot activate that target's effects on the field this turn.")
@@ -312,7 +301,7 @@ describe('parseEffects should parse', () => {
         new EffectMainClause("You can return this card to the hand, and if you do, Special Summon 1 Level 3 \"Dragonmaid\" monster from your hand.")
       ])
     ];
-    testParseEffects({text}, restrictions, effects);
+    testParseEffects({text}, effects);
   });
 
   test('Gemini Lancer', () => {
@@ -322,12 +311,11 @@ describe('parseEffects should parse', () => {
         new ContinuousEffect(new EffectMainClause("During battle between this attacking card and a Defense Position monster whose DEF is lower than the ATK of this card, inflict the difference as Battle Damage to your opponent"))
       ])
     ];
-    testParseEffects({text}, [], effects);
+    testParseEffects({text}, effects);
   });
 
   test('Dragonmaid Sheou', () => {
     const text = "During each Standby Phase: You can Special Summon 1 Level 9 or lower \"Dragonmaid\" monster from your hand or GY. When your opponent activates a card or effect (Quick Effect): You can negate the activation, and if you do, destroy that card, also, after that, return this card to the Extra Deck, and if you do, Special Summon 1 \"House Dragonmaid\" from your Extra Deck. You can only use each effect of \"Dragonmaid Sheou\" once per turn.";
-    const restrictions = [new EffectRestriction("You can only use each effect of \"Dragonmaid Sheou\" once per turn.")];
     const effects = [
       new TriggerEffect([
         new EffectConditionClause("During each Standby Phase"),
@@ -336,9 +324,10 @@ describe('parseEffects should parse', () => {
       new QuickEffect([
         new EffectConditionClause("When your opponent activates a card or effect (Quick Effect)"),
         new EffectMainClause("You can negate the activation, and if you do, destroy that card, also, after that, return this card to the Extra Deck, and if you do, Special Summon 1 \"House Dragonmaid\" from your Extra Deck.")
-      ])
+      ]),
+      new EffectRestriction("You can only use each effect of \"Dragonmaid Sheou\" once per turn.")
     ];
-    testParseEffects({text}, restrictions, effects);
+    testParseEffects({text}, effects);
   });
 
   test('Odd-Eyes Pendulum Dragon', () => {
@@ -351,7 +340,8 @@ describe('parseEffects should parse', () => {
       new TriggerEffect([
         new EffectConditionClause("During your End Phase"),
         new EffectMainClause("You can destroy this card, and if you do, add 1 Pendulum Monster with 1500 or less ATK from your Deck to your hand.")
-      ])
+      ]),
+      new EffectRestriction("You can only use each Pendulum Effect of \"Odd-Eyes Pendulum Dragon\" once per turn.")
     ];
     const monsterEffects = [
       new ContinuousEffect(new EffectMainClause("If this card battles an opponent's monster, any battle damage this card inflicts to your opponent is doubled."))
@@ -361,17 +351,15 @@ describe('parseEffects should parse', () => {
 
   test('Revolution Synchron', () => {
     const text = "If you Synchro Summon a \"Power Tool\" monster or a Level 7 or 8 Dragon monster, this card in your hand can also be used as material. You can only use this effect of \"Revolution Synchron\" once per turn. If you control a Level 7 or higher Synchro Monster while this card is in your GY: You can send the top card of your Deck to the GY, and if you do, Special Summon this card, also its Level becomes 1. You can only use this effect of \"Revolution Synchron\" once per Duel.";
-    const restrictions = [
-      new EffectRestriction("You can only use this effect of \"Revolution Synchron\" once per turn."),
-      new EffectRestriction("You can only use this effect of \"Revolution Synchron\" once per Duel.")
-    ];
     const effects = [
       new ContinuousEffect(new EffectMainClause("If you Synchro Summon a \"Power Tool\" monster or a Level 7 or 8 Dragon monster, this card in your hand can also be used as material.")),
+      new EffectRestriction("You can only use this effect of \"Revolution Synchron\" once per turn."),
       new IgnitionEffect([
         new EffectConditionClause("If you control a Level 7 or higher Synchro Monster while this card is in your GY"),
-        new EffectMainClause("You can send the top card of your Deck to the GY, and if you do, Special Summon this card, also its Level becomes 1.")
-      ])
+        new EffectMainClause("You can send the top card of your Deck to the GY, and if you do, Special Summon this card, also its Level becomes 1."),
+      ]),
+      new EffectRestriction("You can only use this effect of \"Revolution Synchron\" once per Duel."),
     ];
-    testParseEffects({text}, restrictions, effects);
+    testParseEffects({text}, effects);
   });
 });
