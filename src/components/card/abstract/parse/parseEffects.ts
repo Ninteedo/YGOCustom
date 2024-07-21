@@ -16,8 +16,6 @@ import DuringNonMainPhaseParseRule from "./rules/DuringNonMainPhaseParseRule.ts"
 import ConditionalIgnitionParseRule from "./rules/ConditionalIgnitionParseRule.ts";
 import TimedTriggerParseRule from "./rules/TimedTriggerParseRule.ts";
 import EffectRestrictionParseRule from "./rules/EffectRestrictionParseRule.ts";
-import TriggerEffect from "../effect/TriggerEffect.tsx";
-import IgnitionEffect from "../effect/IgnitionEffect.tsx";
 import FastCardActivationWindowParseRule from "./rules/FastCardActivationWindowParseRule.ts";
 import TimedConditionParseRule from "./rules/TimedConditionParseRule.ts";
 import ActivationWindowFallbackParseRule from "./rules/ActivationWindowFallbackParseRule.ts";
@@ -62,7 +60,7 @@ export function parseEffects(props: ParseEffectsProps): EffectData {
   const sentences = (text + " ")
     .split(/\.[ )\n\r]/)
     .map((sentence) => sentence.trim())
-    .map((sentence) => isBrokenBracketedSentence(sentence) ? sentence + ".)" : sentence + ".")
+    .map((sentence) => sentence + (isBrokenBracketedSentence(sentence) ? ".)" : "."))
     .filter((sentence) => sentence.length > 1);
   const effects: Effect[] = [];
   const restrictions: EffectRestriction[] = [];
@@ -137,42 +135,6 @@ function parseSentenceNew(
   effects.push(matchingRule.parse(parseProps));
 }
 
-export function duringNonMainPhase(sentence: string): boolean {
-  return !!sentence.toLowerCase().match(/during (each|the|your|your opponent's) (draw|standby|battle|end) phase/) || !!sentence.match(/At the (start|end) of the /);
-}
-
-export function duringMainPhase(sentence: string): boolean {
-  return sentence.startsWith("During your Main Phase, ");
-}
-
-function hasCondition(sentence: string): boolean {
-  return sentence.includes(": ");
-}
-
-export function hasTimedCondition(sentence: string): boolean {
-  const condition = getCondition(sentence);
-  const keywords = ["if", "when", "each time"];
-  return keywords.some((keyword) => condition.toLowerCase().includes(keyword + " "));
-}
-
-export function isSlowCondition(sentence: string): boolean {
-  return sentence.startsWith("If you control ");
-}
-
-export function hasActivationWindowMention(sentence: string): boolean {
-  return sentence.startsWith("Once per turn") ||
-    sentence.startsWith("During your Main Phase") ||
-    sentence.startsWith("You can ") ||
-    sentence.startsWith("Once per Chain");
-}
-
-function getCondition(sentence: string): string {
-  if (!hasCondition(sentence)) {
-    return "";
-  }
-  return sentence.split(": ")[0];
-}
-
 function isBrokenBracketedSentence(sentence: string): boolean {
   if (!sentence.startsWith("(")) {
     return false
@@ -208,17 +170,3 @@ function parseGeminiCard(sentences: string[], props: ParseEffectsProps, parsers:
   }
   return new GeminiEffect(effects);
 }
-
-export function getTriggerOrIgnition(sentence: string, isTrigger: boolean): Effect {
-  const clauses = parseEffectClauses(sentence);
-  if (isTrigger) {
-    return new IgnitionEffect(clauses);
-  } else {
-    return new TriggerEffect(clauses);
-  }
-}
-
-// function getCost(sentence: string): string {
-//   const remaining = sentence.substring(getCondition(sentence).length + 2);
-//   return remaining.split("; ")[0];
-// }

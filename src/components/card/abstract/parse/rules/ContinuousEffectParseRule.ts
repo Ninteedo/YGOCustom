@@ -3,9 +3,9 @@ import Effect from "../../effect/Effect.tsx";
 import EffectMainClause from "../../effect/clause/EffectMainClause.ts";
 import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
 
-export default class ContinuousEffectParseRule implements EffectParseRule {
+export default class ContinuousEffectParseRule extends EffectParseRule {
   match({sentence}: EffectParseProps): boolean {
-    return !sentence.includes(": ") && !sentence.includes("; ");
+    return !this.hasCondition(sentence) && !sentence.includes("; ");
   }
 
   parse({sentence}: EffectParseProps): Effect {

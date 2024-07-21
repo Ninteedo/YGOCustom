@@ -1,14 +1,14 @@
 import {EffectParseProps, EffectParseRule} from "./EffectParseRule.ts";
-import {duringMainPhase, hasTimedCondition, isSlowCondition, parseEffectClauses} from "../parseEffects.ts";
+import {parseEffectClauses} from "../parseEffects.ts";
 import Effect from "../../effect/Effect.tsx";
 import TriggerEffect from "../../effect/TriggerEffect.tsx";
 
-export default class TimedTriggerParseRule implements EffectParseRule {
+export default class TimedTriggerParseRule extends EffectParseRule {
   match({sentence, isFastCard}: EffectParseProps): boolean {
     return (
-      !isFastCard && !duringMainPhase(sentence)
+      !isFastCard && !this.duringMainPhase(sentence)
       && (
-        (hasTimedCondition(sentence) && !isSlowCondition(sentence))
+        (this.hasTimedCondition(sentence) && !this.isSlowCondition(sentence))
         // || hasActivationWindowMention(sentence)
       )
     );

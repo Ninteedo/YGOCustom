@@ -5,9 +5,11 @@ import QuickEffect from "../../effect/QuickEffect.tsx";
 import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
 import IgnitionEffect from "../../effect/IgnitionEffect.tsx";
 
-export default class SpellTrapActivationParseRule implements EffectParseRule {
-  match({isSpellTrap, isFirstSentence}: EffectParseProps): boolean {
-    return isSpellTrap && isFirstSentence;
+export default class SpellTrapActivationParseRule extends EffectParseRule {
+  match({sentence, isSpellTrap, isFirstSentence, isContinuous}: EffectParseProps): boolean {
+    return isSpellTrap && isFirstSentence && (
+      !isContinuous || sentence.startsWith("When this card is activated")
+    );
   }
 
   parse({isContinuous, sentence, isFastCard}: EffectParseProps): Effect {

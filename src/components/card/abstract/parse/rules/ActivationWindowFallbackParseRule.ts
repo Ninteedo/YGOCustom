@@ -1,14 +1,14 @@
 import {EffectParseProps, EffectParseRule} from "./EffectParseRule.ts";
-import {hasActivationWindowMention, parseEffectClauses} from "../parseEffects.ts";
+import {parseEffectClauses} from "../parseEffects.ts";
 import Effect from "../../effect/Effect.tsx";
 import IgnitionEffect from "../../effect/IgnitionEffect.tsx";
 import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
 import EffectMainClause from "../../effect/clause/EffectMainClause.ts";
 import QuickEffect from "../../effect/QuickEffect.tsx";
 
-export default class ActivationWindowFallbackParseRule implements EffectParseRule {
+export default class ActivationWindowFallbackParseRule extends EffectParseRule {
   match({sentence}: EffectParseProps): boolean {
-    return hasActivationWindowMention(sentence);
+    return this.hasActivationWindowMention(sentence);
   }
 
   parse({sentence, isFastCard}: EffectParseProps): Effect {

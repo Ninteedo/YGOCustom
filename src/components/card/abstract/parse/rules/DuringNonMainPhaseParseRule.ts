@@ -4,7 +4,7 @@ import QuickEffect from "../../effect/QuickEffect.tsx";
 import {parseEffectClauses} from "../parseEffects.ts";
 import TriggerEffect from "../../effect/TriggerEffect.tsx";
 
-export default class DuringNonMainPhaseParseRule implements EffectParseRule {
+export default class DuringNonMainPhaseParseRule extends EffectParseRule {
   match({sentence}: EffectParseProps): boolean {
     return (
       !!sentence.toLowerCase().match(/during (each|the|your|your opponent's) (draw|standby|battle|end) phase/)

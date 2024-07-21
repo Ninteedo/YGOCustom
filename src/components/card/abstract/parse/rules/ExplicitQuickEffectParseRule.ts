@@ -3,7 +3,7 @@ import Effect from "../../effect/Effect.tsx";
 import {parseEffectClauses} from "../parseEffects.ts";
 import QuickEffect from "../../effect/QuickEffect.tsx";
 
-export default class ExplicitQuickEffectParseRule implements EffectParseRule {
+export default class ExplicitQuickEffectParseRule extends EffectParseRule {
   match({sentence}: EffectParseProps): boolean {
     return !!(
       sentence.includes("(Quick Effect):")

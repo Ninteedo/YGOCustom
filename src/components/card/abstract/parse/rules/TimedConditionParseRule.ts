@@ -1,25 +1,17 @@
 import {EffectParseProps, EffectParseRule} from "./EffectParseRule.ts";
-import {
-  duringMainPhase,
-  duringNonMainPhase,
-  getTriggerOrIgnition,
-  hasActivationWindowMention,
-  hasTimedCondition,
-  isSlowCondition,
-} from "../parseEffects.ts";
 import Effect from "../../effect/Effect.tsx";
 
-export default class TimedConditionParseRule implements EffectParseRule {
+export default class TimedConditionParseRule extends EffectParseRule {
   match({sentence}: EffectParseProps): boolean {
     return (
-      hasActivationWindowMention(sentence)
-      && !duringMainPhase(sentence)
-      && !duringNonMainPhase(sentence)
-      && hasTimedCondition(sentence)
+      this.hasActivationWindowMention(sentence)
+      && !this.duringMainPhase(sentence)
+      && !this.duringNonMainPhase(sentence)
+      && this.hasTimedCondition(sentence)
     );
   }
 
   parse({sentence}: EffectParseProps): Effect {
-    return getTriggerOrIgnition(sentence, !isSlowCondition(sentence));
+    return this.getTriggerOrIgnition(sentence, !this.isSlowCondition(sentence));
   }
 }

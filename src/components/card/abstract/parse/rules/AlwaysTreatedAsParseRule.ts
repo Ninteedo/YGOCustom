@@ -2,7 +2,7 @@ import {EffectParseProps, EffectParseRule} from "./EffectParseRule.ts";
 import Effect from "../../effect/Effect.tsx";
 import AlwaysTreatedAs from "../../effect/AlwaysTreatedAs.tsx";
 
-export default class AlwaysTreatedAsParseRule implements EffectParseRule {
+export default class AlwaysTreatedAsParseRule extends EffectParseRule {
   match({sentence, isFirstSentence}: EffectParseProps): boolean {
     return (
       isFirstSentence
