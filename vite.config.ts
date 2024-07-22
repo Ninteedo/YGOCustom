@@ -24,14 +24,5 @@ export default defineConfig(({mode}) => {
     define: {
       "process.env.IMAGE_BASE_URL": JSON.stringify(env.VITE_IMAGE_BASE_URL),
     },
-    build: {
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            worker: ["./src/components/search/searchWorker.ts"],
-          }
-        }
-      }
-    }
   };
 });

@@ -3,7 +3,7 @@ import {BaseCard} from "../BaseCard.ts";
 import BaseDbCard from "../BaseDbCard.tsx";
 import {CardJsonEntry} from "../../../../dbCompression.ts";
 
-export const cardDbContext = createContext<BaseCard[]>([]);
+export const cardDbContext = createContext<BaseDbCard[]>([]);
 
 export function useCardDbContext() {
   return useContext(cardDbContext)
