@@ -48,11 +48,9 @@ export class CardJsonEntry {
     this.id = getMapping(json, "id", isCompressed);
     this.name = getMapping(json, "name", isCompressed);
     this.type = getMapping(json, "type", isCompressed);
-    this.frameType = getMapping(json, "frameType", isCompressed);
     this.desc = getMapping(json, "desc", isCompressed);
     this.atk = getMappingSafe(json, "atk", isCompressed);
     this.def = getMappingSafe(json, "def", isCompressed);
-    this.attribute = getMappingSafe(json, "attribute", isCompressed);
     this.archetype = getMappingSafe(json, "archetype", isCompressed);
     this.level = getMappingSafe(json, "level", isCompressed);
     this.linkval = getMappingSafe(json, "linkval", isCompressed);
@@ -67,10 +65,17 @@ export class CardJsonEntry {
       if (attributeNumberString !== undefined) {
         this.attribute = attributeNumberToName(parseInt(attributeNumberString));
       }
+      const frameTypeNumberString = getMappingSafe(json, "frameType", isCompressed);
+      if (frameTypeNumberString !== undefined) {
+        this.frameType = frameTypeNumberToName(parseInt(frameTypeNumberString));
+      } else {
+        throw new Error("frameType not found");
+      }
     } else {
       this.imageId = json["card_images"][0]["id"];
       this.race = getMappingSafe(json, "race", isCompressed);
       this.attribute = getMappingSafe(json, "attribute", isCompressed);
+      this.frameType = getMapping(json, "frameType", isCompressed);
     }
     // this.cardSets = (json[getMapping("card_sets", isCompressed)]; as Object[]).map(setJson => new CardSet(setJson));
   }
@@ -88,6 +93,9 @@ export class CardJsonEntry {
     }
     if (this.attribute) {
       compressed[attributeKeyShort] = attributeNameToNumber(this.attribute);
+    }
+    if (this.frameType) {
+      compressed[frameTypeKeyShort] = frameTypeNameToNumber(this.frameType);
     }
 
     return compressed;
@@ -204,6 +212,44 @@ function attributeNumberToName(attributeNumber: number): string {
     return found[0];
   }
   throw new Error(`Attribute number ${attributeNumber} not found`);
+}
+
+const frameTypeMappings: [string, number][] = [
+  ["effect", 1],
+  ["normal", 2],
+  ["fusion", 3],
+  ["xyz", 4],
+  ["synchro", 5],
+  ["ritual", 6],
+  ["link", 7],
+  ["spell", 8],
+  ["trap", 9],
+  ["effect_pendulum", 10],
+  ["normal_pendulum", 11],
+  ["fusion_pendulum", 12],
+  ["xyz_pendulum", 13],
+  ["synchro_pendulum", 14],
+  ["ritual_pendulum", 15],
+  ["link_pendulum", 16],
+  ["token", 17],
+];
+
+const frameTypeKeyShort = getShortKey("frameType");
+
+function frameTypeNameToNumber(frameTypeName: string): number {
+  const found = frameTypeMappings.find(([name, _]) => name === frameTypeName);
+  if (found) {
+    return found[1];
+  }
+  throw new Error(`Frame type ${frameTypeName} not found`);
+}
+
+function frameTypeNumberToName(frameTypeNumber: number): string {
+  const found = frameTypeMappings.find(([_, number]) => number === frameTypeNumber);
+  if (found) {
+    return found[0];
+  }
+  throw new Error(`Frame type number ${frameTypeNumber} not found`);
 }
 
 // class CardSet {
