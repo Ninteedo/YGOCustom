@@ -1,6 +1,7 @@
 import {ReactNode} from "react";
 import {CardSubKind} from "./CardSubKind.ts";
 import {CardKind} from "./CardKind.ts";
+import SearchProps from "../../search/SearchProps.ts";
 
 export abstract class BaseCard {
   public readonly id: string;
@@ -26,4 +27,12 @@ export abstract class BaseCard {
   abstract toText(): string;
 
   abstract getLinkUrl(): string;
+
+  /**
+   * Returns a number representing how well this card matches the search query.
+   *
+   * @param search the search query
+   * @returns a positive number representing how well this card matches the search query, higher is better, 0 is no match
+   */
+  abstract matchesSearch(search: SearchProps): number;
 }

@@ -1,12 +1,12 @@
 import {MonsterAttribute} from "./MonsterAttribute.ts";
-import {BaseCard} from "../BaseCard.ts";
 import {MonsterType} from "./MonsterType.ts";
 import {MonsterCategory} from "./MonsterCategory.ts";
 import React from "react";
 import {CardKind} from "../CardKind.ts";
 import {CardSubKind} from "../CardSubKind.ts";
+import BaseCustomCard from "../BaseCustomCard.tsx";
 
-export abstract class BaseMonsterCard extends BaseCard {
+export abstract class BaseMonsterCard extends BaseCustomCard {
   public readonly attribute: MonsterAttribute;
   public readonly categories: MonsterCategory[];
   public readonly monsterTypes: MonsterType[];

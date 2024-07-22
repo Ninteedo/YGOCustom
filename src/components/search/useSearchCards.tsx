@@ -1,7 +1,6 @@
 import {BaseCard} from "../card/abstract/BaseCard.ts";
 import {useCallback, useEffect, useState} from "react";
 import {useCardDbContext} from "../card/abstract/parse/cardDbUtility.ts";
-import cardManifest from "../../cardManifest.json";
 import {loadCard} from "../card/abstract/parse/cardLoader.ts";
 
 export function useSearchCards(searchTerm: string): [BaseCard[], number, boolean, () => void] {
@@ -23,13 +22,16 @@ export function useSearchCards(searchTerm: string): [BaseCard[], number, boolean
 
   useEffect(() => {
     setLoading(true);
-    const dbResults: BaseCard[] = cardDb.filter((c) =>
-      c.toText().toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const scoredResults: [BaseCard, number][] = cardDb.map((c) => [c, c.matchesSearch({query: searchTerm})]);
 
-    const manifestEntries = cardManifest.entries.filter((entry: string) =>
-      entry.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const dbResults: BaseCard[] = scoredResults.filter(([, score]) => score > 0.1)
+      .sort(([, score1], [, score2]) => score2 - score1)
+      .map(([card]) => card);
+
+    // const manifestEntries = cardManifest.entries.filter((entry: string) =>
+    //   entry.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
+    const manifestEntries: string[] = [];
 
     Promise.all(manifestEntries.map((entry) => loadCard(entry)))
       .then((manifestResults) => {
