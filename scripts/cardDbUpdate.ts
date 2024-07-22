@@ -47,7 +47,7 @@ function saveDbByLanguages(cardDb: any): void {
     // const db = getCardDbByLanguage(cardDb, language);
 
     console.log(`Saving card data for ${language}.`)
-    fs.writeFileSync(`public/db/cards.${language}.json`, JSON.stringify(compressedDb, null, 2), "utf8");
+    fs.writeFileSync(`public/db/cards.${language}.json`, JSON.stringify(compressedDb, null, undefined), "utf8");
     console.log(`Saved public/db/cards.${language}.json`);
   }
 }
