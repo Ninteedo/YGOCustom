@@ -1,6 +1,7 @@
 import {createContext, useContext} from "react";
 import {BaseCard} from "../BaseCard.ts";
 import BaseDbCard from "../BaseDbCard.tsx";
+import {CardJsonEntry} from "../../../../dbCompression.ts";
 
 export const cardDbContext = createContext<BaseCard[]>([]);
 
@@ -53,7 +54,8 @@ function loadCardDb(json: any): BaseCard[] {
 
 function parseDbCard(json: any): BaseCard | null {
   try {
-    return new BaseDbCard(json);
+    const cardEntry = new CardJsonEntry(json, true);
+    return new BaseDbCard(cardEntry);
   } catch (e) {
     console.error(`Failed to parse card ${json.id} "${json.name}"`, e);
     return null;

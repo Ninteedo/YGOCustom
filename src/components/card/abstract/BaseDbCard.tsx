@@ -1,5 +1,5 @@
 import {BaseCard} from "./BaseCard.ts";
-import React, {Fragment, ReactNode} from "react";
+import React, {Fragment, ReactElement, ReactNode} from "react";
 import CardTemplate from "./display/elements/CardTemplate.tsx";
 import StatLine from "./display/elements/StatLine.tsx";
 import EffectBlock from "./display/elements/EffectBlock.tsx";
@@ -17,11 +17,9 @@ import Fuse from "fuse.js";
 export default class BaseDbCard extends BaseCard {
   public readonly text: string;
 
-  private readonly json: CardJsonEntry;
+  public readonly json: CardJsonEntry;
 
-  constructor(json: any) {
-    const cardEntry = new CardJsonEntry(json, true);
-
+  constructor(cardEntry: CardJsonEntry) {
     const id = cardEntry.id;
     const name = cardEntry.name;
     const artSrc = getBucketImageLink(cardEntry.imageId);
@@ -52,7 +50,7 @@ export default class BaseDbCard extends BaseCard {
     return `/card/official/${this.id}`
   }
 
-  protected getInfoLine(): ReactNode {
+  protected getInfoLine(): ReactElement {
     switch (this.kind) {
       case CardKind.MONSTER:
         return <p>{getLevelName(this.subKind, this.json)} {this.json.attribute} Monster</p>
@@ -65,7 +63,7 @@ export default class BaseDbCard extends BaseCard {
     }
   }
 
-  protected getCategoryLine(): ReactNode {
+  protected getCategoryLine(): ReactElement | undefined {
     if (this.kind === CardKind.MONSTER) {
       const specialKinds = getMonsterSpecialKinds(this.json.type);
 
@@ -161,7 +159,7 @@ export default class BaseDbCard extends BaseCard {
       keys: [
         { name: "name", weight: 0.5 },
         { name: "text", weight: 0.3 },
-        // { name: "level", weight: 0.1 },
+        { name: "level", weight: 0.1 },
         // { name: "kind", weight: 0.05 },
         // { name: "attributes", weight: 0.05 }
       ]
