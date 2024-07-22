@@ -22,7 +22,9 @@ export function EffectCost(costText: ReactNode) {
 
 export function EffectMain(effectText: ReactNode) {
   return (
-    <span className={"effect-main"}>{effectText}</span>
+    <>
+      <span className={"effect-main"}>{effectText}</span>&nbsp;
+    </>
   )
 }
 
