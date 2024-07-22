@@ -71,11 +71,14 @@ export class CardJsonEntry {
       } else {
         throw new Error("frameType not found");
       }
+      const typeShort = getMapping(json, "type", isCompressed);
+      this.type = shortToType(typeShort);
     } else {
       this.imageId = json["card_images"][0]["id"];
       this.race = getMappingSafe(json, "race", isCompressed);
       this.attribute = getMappingSafe(json, "attribute", isCompressed);
       this.frameType = getMapping(json, "frameType", isCompressed);
+      this.type = getMapping(json, "type", isCompressed);
     }
     // this.cardSets = (json[getMapping("card_sets", isCompressed)]; as Object[]).map(setJson => new CardSet(setJson));
   }
@@ -88,14 +91,13 @@ export class CardJsonEntry {
       compressed[compressedKey] = this[key];
     }
 
+    compressed[frameTypeKeyShort] = frameTypeNameToNumber(this.frameType);
+    compressed[typeKeyShort] = typeToShort(this.type);
     if (this.race) {
       compressed[raceKeyShort] = raceNameToNumber(this.race);
     }
     if (this.attribute) {
       compressed[attributeKeyShort] = attributeNameToNumber(this.attribute);
-    }
-    if (this.frameType) {
-      compressed[frameTypeKeyShort] = frameTypeNameToNumber(this.frameType);
     }
 
     return compressed;
@@ -250,6 +252,54 @@ function frameTypeNumberToName(frameTypeNumber: number): string {
     return found[0];
   }
   throw new Error(`Frame type number ${frameTypeNumber} not found`);
+}
+
+const typeMappings: [string, string][] = [
+  ["Card", "C"],
+  ["Monster", "M"],
+  ["Spell", "S"],
+  ["Trap", "T"],
+  ["Normal", "N"],
+  ["Effect", "E"],
+  ["Fusion", "F"],
+  ["Ritual", "R"],
+  ["Synchro", "Y"],
+  ["XYZ", "X"],
+  ["Link", "L"],
+  ["Pendulum", "P"],
+  ["Token", "t"],
+  ["Flip", "f"],
+  ["Union", "u"],
+  ["Spirit", "s"],
+  ["Toon", "o"],
+  ["Tuner", "n"],
+  ["Gemini", "g"],
+]
+
+const typeKeyShort = getShortKey("type");
+
+function typeToShort(type: string): string {
+  const parts = type.split(" ");
+  const shortParts = parts.map(part => {
+    const found = typeMappings.find(([name, _]) => name === part);
+    if (found) {
+      return found[1];
+    }
+    throw new Error(`Type ${part} not found`);
+  });
+  return shortParts.join("");
+}
+
+function shortToType(short: string): string {
+  const parts = short.split("");
+  const longParts = parts.map(part => {
+    const found = typeMappings.find(([_, short]) => short === part);
+    if (found) {
+      return found[0];
+    }
+    throw new Error(`Type ${part} not found`);
+  });
+  return longParts.join(" ");
 }
 
 // class CardSet {
