@@ -123,7 +123,7 @@ export default class BaseDbCard extends BaseCard {
 
       const materials = this.getMaterials();
       const effects = parseEffects({
-        text: materials ? this.text.substring(materials.length + 2).trim() : this.text,
+        text: materials ? this.getEffectText() : this.text,
         isFastCard: this.kind === CardKind.TRAP || this.subKind === CardSubKind.QUICK_PLAY,
         isSpellTrapCard: isSpellTrapCard(this.kind),
         isContinuousSpellTrapCard: (
@@ -146,6 +146,11 @@ export default class BaseDbCard extends BaseCard {
       }
     }
     return undefined;
+  }
+
+  protected getEffectText(): string {
+    const res = this.text.match(/(?<=([^\n\r/]+?)(\r?\n| \/ ))(.+)/);
+    return res ? res[0] : "";
   }
 }
 
