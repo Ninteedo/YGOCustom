@@ -63,9 +63,14 @@ export class CardJsonEntry {
       if (raceNumberString !== undefined) {
         this.race = raceNumberToName(parseInt(raceNumberString));
       }
+      const attributeNumberString = getMappingSafe(json, "attribute", isCompressed);
+      if (attributeNumberString !== undefined) {
+        this.attribute = attributeNumberToName(parseInt(attributeNumberString));
+      }
     } else {
       this.imageId = json["card_images"][0]["id"];
       this.race = getMappingSafe(json, "race", isCompressed);
+      this.attribute = getMappingSafe(json, "attribute", isCompressed);
     }
     // this.cardSets = (json[getMapping("card_sets", isCompressed)]; as Object[]).map(setJson => new CardSet(setJson));
   }
@@ -79,11 +84,22 @@ export class CardJsonEntry {
     }
 
     if (this.race) {
-      compressed["r"] = raceNameToNumber(this.race);
+      compressed[raceKeyShort] = raceNameToNumber(this.race);
+    }
+    if (this.attribute) {
+      compressed[attributeKeyShort] = attributeNameToNumber(this.attribute);
     }
 
     return compressed;
   }
+}
+
+function getShortKey(key: string): string {
+  const found = mappings.find(([originalKey, _]) => originalKey === key);
+  if (found) {
+    return found[1];
+  }
+  throw new Error(`No mapping found for key ${key}`);
 }
 
 function getMapping(json: any, key: string, isCompressed: boolean): string {
@@ -144,6 +160,7 @@ const raceMappings: [string, number][] = [
   ["Aqua", 33],
 ];
 
+const raceKeyShort = getShortKey("race");
 
 function raceNameToNumber(raceName: string): number {
   const found = raceMappings.find(([name, _]) => name === raceName);
@@ -159,6 +176,34 @@ function raceNumberToName(raceNumber: number): string {
     return found[0];
   }
   throw new Error(`Race number ${raceNumber} not found`);
+}
+
+const attributeMappings: [string, number][] = [
+  ["DARK", 1],
+  ["LIGHT", 2],
+  ["WATER", 3],
+  ["FIRE", 4],
+  ["EARTH", 5],
+  ["WIND", 6],
+  ["DIVINE", 7],
+]
+
+const attributeKeyShort = getShortKey("attribute");
+
+function attributeNameToNumber(attributeName: string): number {
+  const found = attributeMappings.find(([name, _]) => name === attributeName);
+  if (found) {
+    return found[1];
+  }
+  throw new Error(`Attribute ${attributeName} not found`);
+}
+
+function attributeNumberToName(attributeNumber: number): string {
+  const found = attributeMappings.find(([_, number]) => number === attributeNumber);
+  if (found) {
+    return found[0];
+  }
+  throw new Error(`Attribute number ${attributeNumber} not found`);
 }
 
 // class CardSet {
