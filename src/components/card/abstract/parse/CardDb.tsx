@@ -1,10 +1,10 @@
-import {BaseCard} from "../BaseCard.ts";
 import {ReactNode, useEffect, useState} from "react";
 import {LoadingSpinner} from "../../LoadingSpinner.tsx";
 import {cardDbContext, fetchCardDb} from "./cardDbUtility.ts";
+import BaseDbCard from "../BaseDbCard.tsx";
 
 export const CardDbProvider = ({ children }: { children: ReactNode }) => {
-  const [cards, setCards] = useState<BaseCard[]>([]);
+  const [cards, setCards] = useState<BaseDbCard[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [totalSize, setTotalSize] = useState<number | null>(null);
   const [progress, setProgress] = useState<number>(0);

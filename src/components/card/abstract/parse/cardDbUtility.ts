@@ -1,5 +1,4 @@
 import {createContext, useContext} from "react";
-import {BaseCard} from "../BaseCard.ts";
 import BaseDbCard from "../BaseDbCard.tsx";
 import {CardJsonEntry} from "../../../../dbCompression.ts";
 
@@ -48,11 +47,11 @@ export async function fetchCardDb(language: string, onProgress: (loaded: number,
   return {data: loadCardDb(cardDbJson)};
 }
 
-function loadCardDb(json: any): BaseCard[] {
-  return json.map((card: any) => parseDbCard(card)).filter((card: BaseCard | null) => card !== null);
+function loadCardDb(json: any): BaseDbCard[] {
+  return json.map((card: any) => parseDbCard(card)).filter((card: BaseDbCard | null) => card !== null);
 }
 
-function parseDbCard(json: any): BaseCard | null {
+function parseDbCard(json: any): BaseDbCard | null {
   try {
     const cardEntry = new CardJsonEntry(json, true);
     return new BaseDbCard(cardEntry);
