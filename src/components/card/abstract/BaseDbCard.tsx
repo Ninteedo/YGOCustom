@@ -11,8 +11,6 @@ import {parsePendulumText} from "./parse/parsePendulum.ts";
 import NormalEffectLore from "./effect/NormalEffectLore.tsx";
 import {getMonsterSpecialKinds} from "./MonsterSpecialKind.ts";
 import {CardJsonEntry} from "../../../dbCompression.ts";
-import SearchProps from "../../search/SearchProps.ts";
-import Fuse from "fuse.js";
 
 export default class BaseDbCard extends BaseCard {
   public readonly text: string;
@@ -151,33 +149,6 @@ export default class BaseDbCard extends BaseCard {
   protected getEffectText(): string {
     const res = this.text.match(/(?<=([^\n\r/]+?)(\r?\n| \/ ))(.+)/);
     return res ? res[0] : "";
-  }
-
-  matchesSearch({query}: SearchProps): number {
-    const options = {
-      includeScore: true,
-      keys: [
-        { name: "name", weight: 0.5 },
-        { name: "text", weight: 0.3 },
-        { name: "level", weight: 0.1 },
-        // { name: "kind", weight: 0.05 },
-        // { name: "attributes", weight: 0.05 }
-      ]
-    };
-
-    const fuse = new Fuse([this], options);
-    const result = fuse.search(query);
-
-    if (result.length === 0) {
-      return 0;
-    }
-
-    // Normalize the score to a value between 0 and 1
-    const score = result[0].score;
-    if (score === undefined) {
-      return 0;
-    }
-    return 1 - score; // Invert score as lower is better in Fuse.js
   }
 }
 
