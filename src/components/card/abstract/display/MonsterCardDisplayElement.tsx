@@ -35,7 +35,6 @@ export function MonsterCard({
   art,
   categories,
   materials,
-  effectRestrictions,
   effects,
   atk,
   def,
@@ -45,7 +44,7 @@ export function MonsterCard({
 
   const infoLine = <MonsterInfo level={level} attribute={attribute}/>;
   const categoriesLine = <CategoriesList categories={extendedCategories}/>;
-  const effectBlock = <EffectBlock materials={materials} effectRestrictions={effectRestrictions} effects={effects}
+  const effectBlock = <EffectBlock materials={materials} effects={effects}
                                    cardId={id}/>;
   const statLine = <StatLine atk={atk} def={def}/>;
   return <CardTemplate id={id} name={name} artSrc={art} infoLine={infoLine} effectBlock={effectBlock}

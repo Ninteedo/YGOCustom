@@ -10,8 +10,8 @@ export default function PendulumEffectBlock({materials, pendulumEffects, monster
 }): ReactNode {
   return (
     <div className={"pendulum-block"}>
-      <EffectBlock effectRestrictions={[]} effects={pendulumEffects} cardId={cardId} isPendulum={true} />
-      <EffectBlock materials={materials} effectRestrictions={[]} effects={monsterEffects} cardId={cardId} />
+      <EffectBlock effects={pendulumEffects} cardId={cardId} isPendulum={true} />
+      <EffectBlock materials={materials} effects={monsterEffects} cardId={cardId} />
     </div>
   );
 }
