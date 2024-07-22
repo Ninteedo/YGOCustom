@@ -6,7 +6,7 @@ import {cardDbContext, fetchCardDb} from "./cardDbUtility.ts";
 export const CardDbProvider = ({ children }: { children: ReactNode }) => {
   const [cards, setCards] = useState<BaseCard[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [totalSize, setTotalSize] = useState<number>(0);
+  const [totalSize, setTotalSize] = useState<number | null>(null);
   const [progress, setProgress] = useState<number>(0);
 
   useEffect(() => {
@@ -22,13 +22,19 @@ export const CardDbProvider = ({ children }: { children: ReactNode }) => {
     fetchCards();
   }, []);
 
-  const percent = Math.round((progress / totalSize) * 100) || 0;
+  let loadingDiv;
 
+  if (totalSize !== null) {
+    const percent = Math.round((progress / totalSize) * 100) || 0;
+    loadingDiv = <div>Downloaded {Math.round(progress/1000)} of {Math.round(totalSize/1000)} KB ({percent}%)</div>;
+  } else {
+    loadingDiv = <div>Downloaded {Math.round(progress/1000)} KB...</div>;
+  }
   if (loading) {
     return (
       <>
         <LoadingSpinner/>
-        <div>Downloaded {Math.round(progress/1000)} of {Math.round(totalSize/1000)} KB ({percent}%)</div>
+        {loadingDiv}
       </>
     );
   }

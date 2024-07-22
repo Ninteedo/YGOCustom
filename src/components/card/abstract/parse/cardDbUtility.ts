@@ -8,7 +8,7 @@ export function useCardDbContext() {
   return useContext(cardDbContext)
 }
 
-export async function fetchCardDb(language: string, onProgress: (loaded: number, total: number) => void) {
+export async function fetchCardDb(language: string, onProgress: (loaded: number, total: number | null) => void) {
   const dbLocation = `/db/cards.${language}.json`;
   const response = await fetch(dbLocation);
 
@@ -19,7 +19,7 @@ export async function fetchCardDb(language: string, onProgress: (loaded: number,
   }
 
   const contentLength = response.headers.get("Content-Length");
-  const totalSize: number = (contentLength && parseInt(contentLength)) || 0;
+  const totalSize: number | null = (contentLength && parseInt(contentLength)) || null;
 
   const reader = response.body.getReader();
   let loaded = 0;
@@ -35,10 +35,7 @@ export async function fetchCardDb(language: string, onProgress: (loaded: number,
     loaded += value.length;
     chunks.push(new TextDecoder("utf-8").decode(value));
 
-    // Update progress here
     onProgress(loaded, totalSize);
-
-    // Call the function again to read the next chunk
     return readStream();
   }
 
@@ -51,9 +48,14 @@ export async function fetchCardDb(language: string, onProgress: (loaded: number,
 }
 
 function loadCardDb(json: any): BaseCard[] {
-  return json.map((card: any) => parseDbCard(card));
+  return json.map((card: any) => parseDbCard(card)).filter((card: BaseCard | null) => card !== null);
 }
 
-function parseDbCard(json: any): BaseCard {
-  return new BaseDbCard(json);
+function parseDbCard(json: any): BaseCard | null {
+  try {
+    return new BaseDbCard(json);
+  } catch (e) {
+    console.error(`Failed to parse card ${json.id} "${json.name}"`, e);
+    return null;
+  }
 }
