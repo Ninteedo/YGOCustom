@@ -14,19 +14,17 @@ import {CardJsonEntry} from "../../../dbCompression.ts";
 
 export default class BaseDbCard extends BaseCard {
   public readonly text: string;
-
   public readonly json: CardJsonEntry;
 
   constructor(cardEntry: CardJsonEntry) {
-    const id = cardEntry.id;
-    const name = cardEntry.name;
-    const artSrc = getBucketImageLink(cardEntry.imageId);
-    const cardKind = getDbCardKind(cardEntry);
-    const subKind = getDbCardSubKind(cardEntry);
-
-    const isPendulum = cardEntry.type.toLowerCase().includes("pendulum");
-
-    super(id, name, artSrc, cardKind, subKind, isPendulum);
+    super(
+      cardEntry.id,
+      cardEntry.name,
+      getBucketImageLink(cardEntry.imageId),
+      getDbCardKind(cardEntry),
+      getDbCardSubKind(cardEntry),
+      cardEntry.type.toLowerCase().includes("pendulum")
+    );
 
     this.text = cardEntry.desc;
     this.json = cardEntry;
@@ -56,6 +54,8 @@ export default class BaseDbCard extends BaseCard {
         return <p>{this.subKind} Spell</p>
       case CardKind.TRAP:
         return <p>{this.subKind} Trap</p>
+      case CardKind.TOKEN:
+        return <p>Token</p>
       default:
         return <p>Unknown</p>
     }
@@ -64,48 +64,36 @@ export default class BaseDbCard extends BaseCard {
   protected getCategoryLine(): ReactElement | undefined {
     if (this.kind === CardKind.MONSTER) {
       const specialKinds = getMonsterSpecialKinds(this.json.type);
-
       if (!this.json.race) {
         throw new Error(`Missing race for card ${this.id} "${this.name}"`);
       }
-
-      const categories: string[] = [this.json.race.toString()].concat(specialKinds.map(k => k.toString())).concat([this.subKind]);
+      const categories: string[] = [this.json.race.toString(), ...specialKinds.map(k => k.toString()), this.subKind];
       return <p>[{categories.join(" / ")}]</p>;
-    } else {
-      return undefined;
     }
   }
 
   protected getStatLine(): ReactNode {
     if (this.kind === CardKind.MONSTER && this.json.atk) {
       const atk = parseInt(this.json.atk);
-      let def = 0;
-      if (this.json.def) {
-        def = parseInt(this.json.def);
-      }
-
-      return <StatLine atk={atk} def={def}/>
-    } else {
-      return undefined;
+      const def = this.json.def ? parseInt(this.json.def) : 0;
+      return <StatLine atk={atk} def={def} />;
     }
   }
 
   protected toElement(): ReactNode {
-    return (
-      <CardTemplate
-        id={this.id}
-        name={this.name}
-        artSrc={this.art}
-        infoLine={this.getInfoLine()}
-        effectBlock={this.getEffectBlock()}
-        cardKind={this.kind}
-        cardSubKind={this.subKind}
-        overrideArtSrc={true}
-        statLine={this.getStatLine()}
-        categoryLine={this.getCategoryLine()}
-        isPendulum={this.isPendulum}
-      />
-    );
+    return <CardTemplate
+      id={this.id}
+      name={this.name}
+      artSrc={this.art}
+      infoLine={this.getInfoLine()}
+      effectBlock={this.getEffectBlock()}
+      cardKind={this.kind}
+      cardSubKind={this.subKind}
+      overrideArtSrc={true}
+      statLine={this.getStatLine()}
+      categoryLine={this.getCategoryLine()}
+      isPendulum={this.isPendulum}
+    />;
   }
 
   protected getEffectBlock(): ReactNode {
@@ -143,7 +131,6 @@ export default class BaseDbCard extends BaseCard {
         return res[0];
       }
     }
-    return undefined;
   }
 
   protected getEffectText(): string {
