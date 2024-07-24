@@ -9,8 +9,7 @@ export default class SubEffectClause implements EffectClause {
   }
 
   public render(): ReactNode {
-    return <span><br/>● {this.subClauses.map((subClauses, index) =>
-      <span key={index}>{subClauses.render()}</span>)}</span>;
+    return <span>{this.subClauses.map((c, index) => <span key={index}>{c.render()}</span>)}</span>;
   }
 
   public toText(): string {

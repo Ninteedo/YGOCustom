@@ -14,6 +14,6 @@ export default class EffectConditionClause implements EffectClause {
   }
 
   public toText(): string {
-    return this.contents + ".";
+    return this.contents + ":";
   }
 }

@@ -28,6 +28,11 @@ interface EffectSentence {
   isSub: boolean;
 }
 
+interface EffectDetail {
+  effect: Effect;
+  isSub: boolean;
+}
+
 export function parseEffectClauses(sentence: string): EffectClause[] {
   // return [new EffectMainClause(sentence)];
 
@@ -86,7 +91,6 @@ export function parseEffects(props: ParseEffectsProps): Effect[] {
     .map((sentence) => sentence + (isBrokenBracketedSentence(sentence) ? ".)" : sentence.endsWith(";") ? "" : "."))
     .filter((sentence) => sentence.length > 1)
     .map((sentence) => ({ text: sentence, isSub: false }));
-  const effects: Effect[] = [];
 
   for (let i = 1; i < sentences.length; i++) {
     let {text: sentence} = sentences[i];
@@ -113,18 +117,19 @@ export function parseEffects(props: ParseEffectsProps): Effect[] {
     return [parseGeminiCard(sentences, props, parsers)];
   }
 
+  const effects: EffectDetail[] = [];
   for (let i = 0; i < sentences.length; i++) {
     const {text: sentence, isSub} = sentences[i];
     parseSentenceNew(sentence, isSub, effects, props, parsers);
   }
 
-  return effects;
+  return effects.map(({effect}) => effect);
 }
 
 function parseSentenceNew(
   sentence: string,
   isSub: boolean,
-  effects: Effect[],
+  effects: EffectDetail[],
   props: ParseEffectsProps,
   parsers: EffectParseRule[],
 ): void {
@@ -134,8 +139,9 @@ function parseSentenceNew(
     isSpellTrap: props.isSpellTrapCard || false,
     isFastCard: props.isFastCard || false,
     isContinuous: props.isContinuousSpellTrapCard || false,
-    isFirstSentence: !effects.find(effect => effect.isProperEffect()),
-    lastEffect: effects.length > 0 ? effects[effects.length - 1] : null,
+    isFirstSentence: !effects.find(({effect}) => effect.isProperEffect()),
+    lastEffect: effects.length > 0 ? effects[effects.length - 1].effect : null,
+    lastIsSub: effects.length > 0 ? effects[effects.length - 1].isSub : null,
     isSub,
   };
   const matchingRule = parsers.find((rule) => rule.match(parseProps));
@@ -144,7 +150,7 @@ function parseSentenceNew(
   }
   const parsedEffect = matchingRule.parse(parseProps);
   if (parsedEffect) {
-    effects.push(parsedEffect);
+    effects.push({effect: parsedEffect, isSub});
   }
 }
 
@@ -178,9 +184,9 @@ function parseGeminiCard(sentences: EffectSentence[], props: ParseEffectsProps, 
     // effectSentences = [[sentences[1][0].substring(sentences[1].indexOf("●") + 1, sentences[1].length - 1).trimStart()].concat(effectSentences), effectSentences[1]];
     // effectSentences =
   }
-  const effects: Effect[] = [];
+  const effects: EffectDetail[] = [];
   for (let i = 0; i < effectSentences.length; i++) {
     parseSentenceNew(effectSentences[i].text, effectSentences[i].isSub, effects, props, parsers);
   }
-  return new GeminiEffect(effects);
+  return new GeminiEffect(effects.map(({effect}) => effect));
 }

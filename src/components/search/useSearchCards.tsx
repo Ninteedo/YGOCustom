@@ -36,7 +36,7 @@ export function useSearchCards(searchTerm: string): [BaseCard[], number, boolean
         { name: 'type', weight: 0.05 },
       ],
       includeScore: false,
-      threshold: 0.3
+      threshold: 0.5
     };
 
     let dbResults: BaseDbCard[];

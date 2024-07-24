@@ -4,15 +4,13 @@ import {parseEffectClauses} from "../parseEffects.ts";
 import SubEffectClause from "../../effect/clause/SubEffectClause.tsx";
 
 export default class SubEffectParseRule extends EffectParseRule {
-  public match({isSub, lastEffect}: EffectParseProps): boolean {
-    if (!isSub || lastEffect === null || !lastEffect.isProperEffect()) {
+  public match({isSub, lastEffect, lastIsSub}: EffectParseProps): boolean {
+    if (!isSub || lastEffect === null || !lastEffect.isProperEffect() || lastIsSub) {
       return false;
     }
     const lastEffectText = lastEffect.toText();
     return (
-      lastEffectText.endsWith(";")
-      || lastEffectText.endsWith(":")
-      || lastEffectText.includes("this effect")
+      lastEffectText.includes("this effect")
       || lastEffectText.includes("these effects")
     );
   }
@@ -23,5 +21,4 @@ export default class SubEffectParseRule extends EffectParseRule {
     }
     return null;
   }
-
 }

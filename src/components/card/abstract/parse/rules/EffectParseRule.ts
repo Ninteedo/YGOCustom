@@ -12,6 +12,7 @@ export interface EffectParseProps {
   isFirstSentence: boolean;
   lastEffect: Effect | null;
   isSub: boolean;
+  lastIsSub: boolean | null;
 }
 
 export abstract class EffectParseRule {
@@ -77,7 +78,7 @@ export abstract class EffectParseRule {
    * @protected
    */
   protected isSlowCondition(sentence: string): boolean {
-    return sentence.startsWith("If you control ");
+    return sentence.startsWith("If you control ") || sentence.startsWith("If this card is in ");
   }
 
   protected getTriggerOrIgnition(sentence: string, isTrigger: boolean): Effect {

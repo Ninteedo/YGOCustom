@@ -12,8 +12,12 @@ export default class SummoningConditionParseRule extends EffectParseRule {
       return false;
     }
 
-    const summoningTypes = ["Fusion", "Synchro", "Xyz", "Link", "Special", "Tribute"];
-    const pattern = "you can (also)? (" + summoningTypes.join("|") + ") summon (this card|\")";
+    if (this.hasCost(sentence) || this.hasCondition(sentence)) {
+      return false;
+    }
+
+    const summoningTypes = ["Ritual", "Fusion", "Synchro", "Xyz", "Link", "Special", "Tribute"];
+    const pattern = "you can (also )?(" + summoningTypes.join("|") + ") summon (this card|\")";
     return !!(
       sentence.match(new RegExp(pattern, "i")) ||
       sentence.startsWith("Cannot be Normal Summoned/Set") ||

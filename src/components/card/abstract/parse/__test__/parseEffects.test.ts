@@ -512,4 +512,24 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Devotee of Nephthys', () => {
+    const text = "You can Ritual Summon this card with \"Rebirth of Nephthys\". You can only use each of the following effects of \"Devotee of Nephthys\" once per turn.\n" +
+      "● If this card is Ritual Summoned: You can activate this effect; Special Summon 1 \"Nephthys\" monster from your Deck, also during the End Phase of this turn, destroy this card.\n" +
+      "● If this card is in the GY: You can destroy 1 \"Nephthys\" card in your hand, and if you do, Special Summon this card."
+    const effects = [
+      new SummoningCondition(new EffectMainClause("You can Ritual Summon this card with \"Rebirth of Nephthys\".")),
+      new EffectRestriction("You can only use each of the following effects of \"Devotee of Nephthys\" once per turn."),
+      new TriggerEffect([
+        new EffectConditionClause("If this card is Ritual Summoned"),
+        new EffectCostClause("You can activate this effect"),
+        new EffectMainClause("Special Summon 1 \"Nephthys\" monster from your Deck, also during the End Phase of this turn, destroy this card.")
+      ]),
+      new IgnitionEffect([
+        new EffectConditionClause("If this card is in the GY"),
+        new EffectMainClause("You can destroy 1 \"Nephthys\" card in your hand, and if you do, Special Summon this card.")
+      ])
+    ];
+    testParseEffects({text}, effects);
+  });
 });
