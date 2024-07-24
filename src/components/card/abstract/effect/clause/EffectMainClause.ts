@@ -12,4 +12,8 @@ export default class EffectMainClause implements EffectClause {
   public render(): ReactNode {
     return EffectMain(this.contents)
   }
+
+  public toText(): string {
+    return this.contents;
+  }
 }

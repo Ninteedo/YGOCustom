@@ -21,6 +21,7 @@ import ActivationWindowFallbackParseRule from "./rules/ActivationWindowFallbackP
 import AlwaysTreatedAsParseRule from "./rules/AlwaysTreatedAsParseRule.ts";
 import ExtraEffectSentenceParseRule from "./rules/ExtraEffectSentenceParseRule.ts";
 import SubEffectParseRule from "./rules/SubEffectParseRule.ts";
+import QuickDuringMainPhase from "./rules/QuickDuringMainPhase.tsx";
 
 interface EffectSentence {
   text: string;
@@ -74,6 +75,7 @@ const parsers: EffectParseRule[] = [
   new ContinuousEffectParseRule(),
   new DuringNonMainPhaseParseRule(),
   new ActivationWindowFallbackParseRule(),
+  new QuickDuringMainPhase(),
 ];
 
 export function parseEffects(props: ParseEffectsProps): Effect[] {
@@ -99,7 +101,7 @@ export function parseEffects(props: ParseEffectsProps): Effect[] {
     }
     if (hasIncompleteDoubleQuotes(sentence)) {
       // Merge the sentence with the previous one
-      sentences[i].text += " " + sentences[i + 1];
+      sentences[i].text += " " + sentences[i + 1].text;
       sentences.splice(i + 1, 1);
     }
     if (sentence.startsWith("●")) {
@@ -171,7 +173,7 @@ function isGeminiCard(sentences: string[]): boolean {
 }
 
 function parseGeminiCard(sentences: EffectSentence[], props: ParseEffectsProps, parsers: EffectParseRule[]): GeminiEffect {
-  const effectSentences: EffectSentence[] = sentences.slice(2);
+  const effectSentences: EffectSentence[] = sentences.slice(2).map((sentence) => ({text: sentence.text, isSub: false}));
   if (sentences[1].text.startsWith("While this card is face-up on the field, you can Normal Summon it to have it be treated as an Effect Monster with this effect:\n●")) {
     // effectSentences = [[sentences[1][0].substring(sentences[1].indexOf("●") + 1, sentences[1].length - 1).trimStart()].concat(effectSentences), effectSentences[1]];
     // effectSentences =

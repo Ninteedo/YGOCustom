@@ -16,7 +16,7 @@ import AlwaysTreatedAs from "../../effect/AlwaysTreatedAs.tsx";
 import FlipEffect from "../../effect/FlipEffect.tsx";
 import SubEffectClause from "../../effect/clause/SubEffectClause.tsx";
 
-describe('parseEffects should parse', () => {
+describe('parseEffects of card', () => {
   function testParseEffects(props: ParseEffectsProps, expectedEffects: Effect[]) {
     const effects = parseEffects(props);
     expect(effects).toStrictEqual(expectedEffects);
@@ -237,9 +237,9 @@ describe('parseEffects should parse', () => {
       new TriggerEffect([
         new EffectConditionClause("If this card is Special Summoned"),
         new EffectCostClause("Target 1 other face-up monster on the field"),
-        new EffectMainClause("equip this card to it.")
+        new EffectMainClause("equip this card to it."),
+        new EffectMainClause("It gains 1000 ATK, and 500 ATK/DEF for each Dragon monster on the field and in the GYs.")
       ]),
-      new ContinuousEffect(new EffectMainClause("It gains 1000 ATK, and 500 ATK/DEF for each Dragon monster on the field and in the GYs."))
     ];
     testParseEffects({text}, effects);
   });
@@ -311,7 +311,7 @@ describe('parseEffects should parse', () => {
     const text = "This card is treated as a Normal Monster while face-up on the field or in the Graveyard. While this card is face-up on the field, you can Normal Summon it to have it be treated as an Effect Monster with this effect:\n● During battle between this attacking card and a Defense Position monster whose DEF is lower than the ATK of this card, inflict the difference as Battle Damage to your opponent.";
     const effects = [
       new GeminiEffect([
-        new ContinuousEffect(new EffectMainClause("During battle between this attacking card and a Defense Position monster whose DEF is lower than the ATK of this card, inflict the difference as Battle Damage to your opponent"))
+        new ContinuousEffect(new EffectMainClause("During battle between this attacking card and a Defense Position monster whose DEF is lower than the ATK of this card, inflict the difference as Battle Damage to your opponent."))
       ])
     ];
     testParseEffects({text}, effects);
@@ -444,13 +444,14 @@ describe('parseEffects should parse', () => {
     const effects = [
       new QuickEffect([
         new EffectConditionClause("During the Main Phase"),
-        new EffectCostClause("You can activate 1 of these effects;"),
+        new EffectCostClause("You can activate 1 of these effects"),
         new SubEffectClause([
           new EffectCostClause("Target 1 Level 7 LIGHT Dragon monster you control"),
           new EffectMainClause("return it to the hand."),
         ]),
         new SubEffectClause([new EffectMainClause("Special Summon 1 Level 7 LIGHT Dragon monster from your hand.")]),
       ]),
+      new EffectRestriction("You can only use this effect of \"Starry Knight Arrival\" once per turn.")
     ];
     testParseEffects({text, isFastCard: true, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, effects);
   });
@@ -489,6 +490,25 @@ describe('parseEffects should parse', () => {
         new SubEffectClause([new EffectMainClause("Send a card from the Deck to the GY.")]),
       ]),
       new EffectRestriction("You can only use this effect of \"Ash Blossom & Joyous Spring\" once per turn."),
+    ];
+    testParseEffects({text}, effects);
+  });
+
+  test('Digital Bug Centibit', () => {
+    const text = "Cannot be used as an Xyz Material for an Xyz Summon, except for the Xyz Summon of an Insect-Type monster. Once per turn, when this face-up card is changed from Attack Position to Defense Position: You can Special Summon 1 Level 3 Insect-Type monster from your Deck in Defense Position. An Xyz Monster that was Summoned using this card on the field as Xyz Material gains this effect.\n" +
+      "● This card can attack all Defense Position monsters your opponent controls once each.";
+    const effects = [
+      new ContinuousEffect(new EffectMainClause("Cannot be used as an Xyz Material for an Xyz Summon, except for the Xyz Summon of an Insect-Type monster.")),
+      new TriggerEffect([
+        new EffectConditionClause("Once per turn, when this face-up card is changed from Attack Position to Defense Position"),
+        new EffectMainClause("You can Special Summon 1 Level 3 Insect-Type monster from your Deck in Defense Position.")
+      ]),
+      new ContinuousEffect(
+        new EffectMainClause("An Xyz Monster that was Summoned using this card on the field as Xyz Material gains this effect."),
+        new SubEffectClause([
+          new EffectMainClause("This card can attack all Defense Position monsters your opponent controls once each.")
+        ])
+      ),
     ];
     testParseEffects({text}, effects);
   });

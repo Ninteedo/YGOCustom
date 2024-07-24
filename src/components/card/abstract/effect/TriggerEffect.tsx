@@ -23,4 +23,8 @@ export default class TriggerEffect extends Effect {
   public addSubEffect(clauses: EffectClause[]): void {
     this.clauses.push(...clauses);
   }
+
+  public toText(): string {
+    return `${this.clauses.map(c => c.toText()).join(" ")}`;
+  }
 }

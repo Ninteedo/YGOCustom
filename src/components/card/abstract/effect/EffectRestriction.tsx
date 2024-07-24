@@ -21,6 +21,10 @@ export default class EffectRestriction extends Effect {
   public isProperEffect(): boolean {
     return false;
   }
+
+  public toText(): string {
+    return this.content;
+  }
 }
 
 // /**

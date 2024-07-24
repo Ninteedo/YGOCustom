@@ -12,4 +12,8 @@ export default class EffectCostClause implements EffectClause {
   public render(): ReactNode {
     return EffectCost(this.contents)
   }
+
+  public toText(): string {
+    return this.contents + ";";
+  }
 }

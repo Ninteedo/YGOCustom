@@ -16,4 +16,8 @@ export default class NormalEffectLore extends Effect {
   public isProperEffect(): boolean {
     return false;
   }
+
+  public toText(): string {
+    return this.lore;
+  }
 }

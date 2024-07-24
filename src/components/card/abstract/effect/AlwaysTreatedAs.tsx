@@ -16,4 +16,8 @@ export default class AlwaysTreatedAs extends Effect {
   public isProperEffect(): boolean {
     return false;
   }
+
+  public toText(): string {
+    return `(${this.content})`;
+  }
 }

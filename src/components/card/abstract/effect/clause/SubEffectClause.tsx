@@ -12,4 +12,8 @@ export default class SubEffectClause implements EffectClause {
     return <span><br/>● {this.subClauses.map((subClauses, index) =>
       <span key={index}>{subClauses.render()}</span>)}</span>;
   }
+
+  public toText(): string {
+    return `${this.subClauses.map(c => c.toText()).join(" ")}`;
+  }
 }

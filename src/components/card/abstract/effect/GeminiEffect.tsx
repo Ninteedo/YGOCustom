@@ -21,4 +21,8 @@ export default class GeminiEffect extends Effect {
       </>
     )
   }
+
+  public toText(): string {
+    return `${this.effects.map(c => c.toText()).join(" ")}`;
+  }
 }

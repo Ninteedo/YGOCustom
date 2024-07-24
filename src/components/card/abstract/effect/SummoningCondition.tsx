@@ -22,4 +22,8 @@ export default class SummoningCondition extends Effect {
   public isProperEffect(): boolean {
     return false;
   }
+
+  public toText(): string {
+    return this.clause.toText();
+  }
 }

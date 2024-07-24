@@ -12,4 +12,8 @@ export default class EffectConditionClause implements EffectClause {
   public render(): ReactNode {
     return EffectCondition(this.contents)
   }
+
+  public toText(): string {
+    return this.contents + ".";
+  }
 }
