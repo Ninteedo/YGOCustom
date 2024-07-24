@@ -7,11 +7,13 @@ import FlipEffect from "../../effect/FlipEffect.tsx";
  * Parses a FLIP effect.
  */
 export default class FlipParseRule extends EffectParseRule {
+  private readonly flipPrefix = "FLIP: ";
+
   match({sentence}: EffectParseProps): boolean {
-    return sentence.startsWith("FLIP:");
+    return sentence.startsWith(this.flipPrefix);
   }
 
   parse({sentence}: EffectParseProps): Effect {
-    return new FlipEffect(parseEffectClauses(sentence));
+    return new FlipEffect(parseEffectClauses(sentence.substring(this.flipPrefix.length)));
   }
 }

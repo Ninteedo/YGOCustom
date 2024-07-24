@@ -385,7 +385,6 @@ describe('parseEffects should parse', () => {
       "During your Main Phase: You can Special Summon this card from your hand to your opponent's field in face-down Defense Position. If this card is Normal or Special Summoned: You can change 1 face-down monster on the field to face-up Attack or Defense Position. You can only use each effect of \"Mimighoul Archfiend\" once per turn."
     const effects = [
       new FlipEffect([
-        new EffectConditionClause("FLIP"),
         new EffectConditionClause("If it is the Main Phase"),
         new EffectMainClause("Apply these effects in sequence."),
         new SubEffectClause([new EffectMainClause("Your opponent draws 1 card.")]),
@@ -488,7 +487,8 @@ describe('parseEffects should parse', () => {
         new SubEffectClause([new EffectMainClause("Add a card from the Deck to the hand.")]),
         new SubEffectClause([new EffectMainClause("Special Summon from the Deck.")]),
         new SubEffectClause([new EffectMainClause("Send a card from the Deck to the GY.")]),
-      ])
+      ]),
+      new EffectRestriction("You can only use this effect of \"Ash Blossom & Joyous Spring\" once per turn."),
     ];
     testParseEffects({text}, effects);
   });

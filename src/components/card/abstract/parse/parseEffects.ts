@@ -22,11 +22,16 @@ import AlwaysTreatedAsParseRule from "./rules/AlwaysTreatedAsParseRule.ts";
 import ExtraEffectSentenceParseRule from "./rules/ExtraEffectSentenceParseRule.ts";
 import SubEffectParseRule from "./rules/SubEffectParseRule.ts";
 
+interface EffectSentence {
+  text: string;
+  isSub: boolean;
+}
+
 export function parseEffectClauses(sentence: string): EffectClause[] {
   // return [new EffectMainClause(sentence)];
 
   const hasCondition = sentence.includes(": ");
-  const hasCost = sentence.includes("; ");
+  const hasCost = sentence.includes(";");
 
   const clauses: EffectClause[] = [];
   let main = sentence;
@@ -36,11 +41,13 @@ export function parseEffectClauses(sentence: string): EffectClause[] {
     main = remaining;
   }
   if (hasCost) {
-    const [cost, remaining] = main.split("; ");
+    const [cost, remaining] = main.split(";");
     clauses.push(new EffectCostClause(cost));
-    main = remaining;
+    main = remaining.trimStart();
   }
-  clauses.push(new EffectMainClause(main));
+  if (main.length > 0) {
+    clauses.push(new EffectMainClause(main));
+  }
   return clauses;
 }
 
@@ -71,41 +78,41 @@ const parsers: EffectParseRule[] = [
 
 export function parseEffects(props: ParseEffectsProps): Effect[] {
   const {text} = props;
-  const sentences: [string, boolean][] = (text + " ")
-    .split(/\.[ )\n\r]/)
+  const sentences: EffectSentence[] = (text + " ")
+    .split(/\.[ )\r\n]|\r?\n/)
     .map((sentence) => sentence.trim())
-    .map((sentence) => sentence + (isBrokenBracketedSentence(sentence) ? ".)" : "."))
+    .map((sentence) => sentence + (isBrokenBracketedSentence(sentence) ? ".)" : sentence.endsWith(";") ? "" : "."))
     .filter((sentence) => sentence.length > 1)
-    .map((sentence) => [sentence, false]);
+    .map((sentence) => ({ text: sentence, isSub: false }));
   const effects: Effect[] = [];
 
   for (let i = 1; i < sentences.length; i++) {
-    let [sentence, _] = sentences[i];
+    let {text: sentence} = sentences[i];
     if (sentence.startsWith("(") && sentence.match(/\)\.?$/)) {
       // Merge the sentence with the previous one
       if (sentence.endsWith(".")) {
         sentence = sentence.slice(0, -1);
       }
-      sentences[i - 1][0] += " " + sentence;
+      sentences[i - 1].text += " " + sentence;
       sentences.splice(i, 1);
       i--;
     }
     if (hasIncompleteDoubleQuotes(sentence)) {
       // Merge the sentence with the previous one
-      sentences[i][0] += " " + sentences[i + 1];
+      sentences[i].text += " " + sentences[i + 1];
       sentences.splice(i + 1, 1);
     }
     if (sentence.startsWith("●")) {
-      sentences[i] = [sentence.substring(1).trimStart(), true];
+      sentences[i] = {text: sentence.substring(1).trimStart(), isSub: true};
     }
   }
 
-  if (isGeminiCard(sentences.map(([sentence, _]) => sentence))) {
+  if (isGeminiCard(sentences.map((sentence) => sentence.text))) {
     return [parseGeminiCard(sentences, props, parsers)];
   }
 
   for (let i = 0; i < sentences.length; i++) {
-    const [sentence, isSub] = sentences[i];
+    const {text: sentence, isSub} = sentences[i];
     parseSentenceNew(sentence, isSub, effects, props, parsers);
   }
 
@@ -163,15 +170,15 @@ function isGeminiCard(sentences: string[]): boolean {
   );
 }
 
-function parseGeminiCard(sentences: [string, boolean][], props: ParseEffectsProps, parsers: EffectParseRule[]): GeminiEffect {
-  let effectSentences: [string, boolean][] = sentences.slice(2);
-  if (sentences[1][0].startsWith("While this card is face-up on the field, you can Normal Summon it to have it be treated as an Effect Monster with this effect:\n●")) {
+function parseGeminiCard(sentences: EffectSentence[], props: ParseEffectsProps, parsers: EffectParseRule[]): GeminiEffect {
+  const effectSentences: EffectSentence[] = sentences.slice(2);
+  if (sentences[1].text.startsWith("While this card is face-up on the field, you can Normal Summon it to have it be treated as an Effect Monster with this effect:\n●")) {
     // effectSentences = [[sentences[1][0].substring(sentences[1].indexOf("●") + 1, sentences[1].length - 1).trimStart()].concat(effectSentences), effectSentences[1]];
     // effectSentences =
   }
   const effects: Effect[] = [];
   for (let i = 0; i < effectSentences.length; i++) {
-    parseSentenceNew(effectSentences[i][0], effectSentences[i][1], effects, props, parsers);
+    parseSentenceNew(effectSentences[i].text, effectSentences[i].isSub, effects, props, parsers);
   }
   return new GeminiEffect(effects);
 }
