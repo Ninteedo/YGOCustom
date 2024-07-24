@@ -14,4 +14,8 @@ export default class FlipEffect extends TriggerEffect {
       </>
     )
   }
+
+  public addSubEffect(clauses: EffectClause[]): void {
+    this.clauses.push(...clauses);
+  }
 }

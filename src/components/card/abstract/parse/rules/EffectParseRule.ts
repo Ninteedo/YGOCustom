@@ -11,6 +11,7 @@ export interface EffectParseProps {
   isContinuous: boolean;
   isFirstSentence: boolean;
   lastEffect: Effect | null;
+  isSub: boolean;
 }
 
 export abstract class EffectParseRule {

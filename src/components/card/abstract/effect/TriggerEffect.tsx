@@ -19,4 +19,8 @@ export default class TriggerEffect extends Effect {
       </>
     )
   }
+
+  public addSubEffect(clauses: EffectClause[]): void {
+    this.clauses.push(...clauses);
+  }
 }

@@ -12,4 +12,8 @@ export default abstract class Effect {
   public isProperEffect(): boolean {
     return true;
   }
+
+  public addSubEffect(clauses: EffectClause[]): void {
+    throw new Error(`Sub-effects are not supported by this effect. ${clauses}`);
+  }
 }

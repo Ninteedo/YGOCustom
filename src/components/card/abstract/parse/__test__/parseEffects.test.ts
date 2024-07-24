@@ -473,4 +473,23 @@ describe('parseEffects should parse', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Ash Blossom & Joyous Spring', () => {
+    const text = "When a card or effect is activated that includes any of these effects (Quick Effect): You can discard this card; negate that effect.\n" +
+      "● Add a card from the Deck to the hand.\n" +
+      "● Special Summon from the Deck.\n" +
+      "● Send a card from the Deck to the GY.\n" +
+      "You can only use this effect of \"Ash Blossom & Joyous Spring\" once per turn.";
+    const effects = [
+      new QuickEffect([
+        new EffectConditionClause("When a card or effect is activated that includes any of these effects (Quick Effect)"),
+        new EffectCostClause("You can discard this card"),
+        new EffectMainClause("negate that effect."),
+        new SubEffectClause([new EffectMainClause("Add a card from the Deck to the hand.")]),
+        new SubEffectClause([new EffectMainClause("Special Summon from the Deck.")]),
+        new SubEffectClause([new EffectMainClause("Send a card from the Deck to the GY.")]),
+      ])
+    ];
+    testParseEffects({text}, effects);
+  });
 });

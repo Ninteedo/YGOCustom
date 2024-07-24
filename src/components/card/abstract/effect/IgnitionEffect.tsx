@@ -17,4 +17,8 @@ export default class IgnitionEffect extends Effect {
       </>
     )
   }
+
+  public addSubEffect(clauses: EffectClause[]): void {
+    this.clauses.push(...clauses);
+  }
 }

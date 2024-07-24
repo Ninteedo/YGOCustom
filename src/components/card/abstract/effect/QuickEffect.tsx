@@ -19,4 +19,8 @@ export default class QuickEffect extends Effect {
       </>
     )
   }
+
+  public addSubEffect(clauses: EffectClause[]): void {
+    this.clauses.push(...clauses);
+  }
 }
