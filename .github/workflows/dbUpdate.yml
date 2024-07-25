@@ -32,6 +32,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Read current version
+        id: read_version
+        run: |
+          if [ -f ./public/db/version.txt ]; then
+            old_version=$(cat ./public/db/version.txt)
+          else
+            old_version="n/a"
+          fi
+          echo "OLD_VERSION=$old_version" >> $GITHUB_ENV
+
       - name: Run the database update script
         run: npm run cardDbUpdate
         env:
@@ -43,6 +53,16 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Read new version
+        id: read_new_version
+        run: |
+          if [ -f ./public/db/version.txt ]; then
+            new_version=$(cat ./public/db/version.txt)
+          else
+            new_version="n/a"
+          fi
+          echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
+
       - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
@@ -51,7 +71,7 @@ jobs:
       - name: Commit changes
         run: |
           git add public/db
-          git commit -m "Update card database"
+          git commit -m "Update card database, ${{ env.OLD_VERSION }} -> ${{ env.NEW_VERSION }}"
 
       - name: Push changes
         env:
