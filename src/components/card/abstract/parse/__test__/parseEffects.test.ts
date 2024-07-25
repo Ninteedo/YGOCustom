@@ -579,4 +579,25 @@ describe('parseEffects of card', () => {
     ];
     testParsePendulumEffects({text}, expectedPendulumEffects, expectedMonsterEffects);
   });
+
+  test('Magical Musketeer Max', () => {
+    const text = "If this card is Link Summoned: You can activate 1 of these effects;\n" +
+      "● Add \"Magical Musket\" Spells/Traps with different names from your Deck to your hand, up to the number of monsters your opponent controls. ● Special Summon \"Magical Musket\" monsters with different names from your Deck, up to the number of Spells/Traps your opponent controls.\n" +
+      "You can only use this effect of \"Magical Musketeer Max\" once per turn. During either player's turn, you can activate \"Magical Musket\" Spell/Trap Cards from your hand.";
+    const effects = [
+      new TriggerEffect([
+        new EffectConditionClause("If this card is Link Summoned"),
+        new EffectCostClause("You can activate 1 of these effects"),
+        new SubEffectClause([
+          new EffectMainClause("Add \"Magical Musket\" Spells/Traps with different names from your Deck to your hand, up to the number of monsters your opponent controls.")
+        ]),
+        new SubEffectClause([
+          new EffectMainClause("Special Summon \"Magical Musket\" monsters with different names from your Deck, up to the number of Spells/Traps your opponent controls.")
+        ]),
+      ]),
+      new EffectRestriction("You can only use this effect of \"Magical Musketeer Max\" once per turn."),
+      new ContinuousEffect(new EffectMainClause("During either player's turn, you can activate \"Magical Musket\" Spell/Trap Cards from your hand."))
+    ];
+    testParseEffects({text}, effects);
+  });
 });

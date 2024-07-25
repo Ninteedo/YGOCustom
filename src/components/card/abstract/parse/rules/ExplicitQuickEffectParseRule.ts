@@ -12,10 +12,11 @@ import QuickEffect from "../../effect/QuickEffect.tsx";
  */
 export default class ExplicitQuickEffectParseRule extends EffectParseRule {
   match({sentence}: EffectParseProps): boolean {
+    const condition = this.getCondition(sentence);
     return !!(
-      sentence.includes("(Quick Effect):")
-      || sentence.toLowerCase().includes("during either player's turn")
-      || sentence.toLowerCase().match(/if this card is (treated as )?a continuous trap/)
+      condition.includes("(Quick Effect)")
+      || condition.toLowerCase().includes("during either player's turn")
+      || condition.toLowerCase().match(/if this card is (treated as )?a continuous trap/)
     );
   }
 

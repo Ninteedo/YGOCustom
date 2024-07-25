@@ -134,7 +134,7 @@ export default class BaseDbCard extends BaseCard {
   }
 
   protected getEffectText(): string {
-    const res = this.text.match(/(?<=([^\n\r/]+?)(\r?\n| \/ ))(.+)/);
+    const res = this.text.match(/(?<=([^\n\r/]+?)(\r?\n| \/ ))(.+)/s);
     return res ? res[0] : "";
   }
 }
