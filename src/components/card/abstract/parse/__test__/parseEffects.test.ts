@@ -532,4 +532,24 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Dragonmaid Downtime', () => {
+    const text = "You can target 1 \"Dragonmaid\" monster you control, then activate 1 of these effects;\n" +
+      "● Return it to the hand, and if you do, add 1 \"Dragonmaid\" card from your Deck to your hand, except \"Dragonmaid Downtime\".\n" +
+      "● Return it to the hand, and if you do, return 1 Spell/Trap your opponent controls to the hand.\n" +
+      "You can only use this effect of \"Dragonmaid Downtime\" once per turn.";
+    const effects = [
+      new QuickEffect([
+        new EffectCostClause("You can target 1 \"Dragonmaid\" monster you control, then activate 1 of these effects"),
+        new SubEffectClause([
+          new EffectMainClause("Return it to the hand, and if you do, add 1 \"Dragonmaid\" card from your Deck to your hand, except \"Dragonmaid Downtime\".")
+        ]),
+        new SubEffectClause([
+          new EffectMainClause("Return it to the hand, and if you do, return 1 Spell/Trap your opponent controls to the hand.")
+        ]),
+      ]),
+      new EffectRestriction("You can only use this effect of \"Dragonmaid Downtime\" once per turn.")
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true, isContinuousSpellTrapCard: true}, effects);
+  });
 });

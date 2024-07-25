@@ -104,7 +104,7 @@ export abstract class EffectParseRule {
     const condition = this.getCondition(sentence);
     const startIndex = condition.length > 0 ? condition.length + 2 : 0;
     const remaining = sentence.substring(startIndex);
-    return remaining.split("; ")[0];
+    return remaining.split(";")[0];
   }
 
   protected hasCondition(sentence: string): boolean {
@@ -112,6 +112,6 @@ export abstract class EffectParseRule {
   }
 
   protected hasCost(sentence: string): boolean {
-    return sentence.includes("; ");
+    return sentence.includes(";");
   }
 }

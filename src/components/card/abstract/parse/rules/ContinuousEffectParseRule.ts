@@ -5,7 +5,7 @@ import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
 
 export default class ContinuousEffectParseRule extends EffectParseRule {
   match({sentence}: EffectParseProps): boolean {
-    return !this.hasCondition(sentence) && !sentence.includes("; ");
+    return !this.hasCondition(sentence) && !this.hasCost(sentence);
   }
 
   parse({sentence}: EffectParseProps): Effect {
