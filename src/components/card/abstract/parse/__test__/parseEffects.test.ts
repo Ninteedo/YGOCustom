@@ -600,4 +600,23 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Arias the Labrynth Servant', () => {
+    const text = "During the Main Phase (Quick Effect): You can send this card from your hand or field to the GY; Special Summon 1 \"Labrynth\" monster, or Set 1 Normal Trap, from your hand. The Set Normal Trap can be activated this turn. When your opponent activates a card or effect in response to your card or effect activation of a Normal Trap or a \"Labrynth\" card, except \"Arias the Labrynth Butler\" (Quick Effect): You can activate this effect in the GY; Special Summon this card. You can only use each effect of \"Arias the Labrynth Butler\" once per turn.";
+    const effects = [
+      new QuickEffect([
+        new EffectConditionClause("During the Main Phase (Quick Effect)"),
+        new EffectCostClause("You can send this card from your hand or field to the GY"),
+        new EffectMainClause("Special Summon 1 \"Labrynth\" monster, or Set 1 Normal Trap, from your hand."),
+        new EffectMainClause("The Set Normal Trap can be activated this turn.")
+      ]),
+      new QuickEffect([
+        new EffectConditionClause("When your opponent activates a card or effect in response to your card or effect activation of a Normal Trap or a \"Labrynth\" card, except \"Arias the Labrynth Butler\" (Quick Effect)"),
+        new EffectCostClause("You can activate this effect in the GY"),
+        new EffectMainClause("Special Summon this card.")
+      ]),
+      new EffectRestriction("You can only use each effect of \"Arias the Labrynth Butler\" once per turn.")
+    ];
+    testParseEffects({text}, effects);
+  });
 });
