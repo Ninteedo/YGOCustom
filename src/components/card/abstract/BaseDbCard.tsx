@@ -93,6 +93,7 @@ export default class BaseDbCard extends BaseCard {
       statLine={this.getStatLine()}
       categoryLine={this.getCategoryLine()}
       isPendulum={this.isPendulum}
+      copyTextDiscord={this.getCopyTextDiscordBasic()}
     />;
   }
 
@@ -136,6 +137,13 @@ export default class BaseDbCard extends BaseCard {
   protected getEffectText(): string {
     const res = this.text.match(/(?<=([^\n\r/]+?)(\r?\n| \/ ))(.+)/s);
     return res ? res[0] : "";
+  }
+
+  private getCopyTextDiscordBasic(): string {
+    return `**${this.name}**
+*${this.getInfoLine()}*
+${this.getCategoryLine()}
+${this.text}`;
   }
 }
 

@@ -25,6 +25,11 @@
       max-width: 95%;
       margin: 0 auto;
 
+      .name-row {
+        display: flex;
+        justify-content: space-between;
+      }
+
       .card-name {
         a {
           color: #ddd;
