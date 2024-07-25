@@ -17,7 +17,7 @@ export default abstract class Effect {
         subEffectClauses.push(<li key={i}>{clause.render()}</li>);
       } else {
         if (subEffectClauses.length > 0) {
-          renderedClauses.push(<ul key={`sub-${i}`}>{subEffectClauses}</ul>);
+          renderedClauses.push(<ul className="sub-effects" key={`sub-${i}`}>{subEffectClauses}</ul>);
           subEffectClauses = [];
         }
         renderedClauses.push(<span key={i}>{clause.render()}</span>);
@@ -25,7 +25,7 @@ export default abstract class Effect {
     }
 
     if (subEffectClauses.length > 0) {
-      renderedClauses.push(<ul key={`sub-end`}>{subEffectClauses}</ul>);
+      renderedClauses.push(<ul className="sub-effects" key={`sub-end`}>{subEffectClauses}</ul>);
     }
 
     return <>{renderedClauses}</>;
