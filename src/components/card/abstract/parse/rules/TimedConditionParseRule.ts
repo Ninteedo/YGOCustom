@@ -1,5 +1,7 @@
 import {EffectParseProps, EffectParseRule} from "./EffectParseRule.ts";
 import Effect from "../../effect/Effect.tsx";
+import TriggerEffect from "../../effect/TriggerEffect.tsx";
+import {parseEffectClauses} from "../parseEffects.ts";
 
 export default class TimedConditionParseRule extends EffectParseRule {
   match({sentence}: EffectParseProps): boolean {
@@ -8,10 +10,11 @@ export default class TimedConditionParseRule extends EffectParseRule {
       && !this.duringMainPhase(sentence)
       && !this.duringOtherPhase(sentence)
       && this.hasTimedCondition(sentence)
+      && !this.isSlowCondition(sentence)
     );
   }
 
   parse({sentence}: EffectParseProps): Effect {
-    return this.getTriggerOrIgnition(sentence, !this.isSlowCondition(sentence));
+    return new TriggerEffect(parseEffectClauses(sentence));
   }
 }

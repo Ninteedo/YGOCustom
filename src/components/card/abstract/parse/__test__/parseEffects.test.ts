@@ -552,4 +552,31 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text, isSpellTrapCard: true, isFastCard: true, isContinuousSpellTrapCard: true}, effects);
   });
+
+  test('Angello Vaalmonica', () => {
+    const pendulumText = "Each time you gain LP while you control a Fiend Monster Card in your other Pendulum Zone, place 1 Resonance Counter on this card. Once per turn, when an opponent's monster declares an attack, you can: Immediately after this effect resolves, Link Summon 1 \"Vaalmonica\" Link Monster.";
+    const monsterText = "If this card is in your hand: You can discard 1 other card; take 1 \"Dimonno Vaalmonica\" from your Deck, and place this card and that card in your Pendulum Zones. During your Main Phase, if this card was Normal or Special Summoned this turn: You can banish 1 \"Vaalmonica\" Normal Spell/Trap from your GY; apply whichever effect on that card includes gaining LP. You can only use each effect of \"Angello Vaalmonica\" once per turn.";
+    const expectedPendulumEffects = [
+      new ContinuousEffect(new EffectMainClause("Each time you gain LP while you control a Fiend Monster Card in your other Pendulum Zone, place 1 Resonance Counter on this card.")),
+      new TriggerEffect([
+        new EffectConditionClause("Once per turn, when an opponent's monster declares an attack, you can"),
+        new EffectMainClause("Immediately after this effect resolves, Link Summon 1 \"Vaalmonica\" Link Monster.")
+      ])
+    ];
+    const text = `[ Pendulum Effect ]\n${pendulumText}\n[ Monster Effect ]\n${monsterText}`;
+    const expectedMonsterEffects = [
+      new IgnitionEffect([
+        new EffectConditionClause("If this card is in your hand"),
+        new EffectCostClause("You can discard 1 other card"),
+        new EffectMainClause("take 1 \"Dimonno Vaalmonica\" from your Deck, and place this card and that card in your Pendulum Zones.")
+      ]),
+      new IgnitionEffect([
+        new EffectConditionClause("During your Main Phase, if this card was Normal or Special Summoned this turn"),
+        new EffectCostClause("You can banish 1 \"Vaalmonica\" Normal Spell/Trap from your GY"),
+        new EffectMainClause("apply whichever effect on that card includes gaining LP.")
+      ]),
+      new EffectRestriction("You can only use each effect of \"Angello Vaalmonica\" once per turn.")
+    ];
+    testParsePendulumEffects({text}, expectedPendulumEffects, expectedMonsterEffects);
+  });
 });
