@@ -16,13 +16,15 @@ export default class SummoningConditionParseRule extends EffectParseRule {
       return false;
     }
 
-    const summoningTypes = ["Ritual", "Fusion", "Synchro", "Xyz", "Link", "Special", "Tribute"];
-    const pattern = "you can (also )?(" + summoningTypes.join("|") + ") summon (this card|\")";
+    const summoningTypes = ["Ritual", "Fusion", "Synchro", "Xyz", "Link", "Special", "Tribute", "Normal"];
+    const positivePattern = "you can (also )?(" + summoningTypes.join("|") + ") summon (this card|\")";
+    const negativePattern = "cannot be (" + summoningTypes.join("|") + ") summoned";
     return !!(
-      sentence.match(new RegExp(pattern, "i")) ||
-      sentence.startsWith("Cannot be Normal Summoned/Set") ||
-      sentence.startsWith("Cannot be Special Summoned") ||
-      sentence.match(/^Must (first )?be (\w)+ Summoned/)
+      sentence.startsWith("Cannot be Normal Summoned/Set")
+      || sentence.startsWith("Cannot be Special Summoned")
+      || sentence.match(/^Must (first )?be (\w)+ Summoned/)
+      || sentence.match(new RegExp(positivePattern, "i"))
+      || sentence.match(new RegExp(negativePattern, "i"))
     );
   }
 
