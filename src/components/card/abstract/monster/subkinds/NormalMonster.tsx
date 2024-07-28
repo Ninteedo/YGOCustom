@@ -1,5 +1,5 @@
 import {BaseMonsterCard} from "../BaseMonsterCard.ts";
-import {MonsterAttribute} from "../MonsterAttribute.ts";
+import {CardAttribute} from "../CardAttribute.ts";
 import {MonsterType} from "../MonsterType.ts";
 import {MonsterCategory} from "../MonsterCategory.ts";
 import React from "react";
@@ -13,7 +13,7 @@ export class NormalMonster extends BaseMonsterCard {
     id: string,
     name: string,
     level: number,
-    attribute: MonsterAttribute,
+    attribute: CardAttribute,
     monsterType: MonsterType[],
     art: string,
     categories: MonsterCategory[],
@@ -27,7 +27,7 @@ export class NormalMonster extends BaseMonsterCard {
   }
 
   public static fromJson(json: any): NormalMonster {
-    const attribute: MonsterAttribute = json.attribute;
+    const attribute: CardAttribute = json.attribute;
     const monsterType: MonsterType[] = json.type;
     const categories: MonsterCategory[] = json.categories;
     return new NormalMonster(

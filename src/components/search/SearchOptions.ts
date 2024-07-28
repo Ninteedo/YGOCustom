@@ -1,6 +1,7 @@
 import BaseDbCard from "../card/abstract/BaseDbCard.tsx";
 import {CardSubKind} from "../card/abstract/CardSubKind.ts";
 import {MonsterType} from "../card/abstract/monster/MonsterType.ts";
+import {CardAttribute} from "../card/abstract/monster/CardAttribute.ts";
 
 export interface SearchOption {
   label: string;
@@ -9,10 +10,11 @@ export interface SearchOption {
   test: (card: BaseDbCard) => boolean;
 }
 
-enum SearchOptionCategory {
+export enum SearchOptionCategory {
   SubType = "SubType",
   Level = "Level",
   MonsterType = "MonsterType",
+  Attribute = "Attribute",
 }
 
 function subTypeTest(subType: CardSubKind): (card: BaseDbCard) => boolean {
@@ -45,9 +47,24 @@ function monsterTypeSearchOption(type: MonsterType): SearchOption {
   };
 }
 
+function cardAttributeTest(attribute: string): (card: BaseDbCard) => boolean {
+  return (card: BaseDbCard) => card.getAttribute() === attribute;
+}
+
+function cardAttributeSearchOption(attribute: string): SearchOption {
+  return {
+    label: attribute,
+    value: `attribute-${attribute}`,
+    category: SearchOptionCategory.Attribute,
+    test: cardAttributeTest(attribute),
+  };
+}
+
 const levelSearchOptions: SearchOption[] = Array.from({length: 12}, (_, i) => levelSearchOption(i + 1));
 
 const monsterTypeSearchOptions: SearchOption[] = Array.from(Object.values(MonsterType), monsterTypeSearchOption);
+
+const attributeSearchOptions: SearchOption[] = Array.from(Object.values(CardAttribute), cardAttributeSearchOption);
 
 export const searchOptions: SearchOption[] = [
   {label: "Fusion", value: "fusion", category: SearchOptionCategory.SubType, test: subTypeTest(CardSubKind.FUSION)},
@@ -58,4 +75,5 @@ export const searchOptions: SearchOption[] = [
   {label: "Link", value: "link", category: SearchOptionCategory.SubType, test: subTypeTest(CardSubKind.LINK)},
   ...levelSearchOptions,
   ...monsterTypeSearchOptions,
+  ...attributeSearchOptions
 ];

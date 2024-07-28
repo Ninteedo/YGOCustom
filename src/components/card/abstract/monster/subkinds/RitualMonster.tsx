@@ -1,5 +1,5 @@
 import {EffectMonster} from "../EffectMonster.ts";
-import {MonsterAttribute} from "../MonsterAttribute.ts";
+import {CardAttribute} from "../CardAttribute.ts";
 import {MonsterCategory} from "../MonsterCategory.ts";
 import {MonsterType, parseMonsterTypes} from "../MonsterType.ts";
 import Effect from "../../effect/Effect.tsx";
@@ -11,7 +11,7 @@ export class RitualMonster extends EffectMonster {
   constructor(
     art: string,
     atk: number,
-    attribute: MonsterAttribute,
+    attribute: CardAttribute,
     categories: MonsterCategory[],
     def: number,
     effectRestrictions: EffectRestriction[],

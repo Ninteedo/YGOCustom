@@ -619,4 +619,27 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Arcana Force III - The Empress', () => {
+    const text = "If this card is Summoned: Toss a coin.\n" +
+      "● Heads: When your opponent Normal Summons/Sets a monster: You can Special Summon 1 \"Arcana Force\" monster from your hand.\n" +
+      "● Tails: Each time your opponent Normal Summons/Sets a monster: Send 1 card from your hand to the GY.";
+    const effects = [
+      new TriggerEffect([
+        new EffectConditionClause("If this card is Summoned"),
+        new EffectMainClause("Toss a coin."),
+        new SubEffectClause([
+          new EffectConditionClause("Heads"),
+          new EffectConditionClause("When your opponent Normal Summons/Sets a monster"),
+          new EffectMainClause("You can Special Summon 1 \"Arcana Force\" monster from your hand."),
+        ]),
+        new SubEffectClause([
+          new EffectConditionClause("Tails"),
+          new EffectConditionClause("Each time your opponent Normal Summons/Sets a monster"),
+          new EffectMainClause("Send 1 card from your hand to the GY."),
+        ]),
+      ]),
+    ];
+    testParseEffects({text}, effects);
+  });
 });

@@ -5,7 +5,7 @@ import {loadCard} from "../card/abstract/parse/cardLoader.ts";
 import Fuse, {FuseResult} from "fuse.js";
 import {CardJsonEntry} from "../../dbCompression.ts";
 import BaseDbCard from "../card/abstract/BaseDbCard.tsx";
-import {SearchOption} from "./SearchOptions.ts";
+import {SearchOption, SearchOptionCategory} from "./SearchOptions.ts";
 import {MultiValue} from "react-select";
 
 export function useSearchCards(searchTerm: string, filterOptions: MultiValue<SearchOption>): [BaseCard[], number, boolean, () => void] {
@@ -42,8 +42,16 @@ export function useSearchCards(searchTerm: string, filterOptions: MultiValue<Sea
     };
 
     let dbResults: BaseDbCard[] = cardDb;
+    let categorisedFilterOptions: Map<SearchOptionCategory, SearchOption[]> = new Map();
     for (const option of filterOptions) {
-      dbResults = dbResults.filter(option.test);
+      if (!categorisedFilterOptions.has(option.category)) {
+        categorisedFilterOptions.set(option.category, []);
+      }
+      categorisedFilterOptions.get(option.category)?.push(option);
+    }
+
+    for (const [_, options] of categorisedFilterOptions) {
+      dbResults = dbResults.filter((card) => options.some((option) => option.test(card)));
     }
     if (searchTerm) {
       const fuseResults: FuseResult<CardJsonEntry>[] = (() => {

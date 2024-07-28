@@ -1,6 +1,6 @@
 import "../../../../style/Card.scss";
 import {BaseCardProps} from "../../BaseCard.tsx";
-import {MonsterAttribute} from "../monster/MonsterAttribute.ts";
+import {CardAttribute} from "../monster/CardAttribute.ts";
 import {MonsterType} from "../monster/MonsterType.ts";
 import {MonsterCategory} from "../monster/MonsterCategory.ts";
 import EffectRestriction from "../effect/EffectRestriction.tsx";
@@ -15,7 +15,7 @@ export interface MonsterCardProps extends BaseCardProps {
   id: string;
   name: string;
   level: number;
-  attribute: MonsterAttribute;
+  attribute: CardAttribute;
   monsterType: MonsterType[];
   art: string;
   categories: MonsterCategory[];

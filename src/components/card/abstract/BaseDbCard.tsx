@@ -12,6 +12,7 @@ import NormalEffectLore from "./effect/NormalEffectLore.tsx";
 import {getMonsterSpecialKinds} from "./MonsterSpecialKind.ts";
 import {CardJsonEntry} from "../../../dbCompression.ts";
 import {MonsterType, monsterTypeFromString} from "./monster/MonsterType.ts";
+import {CardAttribute, monsterAttributeFromString} from "./monster/CardAttribute.ts";
 
 export default class BaseDbCard extends BaseCard {
   public readonly text: string;
@@ -161,6 +162,16 @@ ${this.text}`;
   getMonsterType(): MonsterType | undefined {
     if (this.kind === CardKind.MONSTER && this.json.race) {
       return monsterTypeFromString(this.json.race);
+    }
+  }
+
+  getAttribute(): CardAttribute | undefined {
+    if (this.kind === CardKind.MONSTER && this.json.attribute) {
+      return monsterAttributeFromString(this.json.attribute);
+    } else if (this.kind === CardKind.SPELL) {
+      return CardAttribute.SPELL;
+    } else if (this.kind === CardKind.TRAP) {
+      return CardAttribute.TRAP;
     }
   }
 }

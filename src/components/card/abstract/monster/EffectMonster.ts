@@ -1,6 +1,6 @@
 import {BaseMonsterCard} from "./BaseMonsterCard.ts";
 import EffectCard from "../effect/EffectCard.ts";
-import {MonsterAttribute} from "./MonsterAttribute.ts";
+import {CardAttribute} from "./CardAttribute.ts";
 import {MonsterCategory} from "./MonsterCategory.ts";
 import EffectRestriction from "../effect/EffectRestriction.tsx";
 import Effect from "../effect/Effect.tsx";
@@ -18,7 +18,7 @@ export abstract class EffectMonster extends BaseMonsterCard implements EffectCar
 
   protected constructor(
     art: string,
-    attribute: MonsterAttribute,
+    attribute: CardAttribute,
     categories: MonsterCategory[],
     effectRestrictions: EffectRestriction[],
     effects: Effect[],

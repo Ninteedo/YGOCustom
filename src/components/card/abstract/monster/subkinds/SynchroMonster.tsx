@@ -1,5 +1,5 @@
 import {EffectMonster} from "../EffectMonster.ts";
-import {MonsterAttribute} from "../MonsterAttribute.ts";
+import {CardAttribute} from "../CardAttribute.ts";
 import {MonsterCategory} from "../MonsterCategory.ts";
 import {MonsterType, parseMonsterTypes} from "../MonsterType.ts";
 import Effect from "../../effect/Effect.tsx";
@@ -13,7 +13,7 @@ export class SynchroMonster extends EffectMonster implements MaterialedMonster {
   constructor(
     art: string,
     atk: number,
-    attribute: MonsterAttribute,
+    attribute: CardAttribute,
     categories: MonsterCategory[],
     def: number,
     effectRestrictions: EffectRestriction[],

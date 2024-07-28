@@ -6,14 +6,41 @@ import WaterSvg from "../../../../assets/images/attributes/WATER.svg";
 import WindSvg from "../../../../assets/images/attributes/WIND.svg";
 import DivineSvg from "../../../../assets/images/attributes/DIVINE.svg";
 
-export enum MonsterAttribute {
+export enum CardAttribute {
   LIGHT = "LIGHT",
   DARK = "DARK",
   EARTH = "EARTH",
   FIRE = "FIRE",
   WATER = "WATER",
   WIND = "WIND",
-  DIVINE = "DIVINE"
+  DIVINE = "DIVINE",
+  SPELL = "SPELL",
+  TRAP = "TRAP",
+}
+
+export function monsterAttributeFromString(attribute: string): CardAttribute {
+  switch (attribute.toUpperCase()) {
+    case "SPELL":
+      return CardAttribute.SPELL;
+    case "TRAP":
+      return CardAttribute.TRAP;
+    case "LIGHT":
+      return CardAttribute.LIGHT;
+    case "DARK":
+      return CardAttribute.DARK;
+    case "EARTH":
+      return CardAttribute.EARTH;
+    case "FIRE":
+      return CardAttribute.FIRE;
+    case "WATER":
+      return CardAttribute.WATER;
+    case "WIND":
+      return CardAttribute.WIND;
+    case "DIVINE":
+      return CardAttribute.DIVINE;
+    default:
+      throw new Error(`Unknown attribute: ${attribute}`);
+  }
 }
 
 /**
@@ -23,21 +50,23 @@ export enum MonsterAttribute {
  * @param attribute The attribute to get the image for.
  * @returns The path to the image for the given attribute.
  */
-export function MonsterAttributeImage(attribute: MonsterAttribute): string {
+export function MonsterAttributeImage(attribute: CardAttribute): string {
   switch (attribute) {
-    case MonsterAttribute.LIGHT:
+    case CardAttribute.LIGHT:
       return LightSvg;
-    case MonsterAttribute.DARK:
+    case CardAttribute.DARK:
       return DarkSvg;
-    case MonsterAttribute.EARTH:
+    case CardAttribute.EARTH:
       return EarthSvg;
-    case MonsterAttribute.FIRE:
+    case CardAttribute.FIRE:
       return FireSvg;
-    case MonsterAttribute.WATER:
+    case CardAttribute.WATER:
       return WaterSvg;
-    case MonsterAttribute.WIND:
+    case CardAttribute.WIND:
       return WindSvg;
-    case MonsterAttribute.DIVINE:
+    case CardAttribute.DIVINE:
       return DivineSvg;
+    default:
+      throw new Error(`Unknown attribute: ${attribute}`);
   }
 }
