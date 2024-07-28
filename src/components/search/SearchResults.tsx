@@ -2,10 +2,13 @@ import {useSearchCards} from "./useSearchCards.tsx";
 import {useCallback, useRef} from "react";
 import {SearchResult} from "./SearchResult.tsx";
 import {LoadingSpinner} from "../card/LoadingSpinner.tsx";
+import {SearchOption} from "./SearchOptions.ts";
+import {MultiValue} from "react-select";
 
 interface SearchResultsProps {
   searchTerm: string;
   toggleSearch: () => void;
+  filterOptions: MultiValue<SearchOption>;
 }
 
 /**
@@ -17,8 +20,9 @@ interface SearchResultsProps {
 export function SearchResults({
   searchTerm,
   toggleSearch,
+  filterOptions,
 }: SearchResultsProps) {
-  const [results, hits, isLoading, loadMore] = useSearchCards(searchTerm);
+  const [results, hits, isLoading, loadMore] = useSearchCards(searchTerm, filterOptions);
   const observer = useRef<IntersectionObserver | null>(null);
   const lastElementRef = useCallback(
     (node: HTMLDivElement | null) => {

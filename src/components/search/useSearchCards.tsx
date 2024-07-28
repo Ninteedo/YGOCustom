@@ -5,8 +5,10 @@ import {loadCard} from "../card/abstract/parse/cardLoader.ts";
 import Fuse, {FuseResult} from "fuse.js";
 import {CardJsonEntry} from "../../dbCompression.ts";
 import BaseDbCard from "../card/abstract/BaseDbCard.tsx";
+import {SearchOption} from "./SearchOptions.ts";
+import {MultiValue} from "react-select";
 
-export function useSearchCards(searchTerm: string): [BaseCard[], number, boolean, () => void] {
+export function useSearchCards(searchTerm: string, filterOptions: MultiValue<SearchOption>): [BaseCard[], number, boolean, () => void] {
   const [results, setResults] = useState<BaseCard[]>([]);
   const [filteredResults, setFilteredResults] = useState<BaseCard[]>([]);
   const [loading, setLoading] = useState(false);
@@ -39,15 +41,16 @@ export function useSearchCards(searchTerm: string): [BaseCard[], number, boolean
       threshold: 0.5
     };
 
-    let dbResults: BaseDbCard[];
+    let dbResults: BaseDbCard[] = cardDb;
+    for (const option of filterOptions) {
+      dbResults = dbResults.filter(option.test);
+    }
     if (searchTerm) {
       const fuseResults: FuseResult<CardJsonEntry>[] = (() => {
-        const fuse: Fuse<CardJsonEntry> = new Fuse(cardDb.map(card => card.json), options);
+        const fuse: Fuse<CardJsonEntry> = new Fuse(dbResults.map(card => card.json), options);
         return fuse.search(searchTerm);
       })();
       dbResults = fuseResults.map(({item}) => new BaseDbCard(item));
-    } else {
-      dbResults = cardDb as BaseDbCard[];
     }
 
     const manifestEntries: string[] = [];
@@ -61,7 +64,7 @@ export function useSearchCards(searchTerm: string): [BaseCard[], number, boolean
         setHasMore(combinedResults.length > page * pageLength);
         setLoading(false);
       });
-  }, [searchTerm, cardDb, page]);
+  }, [searchTerm, cardDb, page, filterOptions]);
 
   useEffect(() => {
     if (!hasMore || fetchedPages.has(page)) return;
