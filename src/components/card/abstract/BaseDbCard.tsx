@@ -11,6 +11,7 @@ import {parsePendulumText} from "./parse/parsePendulum.ts";
 import NormalEffectLore from "./effect/NormalEffectLore.tsx";
 import {getMonsterSpecialKinds} from "./MonsterSpecialKind.ts";
 import {CardJsonEntry} from "../../../dbCompression.ts";
+import {MonsterType, monsterTypeFromString} from "./monster/MonsterType.ts";
 
 export default class BaseDbCard extends BaseCard {
   public readonly text: string;
@@ -144,6 +145,23 @@ export default class BaseDbCard extends BaseCard {
 *${this.getInfoLine()}*
 ${this.getCategoryLine()}
 ${this.text}`;
+  }
+
+  /**
+   * Get the level, rank, or link rating of the card if it has one.
+   *
+   * Spell/Trap cards will return undefined.
+   */
+  getAnyLevelNumber(): number | undefined {
+    if (this.kind === CardKind.MONSTER) {
+      return parseInt(this.json.level || this.json.linkval || "0");
+    }
+  }
+
+  getMonsterType(): MonsterType | undefined {
+    if (this.kind === CardKind.MONSTER && this.json.race) {
+      return monsterTypeFromString(this.json.race);
+    }
   }
 }
 

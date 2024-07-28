@@ -32,7 +32,7 @@ export function monsterTypeFromString(value: string): MonsterType {
     case "Aqua": return MonsterType.Aqua;
     case "Beast": return MonsterType.Beast;
     case "Beast-Warrior": return MonsterType.BeastWarrior;
-    case "Creator God": return MonsterType.CreatorGod;
+    case "Creator-God": return MonsterType.CreatorGod;
     case "Cyberse": return MonsterType.Cyberse;
     case "Dinosaur": return MonsterType.Dinosaur;
     case "Divine-Beast": return MonsterType.DivineBeast;
