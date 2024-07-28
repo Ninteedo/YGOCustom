@@ -22,7 +22,7 @@ export default function SearchBox({toggleSearch}: SearchBoxProps): ReactNode {
       <div>
         <input type="text" name={"search-term"} className={"search-term"} placeholder={"Search"}
                onInput={handleInput}/>
-        <button className={"close-button"} onClick={toggleSearch}>x</button>
+        {/*<button className={"close-button"} onClick={toggleSearch}>x</button>*/}
       </div>
       <SearchFilterSelect
         options={searchOptions}
