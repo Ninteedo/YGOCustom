@@ -17,8 +17,17 @@ export enum SearchOptionCategory {
   Attribute = "Attribute",
 }
 
-function subTypeTest(subType: CardSubKind): (card: BaseDbCard) => boolean {
-  return (card: BaseDbCard) => card.subKind === subType;
+function subKindTest(subKind: CardSubKind): (card: BaseDbCard) => boolean {
+  return (card: BaseDbCard) => card.subKind === subKind;
+}
+
+function subKindSearchOption(subKind: CardSubKind): SearchOption {
+  return {
+    label: subKind,
+    value: `subkind-${subKind}`,
+    category: SearchOptionCategory.SubType,
+    test: subKindTest(subKind),
+  };
 }
 
 function levelTest(level: number): (card: BaseDbCard) => boolean {
@@ -60,6 +69,8 @@ function cardAttributeSearchOption(attribute: string): SearchOption {
   };
 }
 
+const subKindSearchOptions: SearchOption[] = Array.from(Object.values(CardSubKind), subKindSearchOption);
+
 const levelSearchOptions: SearchOption[] = Array.from({length: 12}, (_, i) => levelSearchOption(i + 1));
 
 const monsterTypeSearchOptions: SearchOption[] = Array.from(Object.values(MonsterType), monsterTypeSearchOption);
@@ -67,12 +78,7 @@ const monsterTypeSearchOptions: SearchOption[] = Array.from(Object.values(Monste
 const attributeSearchOptions: SearchOption[] = Array.from(Object.values(CardAttribute), cardAttributeSearchOption);
 
 export const searchOptions: SearchOption[] = [
-  {label: "Fusion", value: "fusion", category: SearchOptionCategory.SubType, test: subTypeTest(CardSubKind.FUSION)},
-  {label: "Ritual", value: "ritual", category: SearchOptionCategory.SubType, test: subTypeTest(CardSubKind.RITUAL)},
-  {label: "Synchro", value: "synchro", category: SearchOptionCategory.SubType, test: subTypeTest(CardSubKind.SYNCHRO)},
-  {label: "Xyz", value: "xyz", category: SearchOptionCategory.SubType, test: subTypeTest(CardSubKind.XYZ)},
-  // {label: "Pendulum", value: "pendulum", category: SearchOptionCategory.SubType, test: subTypeTest(CardSubKind.PENDULUM)},
-  {label: "Link", value: "link", category: SearchOptionCategory.SubType, test: subTypeTest(CardSubKind.LINK)},
+  ...subKindSearchOptions,
   ...levelSearchOptions,
   ...monsterTypeSearchOptions,
   ...attributeSearchOptions
