@@ -42,7 +42,6 @@ export class CardJsonEntry {
   public readonly imageId: string;
   public readonly level: string | undefined;
   public readonly linkval: string | undefined;
-  public readonly searchableLevel: string | undefined;
   // public readonly cardSets: CardSet[];
 
   constructor(json: any, isCompressed: boolean) {
@@ -82,10 +81,6 @@ export class CardJsonEntry {
       this.type = getMapping(json, "type", isCompressed);
     }
     // this.cardSets = (json[getMapping("card_sets", isCompressed)]; as Object[]).map(setJson => new CardSet(setJson));
-    this.searchableLevel = this.level ? "Level " + this.level : this.linkval ? "LINK-" + this.linkval : "";
-    if (this.frameType.toLowerCase() === "xyz") {
-      this.searchableLevel = "Rank " + this.level;
-    }
   }
 
   public toCompressed(): any {

@@ -30,12 +30,8 @@ export function useSearchCards(searchTerm: string, filterOptions: MultiValue<Sea
 
     const options = {
       keys: [
-        { name: 'name', weight: 0.5 },
-        { name: 'text', weight: 0.3 },
-        { name: 'searchableLevel', weight: 0.1 },
-        { name: 'kind', weight: 0.05 },
-        { name: 'attributes', weight: 0.05 },
-        { name: 'type', weight: 0.05 },
+        { name: 'name', weight: 0.6 },
+        { name: 'text', weight: 0.4 },
       ],
       includeScore: false,
       threshold: 0.5
