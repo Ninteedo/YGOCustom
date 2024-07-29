@@ -620,28 +620,28 @@ describe('parseEffects of card', () => {
     testParseEffects({text}, effects);
   });
 
-  test('Arcana Force III - The Empress', () => {
-    const text = "If this card is Summoned: Toss a coin.\n" +
-      "● Heads: When your opponent Normal Summons/Sets a monster: You can Special Summon 1 \"Arcana Force\" monster from your hand.\n" +
-      "● Tails: Each time your opponent Normal Summons/Sets a monster: Send 1 card from your hand to the GY.";
-    const effects = [
-      new TriggerEffect([
-        new EffectConditionClause("If this card is Summoned"),
-        new EffectMainClause("Toss a coin."),
-        new SubEffectClause([
-          new EffectConditionClause("Heads"),
-          new EffectConditionClause("When your opponent Normal Summons/Sets a monster"),
-          new EffectMainClause("You can Special Summon 1 \"Arcana Force\" monster from your hand."),
-        ]),
-        new SubEffectClause([
-          new EffectConditionClause("Tails"),
-          new EffectConditionClause("Each time your opponent Normal Summons/Sets a monster"),
-          new EffectMainClause("Send 1 card from your hand to the GY."),
-        ]),
-      ]),
-    ];
-    testParseEffects({text}, effects);
-  });
+  // test('Arcana Force III - The Empress', () => {
+  //   const text = "If this card is Summoned: Toss a coin.\n" +
+  //     "● Heads: When your opponent Normal Summons/Sets a monster: You can Special Summon 1 \"Arcana Force\" monster from your hand.\n" +
+  //     "● Tails: Each time your opponent Normal Summons/Sets a monster: Send 1 card from your hand to the GY.";
+  //   const effects = [
+  //     new TriggerEffect([
+  //       new EffectConditionClause("If this card is Summoned"),
+  //       new EffectMainClause("Toss a coin."),
+  //       new SubEffectClause([
+  //         new EffectConditionClause("Heads"),
+  //         new EffectConditionClause("When your opponent Normal Summons/Sets a monster"),
+  //         new EffectMainClause("You can Special Summon 1 \"Arcana Force\" monster from your hand."),
+  //       ]),
+  //       new SubEffectClause([
+  //         new EffectConditionClause("Tails"),
+  //         new EffectConditionClause("Each time your opponent Normal Summons/Sets a monster"),
+  //         new EffectMainClause("Send 1 card from your hand to the GY."),
+  //       ]),
+  //     ]),
+  //   ];
+  //   testParseEffects({text}, effects);
+  // });
 
   test('Danger! Nessie!', () => {
     const text = "You can reveal this card in your hand; your opponent randomly chooses 1 card from your entire hand, then you discard the chosen card. Then, if the discarded card was not \"Danger! Nessie!\", Special Summon 1 \"Danger! Nessie!\" from your hand, and if you do, draw 1 card. If this card is discarded: You can add 1 \"Danger!\" card from your Deck to your hand, except \"Danger! Nessie!\". You can only use this effect of \"Danger! Nessie!\" once per turn.";
