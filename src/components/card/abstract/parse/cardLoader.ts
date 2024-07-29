@@ -14,6 +14,7 @@ import {RitualMonster} from "../monster/subkinds/RitualMonster.tsx";
 // import EffectMainClause from "../effect/clause/EffectMainClause.ts";
 import {useEffect, useState} from "react";
 import {useCardDbContext} from "./cardDbUtility.ts";
+import BaseDbCard from "../BaseDbCard.tsx";
 
 const CARD_DIR = "cards"
 
@@ -107,8 +108,8 @@ function parseMonsterCard(json: { kind: string }): BaseMonsterCard {
 //   return clauses;
 // }
 
-export function useGetOfficialCard(id: string | undefined): [BaseCard | undefined, boolean] {
-  const [result, setResult] = useState<BaseCard | undefined>(undefined);
+export function useGetOfficialCard(id: string | undefined): [BaseDbCard | undefined, boolean] {
+  const [result, setResult] = useState<BaseDbCard | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const cardDb = useCardDbContext();
 
