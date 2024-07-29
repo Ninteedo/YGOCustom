@@ -15,6 +15,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
         || sentence.startsWith("That ")
         || sentence.startsWith("It ")
         || sentence.startsWith("The ")
+        || sentence.startsWith("Then")
         || sentence.includes(" this effect ")
       )
     );

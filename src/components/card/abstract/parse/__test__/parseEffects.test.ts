@@ -27,7 +27,7 @@ describe('parseEffects of card', () => {
     expectedPendulumEffects: Effect[],
     expectedMonsterEffects: Effect[]
   ) {
-    const {pendulumEffects, monsterEffects} = parsePendulumText(props.text, false);
+    const {pendulumEffects, monsterEffects} = parsePendulumText(props.text, false, false);
     expect(pendulumEffects).toStrictEqual(expectedPendulumEffects);
     expect(monsterEffects).toStrictEqual(expectedMonsterEffects);
   }
@@ -639,6 +639,23 @@ describe('parseEffects of card', () => {
           new EffectMainClause("Send 1 card from your hand to the GY."),
         ]),
       ]),
+    ];
+    testParseEffects({text}, effects);
+  });
+
+  test('Danger! Nessie!', () => {
+    const text = "You can reveal this card in your hand; your opponent randomly chooses 1 card from your entire hand, then you discard the chosen card. Then, if the discarded card was not \"Danger! Nessie!\", Special Summon 1 \"Danger! Nessie!\" from your hand, and if you do, draw 1 card. If this card is discarded: You can add 1 \"Danger!\" card from your Deck to your hand, except \"Danger! Nessie!\". You can only use this effect of \"Danger! Nessie!\" once per turn.";
+    const effects = [
+      new IgnitionEffect([
+        new EffectCostClause("You can reveal this card in your hand"),
+        new EffectMainClause("your opponent randomly chooses 1 card from your entire hand, then you discard the chosen card."),
+        new EffectMainClause("Then, if the discarded card was not \"Danger! Nessie!\", Special Summon 1 \"Danger! Nessie!\" from your hand, and if you do, draw 1 card.")
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("If this card is discarded"),
+        new EffectMainClause("You can add 1 \"Danger!\" card from your Deck to your hand, except \"Danger! Nessie!\".")
+      ]),
+      new EffectRestriction("You can only use this effect of \"Danger! Nessie!\" once per turn."),
     ];
     testParseEffects({text}, effects);
   });
