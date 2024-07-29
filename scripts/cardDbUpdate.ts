@@ -135,12 +135,11 @@ async function uploadCardImage(croppedUrl: string, imageId: string, s3: S3, buck
         Body: buffer,
         ContentType: 'image/jpeg'
       });
+      console.log(`Uploaded ${imageId} to R2`);
     } catch (e) {
       console.error(`Error uploading ${imageId}`);
       return;
     }
-
-    console.log(`Uploaded ${imageId} to R2`);
   } catch (e) {
     console.error(`Error downloading or uploading ${imageId}`);
   }
