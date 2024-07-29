@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 
 const HomePage: React.FC = () => {
   useEffect(() => {
-    document.title = `$YuGiOh Custom Cards | rgh.dev`;
+    document.title = `YuGiOh Custom Cards | rgh.dev`;
   }, []);
 
   return (
