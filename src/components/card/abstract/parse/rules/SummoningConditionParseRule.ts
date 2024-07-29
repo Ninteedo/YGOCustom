@@ -21,7 +21,7 @@ export default class SummoningConditionParseRule extends EffectParseRule {
     const positivePattern = `you can (also )?${summoningTypeDisjunction} summon (this card|")`;
     const negativePattern = `cannot be ${summoningTypeDisjunction} summoned`;
     return !!(
-      sentence.match(/^Must (first )?be (\w)+ Summoned/)
+      sentence.match(/^Must (first )?be (either )?(\w)+ Summoned/)
       || sentence.match(new RegExp(positivePattern, "i"))
       || sentence.match(new RegExp(negativePattern, "i"))
     );
