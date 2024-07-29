@@ -7,7 +7,7 @@ import TriggerEffect from "../../effect/TriggerEffect.tsx";
 export default class DuringNonMainPhaseParseRule extends EffectParseRule {
   match({sentence}: EffectParseProps): boolean {
     return (
-      !!sentence.toLowerCase().match(/during (each|the|your|your opponent's) (draw|standby|battle|end) phase/)
+      !!sentence.toLowerCase().match(/during (each|the|your|your opponent's) (next )?(draw|standby|battle|end) phase/)
       || !!sentence.match(/At the (start|end) of the /)
     );
   }

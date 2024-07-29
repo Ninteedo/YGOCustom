@@ -659,4 +659,23 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Drill Warrior', () => {
+    const text = "Once per turn, during your Main Phase 1: You can halve this card's ATK, and if you do, it can attack your opponent directly this turn. Once per turn: You can discard 1 card, and if you do, banish this card. During your next Standby Phase: Special Summon this card banished by this effect, then add 1 monster from your Graveyard to your hand.";
+    const effects = [
+      new IgnitionEffect([
+        new EffectConditionClause("Once per turn, during your Main Phase 1"),
+        new EffectMainClause("You can halve this card's ATK, and if you do, it can attack your opponent directly this turn.")
+      ]),
+      new IgnitionEffect([
+        new EffectConditionClause("Once per turn"),
+        new EffectMainClause("You can discard 1 card, and if you do, banish this card.")
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("During your next Standby Phase"),
+        new EffectMainClause("Special Summon this card banished by this effect, then add 1 monster from your Graveyard to your hand.")
+      ]),
+    ];
+    testParseEffects({text}, effects);
+  });
 });
