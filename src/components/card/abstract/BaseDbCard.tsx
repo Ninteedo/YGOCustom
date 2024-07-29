@@ -13,6 +13,7 @@ import {getMonsterSpecialKinds} from "./MonsterSpecialKind.ts";
 import {CardJsonEntry} from "../../../dbCompression.ts";
 import {MonsterType, monsterTypeFromString} from "./monster/MonsterType.ts";
 import {CardAttribute, monsterAttributeFromString} from "./monster/CardAttribute.ts";
+import {readMaterialsText, readNonMaterialsText} from "./parse/parseMaterials.ts";
 
 export default class BaseDbCard extends BaseCard {
   public readonly text: string;
@@ -130,16 +131,12 @@ export default class BaseDbCard extends BaseCard {
 
   protected getMaterials(): string | undefined {
     if (this.kind === CardKind.MONSTER && isExtraDeck(this.subKind)) {
-      const res = this.text.match(/([^\n\r/]+?)(?=(:?\r?\n| \/ ).+)/);
-      if (res) {
-        return res[0];
-      }
+      return readMaterialsText(this.text);
     }
   }
 
   protected getEffectText(): string {
-    const res = this.text.match(/(?<=([^\n\r/]+?)(\r?\n| \/ ))(.+)/s);
-    return res ? res[0] : "";
+    return readNonMaterialsText(this.text);
   }
 
   private getCopyTextDiscordBasic(): string {
