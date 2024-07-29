@@ -68,12 +68,19 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Check for changes
+        id: check_changes
+        run: |
+          git diff --quiet || echo "CHANGES_DETECTED=true" >> $GITHUB_ENV
+
       - name: Commit changes
+        if: env.CHANGES_DETECTED == 'true'
         run: |
           git add public/db
           git commit -m "Update card database, ${{ env.OLD_VERSION }} -> ${{ env.NEW_VERSION }}"
 
       - name: Push changes
+        if: env.CHANGES_DETECTED == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: git push origin master
