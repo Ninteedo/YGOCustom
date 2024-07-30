@@ -8,14 +8,21 @@ import BaseDbCard from "../card/abstract/BaseDbCard.tsx";
 import {SearchOption, SearchOptionCategory} from "./SearchOptions.ts";
 import {MultiValue} from "react-select";
 
-export function useSearchCards(searchTerm: string, filterOptions: MultiValue<SearchOption>): [BaseCard[], number, boolean, () => void] {
+export interface SearchResultsResponse {
+  results: BaseCard[];
+  hits: number;
+  isLoading: boolean;
+  loadMore: () => void;
+  resetPagination: () => void;
+}
+
+export function useSearchCards(searchTerm: string, filterOptions: MultiValue<SearchOption>): SearchResultsResponse {
   const [results, setResults] = useState<BaseCard[]>([]);
   const [filteredResults, setFilteredResults] = useState<BaseCard[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const cardDb = useCardDbContext();
-  const [fetchedPages, setFetchedPages] = useState<Set<number>>(new Set());
 
   const pageLength = 10;
 
@@ -24,6 +31,10 @@ export function useSearchCards(searchTerm: string, filterOptions: MultiValue<Sea
       setPage((prevPage) => prevPage + 1);
     }
   }, [loading, hasMore]);
+
+  const resetPagination = useCallback(() => {
+    setPage(1);
+  }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -38,7 +49,7 @@ export function useSearchCards(searchTerm: string, filterOptions: MultiValue<Sea
     };
 
     let dbResults: BaseDbCard[] = cardDb;
-    let categorisedFilterOptions: Map<SearchOptionCategory, SearchOption[]> = new Map();
+    const categorisedFilterOptions: Map<SearchOptionCategory, SearchOption[]> = new Map();
     for (const option of filterOptions) {
       if (!categorisedFilterOptions.has(option.category)) {
         categorisedFilterOptions.set(option.category, []);
@@ -71,16 +82,15 @@ export function useSearchCards(searchTerm: string, filterOptions: MultiValue<Sea
   }, [searchTerm, cardDb, page, filterOptions]);
 
   useEffect(() => {
-    if (!hasMore || fetchedPages.has(page)) return;
+    if (!hasMore) return;
 
     setResults((prevResults) => [
       ...prevResults,
       ...filteredResults.slice((page - 1) * pageLength, page * pageLength)
     ]);
-    setFetchedPages((prevPages) => new Set(prevPages).add(page));
     setHasMore(filteredResults.length > page * pageLength);
     setLoading(false);
-  }, [page, hasMore, fetchedPages, filteredResults]);
+  }, [page, hasMore, filteredResults]);
 
-  return [results, filteredResults.length, loading, loadMore];
+  return {results, hits: filteredResults.length, isLoading: loading, loadMore, resetPagination};
 }

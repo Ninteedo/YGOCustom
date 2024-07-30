@@ -1,5 +1,5 @@
 import {useSearchCards} from "./useSearchCards.tsx";
-import {useCallback, useRef} from "react";
+import {useCallback, useEffect, useRef} from "react";
 import {SearchResult} from "./SearchResult.tsx";
 import {LoadingSpinner} from "../card/LoadingSpinner.tsx";
 import {SearchOption} from "./SearchOptions.ts";
@@ -22,8 +22,10 @@ export function SearchResults({
   toggleSearch,
   filterOptions,
 }: SearchResultsProps) {
-  const [results, hits, isLoading, loadMore] = useSearchCards(searchTerm, filterOptions);
+  const {results, hits, isLoading, loadMore, resetPagination} = useSearchCards(searchTerm, filterOptions);
   const observer = useRef<IntersectionObserver | null>(null);
+  const resultsRef = useRef<HTMLDivElement | null>(null);
+
   const lastElementRef = useCallback(
     (node: HTMLDivElement | null) => {
       if (isLoading) return;
@@ -38,10 +40,17 @@ export function SearchResults({
     [isLoading, loadMore],
   );
 
+  useEffect(() => {
+    if (resultsRef.current) {
+      resultsRef.current.scrollTop = 0;
+      resetPagination();
+    }
+  }, [searchTerm, filterOptions, resetPagination]);
+
   return (
     <>
       <p>Hits: {hits}</p>
-      <div className={"results"}>
+      <div className={"results"} ref={resultsRef}>
         {results.map((result, index) => {
           if (results.length === index + 1) {
             return (
