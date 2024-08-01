@@ -1,5 +1,5 @@
 import {useSearchCards} from "./useSearchCards.tsx";
-import {useCallback, useEffect, useRef} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {SearchResult} from "./SearchResult.tsx";
 import {LoadingSpinner} from "../card/LoadingSpinner.tsx";
 import {SearchOption} from "./SearchOptions.ts";
@@ -22,16 +22,29 @@ export function SearchResults({
   toggleSearch,
   filterOptions,
 }: SearchResultsProps) {
-  const {results, hits, isLoading, loadMore, resetPagination} = useSearchCards(searchTerm, filterOptions);
+  const {results, hits, isLoading} = useSearchCards(searchTerm, filterOptions);
   const observer = useRef<IntersectionObserver | null>(null);
   const resultsRef = useRef<HTMLDivElement | null>(null);
+  const [page, setPage] = useState(1);
+
+  const pageLength = 10;
+
+  const loadMore = useCallback(() => {
+    console.log("Loading more");
+    if (!isLoading) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  }, [isLoading]);
 
   const lastElementRef = useCallback(
     (node: HTMLDivElement | null) => {
+      console.log("Is loading: " + isLoading);
       if (isLoading) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
+        console.log("Intersection observed");
         if (entries[0].isIntersecting) {
+          console.log("Calling loadMore");
           loadMore();
         }
       });
@@ -43,16 +56,16 @@ export function SearchResults({
   useEffect(() => {
     if (resultsRef.current) {
       resultsRef.current.scrollTop = 0;
-      resetPagination();
+      setPage(1);
     }
-  }, [searchTerm, filterOptions, resetPagination]);
+  }, [searchTerm, filterOptions]);
 
   return (
     <>
       <p>Hits: {hits}</p>
       <div className={"results"} ref={resultsRef}>
-        {results.map((result, index) => {
-          if (results.length === index + 1) {
+        {results.slice(0, page * pageLength).map((result, index) => {
+          if (index + 1 === page * pageLength) {
             return (
               <div ref={lastElementRef} key={index} className={"last-ref"}>
                 <SearchResult card={result} toggleSearch={toggleSearch}/>
