@@ -678,4 +678,37 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Numeron Dragon', () => {
+    const text = "Once per turn: You can detach 1 material from this card; this card gains ATK equal to the combined Ranks of all Xyz Monsters currently on the field x 1000, until the end of your opponent's turn. When this card is destroyed by card effect: You can destroy as many monsters on the field as possible (min. 1), then each player Sets 1 Spell/Trap from their GY to their field. When an opponent's monster declares an attack while this card is in your GY and you have no cards in your hand or field: You can Special Summon this card."
+    const effects = [
+      new IgnitionEffect([
+        new EffectConditionClause("Once per turn"),
+        new EffectCostClause("You can detach 1 material from this card"),
+        new EffectMainClause("this card gains ATK equal to the combined Ranks of all Xyz Monsters currently on the field x 1000, until the end of your opponent's turn.")
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("When this card is destroyed by card effect"),
+        new EffectMainClause("You can destroy as many monsters on the field as possible (min. 1), then each player Sets 1 Spell/Trap from their GY to their field.")
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("When an opponent's monster declares an attack while this card is in your GY and you have no cards in your hand or field"),
+        new EffectMainClause("You can Special Summon this card.")
+      ]),
+    ];
+    testParseEffects({text}, effects);
+  });
+
+  test('Number 97: Draglubion', () => {
+    const text = "Your opponent cannot target this card with card effects. You can detach 1 material from this card; take 2 Dragon \"Number\" monsters with different names from your Extra Deck and/or GY, except \"Number 97: Draglubion\", Special Summon 1 of them and attach the other to it as material, also for the rest of this turn you cannot Special Summon other monsters, or declare an attack, except with that Special Summoned monster. You can only use this effect of \"Number 97: Draglubion\" once per turn.";
+    const effects = [
+      new ContinuousEffect(new EffectMainClause("Your opponent cannot target this card with card effects.")),
+      new IgnitionEffect([
+        new EffectCostClause("You can detach 1 material from this card"),
+        new EffectMainClause("take 2 Dragon \"Number\" monsters with different names from your Extra Deck and/or GY, except \"Number 97: Draglubion\", Special Summon 1 of them and attach the other to it as material, also for the rest of this turn you cannot Special Summon other monsters, or declare an attack, except with that Special Summoned monster.")
+      ]),
+      new EffectRestriction("You can only use this effect of \"Number 97: Draglubion\" once per turn.")
+    ];
+    testParseEffects({text}, effects);
+  })
 });

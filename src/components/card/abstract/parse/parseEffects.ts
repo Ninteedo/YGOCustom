@@ -103,6 +103,11 @@ export function parseEffects(props: ParseEffectsProps): Effect[] {
       sentences.splice(i, 1);
       i--;
     }
+    if (sentence.endsWith("(min.")) {
+      // Merge the sentence with the next one
+      sentences[i].text += " " + sentences[i + 1].text;
+      sentences.splice(i + 1, 1);
+    }
     if (hasIncompleteDoubleQuotes(sentence)) {
       // Merge the sentence with the previous one
       sentences[i].text += " " + sentences[i + 1].text;
