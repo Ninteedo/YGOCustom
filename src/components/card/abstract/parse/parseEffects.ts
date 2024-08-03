@@ -22,6 +22,7 @@ import AlwaysTreatedAsParseRule from "./rules/AlwaysTreatedAsParseRule.ts";
 import ExtraEffectSentenceParseRule from "./rules/ExtraEffectSentenceParseRule.ts";
 import SubEffectParseRule from "./rules/SubEffectParseRule.ts";
 import QuickDuringMainPhase from "./rules/QuickDuringMainPhase.tsx";
+import {containsIgnoreQuotes, takeUntilIgnoreQuotes} from "../../../../utils/stringParse.ts";
 
 interface EffectSentence {
   text: string;
@@ -36,18 +37,20 @@ interface EffectDetail {
 export function parseEffectClauses(sentence: string): EffectClause[] {
   // return [new EffectMainClause(sentence)];
 
-  const hasCondition = sentence.includes(": ");
-  const hasCost = sentence.includes(";");
+  const hasCondition = containsIgnoreQuotes(sentence, ":");
+  const hasCost = containsIgnoreQuotes(sentence, ";");
 
   const clauses: EffectClause[] = [];
   let main = sentence;
   if (hasCondition) {
-    const [condition, remaining] = sentence.split(": ");
+    const condition = takeUntilIgnoreQuotes(main, ":");
+    const remaining = main.substring(condition.length + 1).trimStart();
     clauses.push(new EffectConditionClause(condition));
     main = remaining;
   }
   if (hasCost) {
-    const [cost, remaining] = main.split(";");
+    const cost = takeUntilIgnoreQuotes(main, ";");
+    const remaining = main.substring(cost.length + 1).trimStart();
     clauses.push(new EffectCostClause(cost));
     main = remaining.trimStart();
   }

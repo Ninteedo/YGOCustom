@@ -2,6 +2,7 @@ import Effect from "../../effect/Effect.tsx";
 import IgnitionEffect from "../../effect/IgnitionEffect.tsx";
 import TriggerEffect from "../../effect/TriggerEffect.tsx";
 import {parseEffectClauses} from "../parseEffects.ts";
+import {containsIgnoreQuotes, takeUntilIgnoreQuotes} from "../../../../../utils/stringParse.ts";
 
 export interface EffectParseProps {
   text: string;
@@ -94,7 +95,7 @@ export abstract class EffectParseRule {
     if (!this.hasCondition(sentence)) {
       return "";
     }
-    return sentence.split(": ")[0];
+    return takeUntilIgnoreQuotes(sentence, ":");
   }
 
   protected getCost(sentence: string): string {
@@ -103,15 +104,14 @@ export abstract class EffectParseRule {
     }
     const condition = this.getCondition(sentence);
     const startIndex = condition.length > 0 ? condition.length + 2 : 0;
-    const remaining = sentence.substring(startIndex);
-    return remaining.split(";")[0];
+    return takeUntilIgnoreQuotes(sentence.substring(startIndex), ";");
   }
 
   protected hasCondition(sentence: string): boolean {
-    return sentence.includes(": ");
+    return containsIgnoreQuotes(sentence, ":");
   }
 
   protected hasCost(sentence: string): boolean {
-    return sentence.includes(";");
+    return containsIgnoreQuotes(sentence, ";");
   }
 }
