@@ -12,6 +12,7 @@ export default class SubEffectParseRule extends EffectParseRule {
     return (
       lastEffectText.includes("this effect")
       || lastEffectText.includes("these effects")
+      || lastEffectText.includes("this additional effect")
     );
   }
 

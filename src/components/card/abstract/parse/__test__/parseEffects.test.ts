@@ -710,5 +710,23 @@ describe('parseEffects of card', () => {
       new EffectRestriction("You can only use this effect of \"Number 97: Draglubion\" once per turn.")
     ];
     testParseEffects({text}, effects);
-  })
+  });
+
+  test('Labrynth Labyrinth', () => {
+    const text = "If you activate a Set \"Welcome Labrynth\" Normal Trap, you can add this additional effect to that card's effect at resolution.\n" +
+      "● Also after that, destroy 1 card on the field.\n" +
+      "If you activate a non-\"Labrynth\" Normal Trap Card (except during the Damage Step): You can Special Summon 1 Fiend monster from your hand or GY. You can only use each effect of \"Labrynth Labyrinth\" once per turn.";
+    const effects = [
+      new ContinuousEffect(
+        new EffectMainClause("If you activate a Set \"Welcome Labrynth\" Normal Trap, you can add this additional effect to that card's effect at resolution."),
+        new SubEffectClause([new EffectMainClause("Also after that, destroy 1 card on the field.")])
+      ),
+      new TriggerEffect([
+        new EffectConditionClause("If you activate a non-\"Labrynth\" Normal Trap Card (except during the Damage Step)"),
+        new EffectMainClause("You can Special Summon 1 Fiend monster from your hand or GY.")
+      ]),
+      new EffectRestriction("You can only use each effect of \"Labrynth Labyrinth\" once per turn.")
+    ];
+    testParseEffects({text}, effects);
+  });
 });
