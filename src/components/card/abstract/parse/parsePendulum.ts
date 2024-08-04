@@ -1,6 +1,7 @@
 import Effect from "../effect/Effect.tsx";
 import {parseEffects} from "./parseEffects.ts";
 import NormalEffectLore from "../effect/NormalEffectLore.tsx";
+import {readMaterialsText, readNonMaterialsText} from "./parseMaterials.ts";
 
 export function parsePendulumText(text: string, isNormalMonster: boolean, isExtraDeck: boolean): {
   materials: string | undefined,
@@ -27,10 +28,10 @@ export function parsePendulumText(text: string, isNormalMonster: boolean, isExtr
     } else {
       let monsterEffectText = text.slice(monsterIndex + monsterDelimiter.length).trim();
       if (isExtraDeck) {
-        const materialsRes = monsterEffectText.match(/([^\n\r/]+?)(?=(:?\r?\n| \/ ).+)/);
+        const materialsRes = readMaterialsText(monsterEffectText);
         if (materialsRes) {
-          materials = materialsRes[0];
-          monsterEffectText = monsterEffectText.substring(materials.length + 2).trimStart();
+          materials = materialsRes;
+          monsterEffectText = readNonMaterialsText(monsterEffectText);
         }
       }
       monsterEffectData = parseEffects({text: monsterEffectText});
