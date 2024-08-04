@@ -8,7 +8,7 @@ import BaseDbCard from "../card/abstract/BaseDbCard.tsx";
 import {SearchOption, SearchOptionCategory} from "./SearchOptions.ts";
 import {MultiValue} from "react-select";
 
-export interface SearchResultsResponse {
+interface SearchResultsResponse {
   results: BaseCard[];
   hits: number;
   isLoading: boolean;
