@@ -30,7 +30,6 @@ export function SearchResults({
   const pageLength = 10;
 
   const loadMore = useCallback(() => {
-    console.log("Loading more");
     if (!isLoading) {
       setPage((prevPage) => prevPage + 1);
     }
@@ -38,13 +37,10 @@ export function SearchResults({
 
   const lastElementRef = useCallback(
     (node: HTMLDivElement | null) => {
-      console.log("Is loading: " + isLoading);
       if (isLoading) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
-        console.log("Intersection observed");
         if (entries[0].isIntersecting) {
-          console.log("Calling loadMore");
           loadMore();
         }
       });
