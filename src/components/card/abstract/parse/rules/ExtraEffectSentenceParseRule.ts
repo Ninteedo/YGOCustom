@@ -18,6 +18,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
         || sentence.startsWith("Then")
         || sentence.includes(" activate this effect")
         || sentence.includes(" by this effect")
+        || sentence.includes(" this effect's activation")
       )
     );
   }

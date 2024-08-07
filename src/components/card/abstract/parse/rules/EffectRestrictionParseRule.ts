@@ -7,7 +7,10 @@ import EffectRestriction from "../../effect/EffectRestriction.tsx";
  */
 export default class EffectRestrictionParseRule extends EffectParseRule {
   match({sentence}: EffectParseProps): boolean {
-    return sentence.startsWith("You can only ");
+    return (
+      sentence.startsWith("You can only ")
+      || sentence.includes(" the turn you activate this card")
+    );
   }
 
   parse({sentence}: EffectParseProps): Effect {
