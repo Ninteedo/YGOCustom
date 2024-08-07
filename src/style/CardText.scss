@@ -11,15 +11,13 @@ ol.effect-list {
   list-style-type: none;
   padding-left: 0;
 
-  > li {
+  > li:not(.restriction) {
+    counter-increment: item;
+
     > div {
       margin-left: 20px;
       display: inline-block;
     }
-  }
-
-  > li:not(.restriction) {
-    counter-increment: item;
 
     &::before {
       content: counter(item) ".";
@@ -33,7 +31,6 @@ ol.effect-list {
   > li.restriction {
     color: #9c9c9c;
     &::before {
-      content: "";
       margin-right: 0.5em;
     }
   }
