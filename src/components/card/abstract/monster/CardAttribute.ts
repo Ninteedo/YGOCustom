@@ -18,6 +18,16 @@ export enum CardAttribute {
   TRAP = "TRAP",
 }
 
+export const MONSTER_ATTRIBUTES = [
+  CardAttribute.LIGHT,
+  CardAttribute.DARK,
+  CardAttribute.EARTH,
+  CardAttribute.FIRE,
+  CardAttribute.WATER,
+  CardAttribute.WIND,
+  CardAttribute.DIVINE,
+];
+
 export function monsterAttributeFromString(attribute: string): CardAttribute {
   switch (attribute.toUpperCase()) {
     case "SPELL":

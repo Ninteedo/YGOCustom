@@ -1,7 +1,8 @@
 import BaseDbCard from "../card/abstract/BaseDbCard.tsx";
 import {CardSubKind} from "../card/abstract/CardSubKind.ts";
 import {MonsterType} from "../card/abstract/monster/MonsterType.ts";
-import {CardAttribute} from "../card/abstract/monster/CardAttribute.ts";
+import {MONSTER_ATTRIBUTES} from "../card/abstract/monster/CardAttribute.ts";
+import {CardKind} from "../card/abstract/CardKind.ts";
 
 export interface SearchOption {
   label: string;
@@ -11,10 +12,24 @@ export interface SearchOption {
 }
 
 export enum SearchOptionCategory {
+  CardKind = "CardKind",
   SubType = "SubType",
   Level = "Level",
   MonsterType = "MonsterType",
   Attribute = "Attribute",
+}
+
+function cardKindTest(kind: string): (card: BaseDbCard) => boolean {
+  return (card: BaseDbCard) => card.kind === kind;
+}
+
+function cardKindSearchOption(kind: string): SearchOption {
+  return {
+    label: kind,
+    value: `kind-${kind}`,
+    category: SearchOptionCategory.CardKind,
+    test: cardKindTest(kind),
+  };
 }
 
 function subKindTest(subKind: CardSubKind): (card: BaseDbCard) => boolean {
@@ -69,15 +84,18 @@ function cardAttributeSearchOption(attribute: string): SearchOption {
   };
 }
 
+const cardKindSearchOptions: SearchOption[] = Array.from(Object.values(CardKind), cardKindSearchOption);
+
 const subKindSearchOptions: SearchOption[] = Array.from(Object.values(CardSubKind), subKindSearchOption);
 
 const levelSearchOptions: SearchOption[] = Array.from({length: 12}, (_, i) => levelSearchOption(i + 1));
 
 const monsterTypeSearchOptions: SearchOption[] = Array.from(Object.values(MonsterType), monsterTypeSearchOption);
 
-const attributeSearchOptions: SearchOption[] = Array.from(Object.values(CardAttribute), cardAttributeSearchOption);
+const attributeSearchOptions: SearchOption[] = Array.from(Object.values(MONSTER_ATTRIBUTES), cardAttributeSearchOption);
 
 export const searchOptions: SearchOption[] = [
+  ...cardKindSearchOptions,
   ...subKindSearchOptions,
   ...levelSearchOptions,
   ...monsterTypeSearchOptions,
