@@ -35,8 +35,8 @@ jobs:
       - name: Read current version
         id: read_version
         run: |
-          if [ -f ./public/db/version.txt ]; then
-            old_version=$(cat ./public/db/version.txt)
+          if [ -f db_version.txt ]; then
+            old_version=$(cat db_version.txt)
           else
             old_version="n/a"
           fi
@@ -56,8 +56,8 @@ jobs:
       - name: Read new version
         id: read_new_version
         run: |
-          if [ -f ./public/db/version.txt ]; then
-            new_version=$(cat ./public/db/version.txt)
+          if [ -f db_version.txt ]; then
+            new_version=$(cat db_version.txt)
           else
             new_version="n/a"
           fi
@@ -76,7 +76,7 @@ jobs:
       - name: Commit changes
         if: env.CHANGES_DETECTED == 'true'
         run: |
-          git add public/db
+          git add db_version.txt src/assets/cards.en.json
           git commit -m "Update card database, ${{ env.OLD_VERSION }} -> ${{ env.NEW_VERSION }}"
 
       - name: Push changes
