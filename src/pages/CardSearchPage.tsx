@@ -12,7 +12,7 @@ export default function CardSearchPage(): ReactNode {
 
   return (
     <div>
-      <SearchBox toggleSearch={toggleSearch}/>
+      <SearchBox toggleSearch={toggleSearch} isSearchBoxOpen={true}/>
     </div>
   );
 }
