@@ -3,10 +3,10 @@ import fs from "fs";
 import { ListObjectsV2CommandInput, S3 } from "@aws-sdk/client-s3";
 import {compressDbCardJson} from "../src/dbCompression";
 
-// import dotenv from "dotenv";
-// if (process.env.NODE_ENV !== 'production') {
-//   dotenv.config();
-// }
+import dotenv from "dotenv";
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 const DB_FILE = "src/assets/cards.en.json";
 const DB_VERSION_FILE = "db_version.txt";
@@ -78,7 +78,6 @@ function configureR2Client() {
       secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
     },
     region: 'auto',
-    forcePathStyle: true,
     endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
   });
 }
@@ -119,24 +118,37 @@ async function uploadCardImage(croppedUrl: string, imageId: string, s3: S3, buck
   try {
     const response = await fetch(croppedUrl);
 
+    if (!response.ok) {
+      console.error(`Failed to download ${croppedUrl}: ${response.status}`);
+      return;
+    }
+
     const arrayBuffer = await response.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+
+    // Check if the image is empty
+    if (buffer.byteLength === 0) {
+      console.error(`Empty image ${imageId}`);
+      return;
+    }
+
+    console.log(`${imageId} size: ${buffer.byteLength}`);
 
     // Upload to Cloudflare R2
     try {
       await s3.putObject({
         Bucket: bucketName,
-        Key: `official/${imageId}`,
+        Key: imageId,
         Body: buffer,
         ContentType: 'image/jpeg'
       });
-      console.log(`Uploaded ${imageId} to R2`);
+
+      console.log(`Uploaded ${imageId} to R2 https://images.ygo.rgh.dev/${imageId}`);
     } catch (e) {
-      console.error(`Error uploading ${imageId}`);
-      return;
+      console.error(`Error uploading ${imageId}`, e);
     }
   } catch (e) {
-    console.error(`Error downloading or uploading ${imageId}`);
+    console.error(`Error downloading or uploading ${imageId}`, e);
   }
 }
 
