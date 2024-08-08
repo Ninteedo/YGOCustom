@@ -8,7 +8,8 @@ import {compressDbCardJson} from "../src/dbCompression";
 //   dotenv.config();
 // }
 
-const DB_VERSION_FILE = "public/db/version.txt";
+const DB_FILE = "src/assets/cards.en.json";
+const DB_VERSION_FILE = "db_version.txt";
 
 async function fetchCurrentDbVersion(): Promise<string | null> {
   if (!fs.existsSync(DB_VERSION_FILE)) {
@@ -36,20 +37,14 @@ async function loadCardDb(): Promise<any> {
     });
 }
 
-function saveDbByLanguages(cardDb: any): void {
-  const LANGUAGES = ["en"];  // , "de", "es", "fr", "it", "pt", "ja", "ko", "zh-TW", "zh-CN"];
-
+function saveDb(cardDb: any): void {
   const db = cardDb['data'];
   const dbNoSkills = db.filter((card: any) => !isSkillCard(card));
   const compressedDb = dbNoSkills.map((card: any) => compressCard(card));
 
-  for (const language of LANGUAGES) {
-    // const db = getCardDbByLanguage(cardDb, language);
-
-    console.log(`Saving card data for ${language}.`)
-    fs.writeFileSync(`public/db/cards.${language}.json`, JSON.stringify(compressedDb, null, undefined), "utf8");
-    console.log(`Saved public/db/cards.${language}.json`);
-  }
+  console.log(`Saving card DB.`)
+  fs.writeFileSync(DB_FILE, JSON.stringify(compressedDb, null, undefined), "utf8");
+  console.log(`Saved ${DB_FILE}`);
 }
 
 async function main(): Promise<void> {
@@ -63,7 +58,7 @@ async function main(): Promise<void> {
   console.log("Database update required. " + currentDbVersion + " -> " + latestDbVersion);
 
   const cardDb = await loadCardDb();
-  saveDbByLanguages(cardDb);
+  saveDb(cardDb);
   fs.writeFileSync(DB_VERSION_FILE, latestDbVersion, "utf8");
 
   await saveNewCardImages(cardDb);

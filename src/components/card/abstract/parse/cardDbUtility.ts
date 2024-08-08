@@ -1,6 +1,7 @@
 import {createContext, useContext} from "react";
 import BaseDbCard from "../BaseDbCard.tsx";
 import {CardJsonEntry} from "../../../../dbCompression.ts";
+import CardDb from "../../../../assets/cards.en.json";
 
 export const cardDbContext = createContext<BaseDbCard[]>([]);
 
@@ -45,6 +46,10 @@ export async function fetchCardDb(language: string, onProgress: (loaded: number,
   console.log("Aggregate card data loaded.");
 
   return {data: loadCardDb(cardDbJson)};
+}
+
+export function getCardDb() {
+  return loadCardDb(CardDb);
 }
 
 function loadCardDb(json: any): BaseDbCard[] {
