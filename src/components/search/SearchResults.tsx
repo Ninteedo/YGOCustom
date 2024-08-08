@@ -9,6 +9,7 @@ interface SearchResultsProps {
   searchTerm: string;
   toggleSearch: () => void;
   filterOptions: MultiValue<SearchOption>;
+  fuzzySearch: boolean;
 }
 
 /**
@@ -21,8 +22,9 @@ export function SearchResults({
   searchTerm,
   toggleSearch,
   filterOptions,
+  fuzzySearch,
 }: SearchResultsProps) {
-  const {results, hits, isLoading} = useSearchCards(searchTerm, filterOptions);
+  const {results, hits, isLoading} = useSearchCards(searchTerm, filterOptions, fuzzySearch);
   const observer = useRef<IntersectionObserver | null>(null);
   const resultsRef = useRef<HTMLDivElement | null>(null);
   const [page, setPage] = useState(1);
@@ -58,7 +60,7 @@ export function SearchResults({
 
   return (
     <>
-      <p>Hits: {hits}</p>
+      <p className={"hit-count"}>Hits: {hits}</p>
       <div className={"results"} ref={resultsRef}>
         {results.slice(0, page * pageLength).map((result, index) => {
           if (index + 1 === page * pageLength) {

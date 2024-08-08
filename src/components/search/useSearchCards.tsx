@@ -14,23 +14,23 @@ interface SearchResultsResponse {
   isLoading: boolean;
 }
 
-export function useSearchCards(searchTerm: string, filterOptions: MultiValue<SearchOption>): SearchResultsResponse {
+export function useSearchCards(searchTerm: string, filterOptions: MultiValue<SearchOption>, fuzzySearch: boolean): SearchResultsResponse {
   const [results, setResults] = useState<BaseCard[]>([]);
   const [filteredResults, setFilteredResults] = useState<BaseCard[]>([]);
   const [loading, setLoading] = useState(false);
   const cardDb = useCardDbContext();
 
+  const options = {
+    keys: [
+      { name: 'name', weight: 0.6 },
+      { name: 'desc', weight: 0.4 },
+    ],
+    includeScore: false,
+    threshold: 0.5
+  };
+
   useEffect(() => {
     setLoading(true);
-
-    const options = {
-      keys: [
-        { name: 'name', weight: 0.6 },
-        { name: 'desc', weight: 0.4 },
-      ],
-      includeScore: false,
-      threshold: 0.5
-    };
 
     let dbResults: BaseDbCard[] = cardDb;
     const categorisedFilterOptions: Map<SearchOptionCategory, SearchOption[]> = new Map();
@@ -45,11 +45,18 @@ export function useSearchCards(searchTerm: string, filterOptions: MultiValue<Sea
       dbResults = dbResults.filter((card) => options.some((option) => option.test(card)));
     }
     if (searchTerm) {
-      const fuseResults: FuseResult<CardJsonEntry>[] = (() => {
-        const fuse: Fuse<CardJsonEntry> = new Fuse(dbResults.map(card => card.json), options);
-        return fuse.search(searchTerm);
-      })();
-      dbResults = fuseResults.map(({item}) => new BaseDbCard(item));
+      if (fuzzySearch) {
+        const fuseResults: FuseResult<CardJsonEntry>[] = (() => {
+          const fuse: Fuse<CardJsonEntry> = new Fuse(dbResults.map(card => card.json), options);
+          return fuse.search(searchTerm);
+        })();
+        dbResults = fuseResults.map(({item}) => new BaseDbCard(item));
+      } else {
+        dbResults = dbResults.filter((card) =>
+          card.name.toLowerCase().includes(searchTerm.toLowerCase())
+            || card.text.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      }
     }
 
     const manifestEntries: string[] = [];
@@ -63,7 +70,7 @@ export function useSearchCards(searchTerm: string, filterOptions: MultiValue<Sea
         // setHasMore(combinedResults.length > page * pageLength);
         setLoading(false);
       });
-  }, [searchTerm, cardDb, filterOptions]);
+  }, [searchTerm, cardDb, filterOptions, fuzzySearch]);
 
   return {results, hits: filteredResults.length, isLoading: loading};
 }

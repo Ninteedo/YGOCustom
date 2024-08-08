@@ -12,6 +12,7 @@ interface SearchBoxProps {
 export default function SearchBox({toggleSearch}: SearchBoxProps): ReactNode {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedOptions, setSelectedOptions] = useState<MultiValue<SearchOption>>([]);
+  const [enableFuzzySearch, setEnableFuzzySearch] = useState(false);
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -23,6 +24,11 @@ export default function SearchBox({toggleSearch}: SearchBoxProps): ReactNode {
         <input type="text" name={"search-term"} className={"search-term"} placeholder={"Search"}
                onInput={handleInput}/>
         {/*<button className={"close-button"} onClick={toggleSearch}>x</button>*/}
+        <label className={"toggle-fuzzy-container"}>
+          Fuzzy<input type="checkbox" name={"fuzzy-search"} className={"fuzzy-search"} id={"fuzzy-search"} onInput={() => {
+            setEnableFuzzySearch(!enableFuzzySearch);
+          }}/>
+        </label>
       </div>
       <SearchFilterSelect
         options={searchOptions}
@@ -33,6 +39,7 @@ export default function SearchBox({toggleSearch}: SearchBoxProps): ReactNode {
         searchTerm={searchTerm}
         toggleSearch={toggleSearch}
         filterOptions={selectedOptions}
+        fuzzySearch={enableFuzzySearch}
       />
     </div>
   )
