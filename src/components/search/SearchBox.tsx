@@ -20,8 +20,8 @@ export default function SearchBox({toggleSearch}: SearchBoxProps): ReactNode {
 
   return (
     <div className={"search-box"}>
-      <div>
-        <input type="text" name={"search-term"} className={"search-term"} placeholder={"Search"}
+      <div className={"search-term-container"}>
+        <input type="text" name={"search-term"} className={"search-term"} placeholder={"Search..."}
                onInput={handleInput}/>
         {/*<button className={"close-button"} onClick={toggleSearch}>x</button>*/}
         <label className={"toggle-fuzzy-container"}>

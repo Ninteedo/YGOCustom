@@ -31,7 +31,7 @@ export function SearchFilterSelect({options, selectedOptions, setSelectedOptions
   });
 
   return (
-    <div>
+    <div className={"search-filter-container"}>
       <Select
         isMulti
         options={options}
