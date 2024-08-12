@@ -1,5 +1,5 @@
 import BaseDbCard from "../card/abstract/BaseDbCard.tsx";
-import {CardSubKind} from "../card/abstract/CardSubKind.ts";
+import {CardSubKind, isExtraDeck} from "../card/abstract/CardSubKind.ts";
 import {MonsterType} from "../card/abstract/monster/MonsterType.ts";
 import {MONSTER_ATTRIBUTES} from "../card/abstract/monster/CardAttribute.ts";
 import {CardKind} from "../card/abstract/CardKind.ts";
@@ -43,6 +43,24 @@ function subKindSearchOption(subKind: CardSubKind): SearchOption {
     category: SearchOptionCategory.SubType,
     test: subKindTest(subKind),
   };
+}
+
+function mainDeckSearchOption(): SearchOption {
+  return {
+    label: "Main Deck",
+    value: "subkind-main-deck",
+    category: SearchOptionCategory.SubType,
+    test: card => !isExtraDeck(card.subKind),
+  }
+}
+
+function extraDeckSearchOption(): SearchOption {
+  return {
+    label: "Extra Deck",
+    value: "subkind-extra-deck",
+    category: SearchOptionCategory.SubType,
+    test: card => isExtraDeck(card.subKind),
+  }
 }
 
 function levelTest(level: number): (card: BaseDbCard) => boolean {
@@ -97,6 +115,8 @@ const attributeSearchOptions: SearchOption[] = Array.from(Object.values(MONSTER_
 export const searchOptions: SearchOption[] = [
   ...cardKindSearchOptions,
   ...subKindSearchOptions,
+  mainDeckSearchOption(),
+  extraDeckSearchOption(),
   ...levelSearchOptions,
   ...monsterTypeSearchOptions,
   ...attributeSearchOptions
