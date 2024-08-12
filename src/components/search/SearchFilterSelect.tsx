@@ -6,9 +6,10 @@ export interface SearchFilterSelectProps {
   options: SearchOption[];
   selectedOptions: MultiValue<SearchOption>;
   setSelectedOptions: (selected: MultiValue<SearchOption>) => void;
+  tabIndex: number;
 }
 
-export function SearchFilterSelect({options, selectedOptions, setSelectedOptions}: SearchFilterSelectProps): ReactNode {
+export function SearchFilterSelect({options, selectedOptions, setSelectedOptions, tabIndex}: SearchFilterSelectProps): ReactNode {
   const handleChange = (selected: MultiValue<SearchOption>, _: ActionMeta<SearchOption>) => {
     setSelectedOptions(selected);
   };
@@ -39,6 +40,7 @@ export function SearchFilterSelect({options, selectedOptions, setSelectedOptions
         onChange={handleChange}
         className={"search-filter-select"}
         theme={customTheme}
+        tabIndex={tabIndex}
       />
     </div>
   )

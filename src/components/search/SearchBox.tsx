@@ -36,18 +36,21 @@ export default function SearchBox({toggleSearch, isSearchBoxOpen}: SearchBoxProp
           placeholder={"Search..."}
           onInput={handleInput}
           ref={inputRef}
+          tabIndex={1}
         />
         {/*<button className={"close-button"} onClick={toggleSearch}>x</button>*/}
         <label className={"toggle-fuzzy-container"}>
-          Fuzzy<input type="checkbox" name={"fuzzy-search"} className={"fuzzy-search"} id={"fuzzy-search"} onInput={() => {
-          setEnableFuzzySearch(!enableFuzzySearch);
-        }}/>
+          Fuzzy<input type="checkbox" name={"fuzzy-search"} className={"fuzzy-search"} id={"fuzzy-search"}
+                      onInput={() => {setEnableFuzzySearch(!enableFuzzySearch);}}
+                      tabIndex={3}
+        />
         </label>
       </div>
       <SearchFilterSelect
         options={searchOptions}
         selectedOptions={selectedOptions}
         setSelectedOptions={setSelectedOptions}
+        tabIndex={2}
       />
       <SearchResults
         searchTerm={searchTerm}
