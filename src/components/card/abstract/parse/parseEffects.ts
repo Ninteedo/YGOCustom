@@ -88,12 +88,8 @@ const parsers: EffectParseRule[] = [
 
 export function parseEffects(props: ParseEffectsProps): Effect[] {
   const {text} = props;
-  const sentences: EffectSentence[] = (text + " ")
-    .split(/\.[ )\r\n]|\r?\n/)
-    .map((sentence) => sentence.trim())
-    .map((sentence) => sentence + (isBrokenBracketedSentence(sentence) ? ".)" : sentence.endsWith(";") ? "" : "."))
-    .filter((sentence) => sentence.length > 1)
-    .map((sentence) => ({ text: sentence, isSub: false }));
+  const sentences: EffectSentence[] = splitSentences(text)
+    .map((sentence: string) => ({ text: sentence, isSub: false }));
 
   for (let i = 1; i < sentences.length; i++) {
     let {text: sentence} = sentences[i];
@@ -162,13 +158,42 @@ function parseSentenceNew(
   }
 }
 
-function isBrokenBracketedSentence(sentence: string): boolean {
-  if (!sentence.startsWith("(")) {
-    return false
+function splitSentences(text: string): string[] {
+  const sentences: string[] = [];
+  let inQuotes = false;
+  let inBrackets = false;
+  let prevSentenceEnd = 0;
+  let i = 0
+
+  function endSentence() {
+    const newSentence = text.substring(prevSentenceEnd, i + 1).trim();
+    if (newSentence.length > 0) {
+      sentences.push(newSentence);
+    }
+    prevSentenceEnd = i + 1;
   }
-  const openBrackets = sentence.match(/\(/g);
-  const closeBrackets = sentence.match(/\)/g);
-  return !!openBrackets && openBrackets.length !== (closeBrackets || []).length;
+
+  function isSentenceTerminator(char: string): boolean {
+    return char === "." || char === "\n";
+  }
+
+  for (i = 0; i < text.length; i++) {
+    const char = text[i];
+    if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === "(") {
+      inBrackets = true;
+    } else if (char === ")") {
+      inBrackets = false;
+      if (i > 0 && text[i - 1] === ".") {
+        endSentence();
+      }
+    } else if (isSentenceTerminator(char) && !inQuotes && !inBrackets) {
+      endSentence();
+    }
+  }
+  endSentence();
+  return sentences;
 }
 
 function hasIncompleteDoubleQuotes(sentence: string): boolean {
