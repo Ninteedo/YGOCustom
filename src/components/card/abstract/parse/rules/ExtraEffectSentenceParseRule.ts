@@ -19,6 +19,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
         || sentence.startsWith("Then")
         || sentence.startsWith("After choosing ")
         || sentence.startsWith("You can also ")
+        || sentence.startsWith("You can use this effect ")
         || sentence.startsWith("This is a Quick Effect if ")
         || sentence.startsWith("For the rest of this turn, ")
         || sentence.includes(" activate this effect")

@@ -869,4 +869,19 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
   });
+
+  test('Gimmick Puppet Egg Head', () => {
+    const text = "You can only use the effect of \"Gimmick Puppet Egg Head\" once per turn. You can discard 1 \"Gimmick Puppet\" monster, then activate 1 of these effects;\n" +
+      "● Inflict 800 damage to your opponent.\n" +
+      "● This card's Level becomes 8 until the End Phase.";
+    const effects = [
+      new EffectRestriction("You can only use the effect of \"Gimmick Puppet Egg Head\" once per turn."),
+      new IgnitionEffect([
+        new EffectCostClause("You can discard 1 \"Gimmick Puppet\" monster, then activate 1 of these effects"),
+        new SubEffectClause([new EffectMainClause("Inflict 800 damage to your opponent.")]),
+        new SubEffectClause([new EffectMainClause("This card's Level becomes 8 until the End Phase.")]),
+      ]),
+    ];
+    testParseEffects({text}, effects);
+  })
 });

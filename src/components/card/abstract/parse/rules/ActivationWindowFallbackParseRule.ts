@@ -19,7 +19,7 @@ export default class ActivationWindowFallbackParseRule extends EffectParseRule {
   parse({sentence, isFastCard}: EffectParseProps): Effect {
     if (isFastCard) {
       return new QuickEffect(parseEffectClauses(sentence));
-    } if (sentence.includes(": ") || sentence.includes("; ")) {
+    } if (this.hasCondition(sentence) || this.hasCost(sentence)) {
       return new IgnitionEffect(parseEffectClauses(sentence))
     } else {
       return new ContinuousEffect(new EffectMainClause(sentence));
