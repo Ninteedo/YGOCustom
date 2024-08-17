@@ -158,6 +158,7 @@ const raceMappings: [string, number][] = [
   ["Psychic", 21],
   ["Divine-Beast", 22],
   ["Creator-God", 23],
+  ["Creator God", 23],
   ["Wyrm", 24],
   ["Cyberse", 25],
   ["Illusion", 26],
