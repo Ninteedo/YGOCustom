@@ -10,6 +10,7 @@ export default class EffectRestrictionParseRule extends EffectParseRule {
     return (
       sentence.startsWith("You can only ")
       || sentence.includes(" the turn you activate this card")
+      || sentence.startsWith("You can use this effect of ")
     );
   }
 

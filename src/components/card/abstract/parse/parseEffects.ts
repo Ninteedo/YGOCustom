@@ -23,6 +23,7 @@ import ExtraEffectSentenceParseRule from "./rules/ExtraEffectSentenceParseRule.t
 import SubEffectParseRule from "./rules/SubEffectParseRule.ts";
 import QuickDuringMainPhase from "./rules/QuickDuringMainPhase.tsx";
 import {containsIgnoreQuotes, takeUntilIgnoreQuotes} from "../../../../utils/stringParse.ts";
+import ContinuousCardIgnitionParseRuleParseRule from "./rules/ContinuousCardIgnitionParseRule.ts";
 
 interface EffectSentence {
   text: string;
@@ -84,6 +85,7 @@ const parsers: EffectParseRule[] = [
   new DuringNonMainPhaseParseRule(),
   new ActivationWindowFallbackParseRule(),
   new QuickDuringMainPhase(),
+  new ContinuousCardIgnitionParseRuleParseRule(),
 ];
 
 export function parseEffects(props: ParseEffectsProps): Effect[] {

@@ -808,5 +808,46 @@ describe('parseEffects of card', () => {
       new EffectRestriction("You can only activate 1 \"Purrelyeap!?\" per turn.")
     ];
     testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
-  })
+  });
+
+  test('Mayakashi Mayhem', () => {
+    const text = "If a Zombie Synchro Monster(s) is Special Summoned, except from the Extra Deck, even during the Damage Step: You can apply 1 of the following effects. You cannot apply that same effect of \"Mayakashi Mayhem\" for the rest of this turn.\n" +
+      "● Draw 1 card.\n" +
+      "● Set 1 \"Mayakashi\" Spell/Trap directly from your Deck, except \"Mayakashi Mayhem\".\n" +
+      "● Send the 1 monster with the lowest ATK your opponent controls to the GY (your choice, if tied).\n" +
+      "● Inflict 800 damage to your opponent.\n" +
+      "You can only activate the effect of \"Mayakashi Mayhem\" once per Chain.";
+    const effects = [
+      new TriggerEffect([
+        new EffectConditionClause("If a Zombie Synchro Monster(s) is Special Summoned, except from the Extra Deck, even during the Damage Step"),
+        new EffectMainClause("You can apply 1 of the following effects."),
+        new EffectMainClause("You cannot apply that same effect of \"Mayakashi Mayhem\" for the rest of this turn."),
+        new SubEffectClause([new EffectMainClause("Draw 1 card.")]),
+        new SubEffectClause([new EffectMainClause("Set 1 \"Mayakashi\" Spell/Trap directly from your Deck, except \"Mayakashi Mayhem\".")]),
+        new SubEffectClause([new EffectMainClause("Send the 1 monster with the lowest ATK your opponent controls to the GY (your choice, if tied).")]),
+        new SubEffectClause([new EffectMainClause("Inflict 800 damage to your opponent.")]),
+      ]),
+      new EffectRestriction("You can only activate the effect of \"Mayakashi Mayhem\" once per Chain.")
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true, isContinuousSpellTrapCard: true}, effects);
+  });
+
+  test('Mayakashi Winter', () => {
+    const text = "Monsters your opponent controls lose 100 ATK/DEF for each \"Mayakashi\" monster with a different name in your GY. You can only use 1 of the following effects of \"Mayakashi Winter\" per turn, and only once that turn.\n" +
+      "● Send this card and 1 \"Mayakashi\" monster you control to the GY; draw 1 card.\n" +
+      "● Banish this card and 1 Zombie monster from your GY, then target 1 \"Mayakashi\" monster in your GY; Special Summon it.";
+    const effects = [
+      new ContinuousEffect(new EffectMainClause("Monsters your opponent controls lose 100 ATK/DEF for each \"Mayakashi\" monster with a different name in your GY.")),
+      new EffectRestriction("You can only use 1 of the following effects of \"Mayakashi Winter\" per turn, and only once that turn."),
+      new IgnitionEffect([
+        new EffectCostClause("Send this card and 1 \"Mayakashi\" monster you control to the GY"),
+        new EffectMainClause("draw 1 card.")
+      ]),
+      new IgnitionEffect([
+        new EffectCostClause("Banish this card and 1 Zombie monster from your GY, then target 1 \"Mayakashi\" monster in your GY"),
+        new EffectMainClause("Special Summon it.")
+      ]),
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, effects);
+  });
 });

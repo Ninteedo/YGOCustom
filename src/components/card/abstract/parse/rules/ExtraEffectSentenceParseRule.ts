@@ -22,6 +22,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
         || sentence.includes(" activate this effect")
         || sentence.includes(" by this effect")
         || sentence.includes(" this effect's activation")
+        || sentence.includes(" that same effect ")
         || (sentence.startsWith("(") && sentence.endsWith(")"))
       )
     );
