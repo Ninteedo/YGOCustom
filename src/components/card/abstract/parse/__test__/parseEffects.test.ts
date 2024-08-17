@@ -901,4 +901,22 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Gigantic "Champion" Sargas', () => {
+    const text = "Once per turn, you can also Xyz Summon \"Gigantic \"Champion\" Sargas\" by using 1 \"Springans\" Xyz Monster you control. (Transfer its materials to this card.) While this card has material: You can add 1 \"Springans\" or \"Therion\" card from your Deck to your hand. If material is detached from a monster(s) on the field (except during the Damage Step): You can target 1 card on the field; either destroy it or return it to the hand. You can only use each effect of \"Gigantic \"Champion\" Sargas\" once per turn."
+    const effects = [
+      new SummoningCondition(new EffectMainClause("Once per turn, you can also Xyz Summon \"Gigantic \"Champion\" Sargas\" by using 1 \"Springans\" Xyz Monster you control. (Transfer its materials to this card.)")),
+      new IgnitionEffect([
+        new EffectConditionClause("While this card has material"),
+        new EffectMainClause("You can add 1 \"Springans\" or \"Therion\" card from your Deck to your hand.")
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("If material is detached from a monster(s) on the field (except during the Damage Step)"),
+        new EffectCostClause("You can target 1 card on the field"),
+        new EffectMainClause("either destroy it or return it to the hand.")
+      ]),
+      new EffectRestriction("You can only use each effect of \"Gigantic \"Champion\" Sargas\" once per turn.")
+    ];
+    testParseEffects({text}, effects);
+  });
 });

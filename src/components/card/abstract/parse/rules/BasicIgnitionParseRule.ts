@@ -3,9 +3,9 @@ import Effect from "../../effect/Effect.tsx";
 import IgnitionEffect from "../../effect/IgnitionEffect.tsx";
 import {parseEffectClauses} from "../parseEffects.ts";
 
-export default class ContinuousCardIgnitionParseRuleParseRule extends EffectParseRule {
-  match({sentence, isSpellTrap, isContinuous}: EffectParseProps): boolean {
-    return isSpellTrap && isContinuous && (this.hasCondition(sentence) || this.hasCost(sentence));
+export default class BasicIgnitionParseRuleParseRule extends EffectParseRule {
+  match({sentence}: EffectParseProps): boolean {
+    return this.hasCondition(sentence) || this.hasCost(sentence);
   }
 
   parse({sentence}: EffectParseProps): Effect {
