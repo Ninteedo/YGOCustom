@@ -883,5 +883,22 @@ describe('parseEffects of card', () => {
       ]),
     ];
     testParseEffects({text}, effects);
-  })
+  });
+
+  test('Metaphys Horus', () => {
+    const text = "If this card is Synchro Summoned: You can activate the appropriate effect(s), depending on the non-Tuner monster(s) used as Synchro Material;\n" +
+      "● Normal Monster: This face-up card is unaffected by other card effects this turn.\n" +
+      "● Effect Monster: You can target 1 other face-up card on the field; negate that target's effects.\n" +
+      "● Pendulum Monster: Your opponent chooses 1 monster they control and gives control of it to you, but it cannot attack this turn.";
+    const effects = [
+      new TriggerEffect([
+        new EffectConditionClause("If this card is Synchro Summoned"),
+        new EffectCostClause("You can activate the appropriate effect(s), depending on the non-Tuner monster(s) used as Synchro Material"),
+        new SubEffectClause([new EffectConditionClause("Normal Monster"), new EffectMainClause("This face-up card is unaffected by other card effects this turn.")]),
+        new SubEffectClause([new EffectConditionClause("Effect Monster"), new EffectCostClause("You can target 1 other face-up card on the field"), new EffectMainClause("negate that target's effects.")]),
+        new SubEffectClause([new EffectConditionClause("Pendulum Monster"), new EffectMainClause("Your opponent chooses 1 monster they control and gives control of it to you, but it cannot attack this turn.")]),
+      ])
+    ];
+    testParseEffects({text}, effects);
+  });
 });
