@@ -729,4 +729,84 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Purrely Delicious Memory', () => {
+    const text = "Choose 1 monster on the field, and until the end of the next turn, it cannot be destroyed by battle. After choosing a card, then you can apply the following effect.\n" +
+      "● Discard 1 card, and if you do, Special Summon 1 Level 1 \"Purrely\" monster from your Deck.\n" +
+      "A \"Purrely\" Xyz Monster that has this card as material gains the following effect.\n" +
+      "● Gains 300 ATK/DEF for each material attached to it.";
+    const effects = [
+      new QuickEffect([
+        new EffectMainClause("Choose 1 monster on the field, and until the end of the next turn, it cannot be destroyed by battle."),
+        new EffectMainClause("After choosing a card, then you can apply the following effect."),
+        new SubEffectClause([
+          new EffectMainClause("Discard 1 card, and if you do, Special Summon 1 Level 1 \"Purrely\" monster from your Deck.")
+        ])
+      ]),
+      new ContinuousEffect(
+        new EffectMainClause("A \"Purrely\" Xyz Monster that has this card as material gains the following effect."),
+        new SubEffectClause([
+          new EffectMainClause("Gains 300 ATK/DEF for each material attached to it.")
+        ])
+      )
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
+  });
+
+  test('Purrely Sleepy Memory', () => {
+    const text = "The next battle or effect damage you take this turn will become 0. You can also immediately apply the following effect.\n" +
+      "● Discard 1 card, and if you do, Special Summon 1 Level 1 \"Purrely\" monster from your Deck.\n" +
+      "A \"Purrely\" Xyz Monster that has this card as material gains the following effect.\n" +
+      "● Once per turn, during your opponent's Standby Phase: You can draw 1 card.";
+    const effects = [
+      new QuickEffect([
+        new EffectMainClause("The next battle or effect damage you take this turn will become 0."),
+        new EffectMainClause("You can also immediately apply the following effect."),
+        new SubEffectClause([
+          new EffectMainClause("Discard 1 card, and if you do, Special Summon 1 Level 1 \"Purrely\" monster from your Deck.")
+        ])
+      ]),
+      new ContinuousEffect(
+        new EffectMainClause("A \"Purrely\" Xyz Monster that has this card as material gains the following effect."),
+        new SubEffectClause([
+          new EffectConditionClause("Once per turn, during your opponent's Standby Phase"),
+          new EffectMainClause("You can draw 1 card.")
+        ])
+      )
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
+  });
+
+  test('Epurrely Plump', () => {
+    const text = "Once per turn: You can target up to 2 Spells/Traps in the GYs; attach them to this card as material. This is a Quick Effect if this card has \"Purrely Delicious Memory\" as material. Up to thrice per turn, when you activate a \"Purrely\" Quick-Play Spell Card (Quick Effect): You can attach that card on the field to this card as material, then you can banish 1 monster on the field until the End Phase.";
+    const effects = [
+      new IgnitionEffect([
+        new EffectConditionClause("Once per turn"),
+        new EffectCostClause("You can target up to 2 Spells/Traps in the GYs"),
+        new EffectMainClause("attach them to this card as material."),
+        new EffectMainClause("This is a Quick Effect if this card has \"Purrely Delicious Memory\" as material.")
+      ]),
+      new QuickEffect([
+        new EffectConditionClause("Up to thrice per turn, when you activate a \"Purrely\" Quick-Play Spell Card (Quick Effect)"),
+        new EffectMainClause("You can attach that card on the field to this card as material, then you can banish 1 monster on the field until the End Phase.")
+      ])
+    ];
+    testParseEffects({text}, effects);
+  });
+
+  test('Purrelyeap!?', () => {
+    const text = "Target 1 \"Purrely\" Xyz Monster you control; Special Summon from your Extra Deck, 1 \"Purrely\" Xyz Monster with a different Rank, by using that target as material, but return it to the Extra Deck during the End Phase of the next turn. (This is treated as an Xyz Summon. Transfer its materials to the Summoned monster.) You can banish this card from your GY, then target up to 3 \"Purrely\" monsters in your GY; shuffle them into the Deck. You can only activate 1 \"Purrelyeap!?\" per turn.";
+    const effects = [
+      new QuickEffect([
+        new EffectCostClause("Target 1 \"Purrely\" Xyz Monster you control"),
+        new EffectMainClause("Special Summon from your Extra Deck, 1 \"Purrely\" Xyz Monster with a different Rank, by using that target as material, but return it to the Extra Deck during the End Phase of the next turn. (This is treated as an Xyz Summon. Transfer its materials to the Summoned monster.)"),
+      ]),
+      new QuickEffect([
+        new EffectCostClause("You can banish this card from your GY, then target up to 3 \"Purrely\" monsters in your GY"),
+        new EffectMainClause("shuffle them into the Deck.")
+      ]),
+      new EffectRestriction("You can only activate 1 \"Purrelyeap!?\" per turn.")
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
+  })
 });
