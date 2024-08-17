@@ -850,4 +850,23 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, effects);
   });
+
+  test('Emblema Oath', () => {
+    const text = "Activate 1 of these effects;\n" +
+      "● Place 1 \"Centur-Ion\" monster from your Deck in your Spell & Trap Zone as a face-up Continuous Trap. For the rest of this turn, while you control that card, or any card with that same original name, you cannot Special Summon from the Extra Deck, except \"Centur-Ion\" monsters.\n" +
+      "● Set 1 \"Centur-Ion\" Spell/Trap directly from your Deck.\n" +
+      "You can only activate 1 \"Emblema Oath\" per turn.";
+    const effects = [
+      new QuickEffect([
+        new EffectCostClause("Activate 1 of these effects"),
+        new SubEffectClause([
+          new EffectMainClause("Place 1 \"Centur-Ion\" monster from your Deck in your Spell & Trap Zone as a face-up Continuous Trap."),
+          new EffectMainClause("For the rest of this turn, while you control that card, or any card with that same original name, you cannot Special Summon from the Extra Deck, except \"Centur-Ion\" monsters.")
+        ]),
+        new SubEffectClause([new EffectMainClause("Set 1 \"Centur-Ion\" Spell/Trap directly from your Deck.")]),
+      ]),
+      new EffectRestriction("You can only activate 1 \"Emblema Oath\" per turn.")
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
+  });
 });

@@ -3,6 +3,7 @@ import TriggerEffect from "../../effect/TriggerEffect.tsx";
 import IgnitionEffect from "../../effect/IgnitionEffect.tsx";
 import QuickEffect from "../../effect/QuickEffect.tsx";
 import EffectMainClause from "../../effect/clause/EffectMainClause.ts";
+import SubEffectClause from "../../effect/clause/SubEffectClause.tsx";
 
 /**
  * Parses a sentence that is an extension of the previous sentence.
@@ -19,6 +20,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
         || sentence.startsWith("After choosing ")
         || sentence.startsWith("You can also ")
         || sentence.startsWith("This is a Quick Effect if ")
+        || sentence.startsWith("For the rest of this turn, ")
         || sentence.includes(" activate this effect")
         || sentence.includes(" by this effect")
         || sentence.includes(" this effect's activation")
@@ -30,7 +32,12 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
 
   parse({sentence, lastEffect}: EffectParseProps): null {
     if (lastEffect instanceof TriggerEffect || lastEffect instanceof IgnitionEffect || lastEffect instanceof QuickEffect) {
-      lastEffect.clauses.push(new EffectMainClause(sentence));
+      const lastClause = lastEffect.clauses[lastEffect.clauses.length - 1];
+      if (lastClause instanceof SubEffectClause) {
+        lastClause.subClauses.push(new EffectMainClause(sentence));
+      } else {
+        lastEffect.clauses.push(new EffectMainClause(sentence));
+      }
     }
     return null;
   }
