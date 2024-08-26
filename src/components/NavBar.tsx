@@ -24,7 +24,11 @@ export default function NavBar(): ReactNode {
       <div className={"search"}>
         <button onClick={toggleSearch}>Search</button>
         <ModalOverlay close={toggleSearch} isVisible={isSearchVisible}>
-          {(isSearchVisible || searchHasBeenVisible) && <SearchBox toggleSearch={toggleSearch} isSearchBoxOpen={isSearchVisible}/>}
+          {(isSearchVisible || searchHasBeenVisible) && <SearchBox
+              toggleSearch={toggleSearch}
+              isSearchBoxOpen={isSearchVisible}
+              isModal={true}
+          />}
         </ModalOverlay>
       </div>
     </div>
