@@ -20,7 +20,7 @@ export default function CardHoverPreview({card, mousePos}: CardHoverPreviewProps
 
       const previewWidth = ref.current.clientWidth;
       const previewHeight = ref.current.clientHeight;
-      const offset = 10;
+      const offset = 0;
       let newLeft = mousePos.x + offset;
       let newTop = mousePos.y + offset;
 
