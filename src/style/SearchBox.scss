@@ -79,12 +79,18 @@
 
     user-select: none;
 
+    > div {
+      width: min-content;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      font-weight: inherit;
+      cursor: inherit;
+    }
+
     .card {
-      //margin: 0.5%;
-      //width: 200px;
-      //width: 20vw;
-      //height: 33vh;
-      //overflow: hidden;
       height: fit-content;
 
       img {
