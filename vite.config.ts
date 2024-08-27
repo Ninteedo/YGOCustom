@@ -23,15 +23,6 @@ export default defineConfig(({mode}) => {
     },
     define: {
       "process.env.IMAGE_BASE_URL": JSON.stringify(env.VITE_IMAGE_BASE_URL),
-    },
-    build: {
-      rollupOptions: {
-        output: {
-          entryFileNames: 'assets/[name].js',
-          chunkFileNames: 'assets/[name].js',
-          assetFileNames: 'assets/[name][extname]'
-        }
-      }
     }
   };
 });
