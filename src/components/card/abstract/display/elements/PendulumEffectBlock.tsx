@@ -4,8 +4,8 @@ import EffectBlock from "./EffectBlock.tsx";
 
 export default function PendulumEffectBlock({materials, pendulumEffects, monsterEffects, cardId}: {
   materials?: string,
-  pendulumEffects: Effect[],
-  monsterEffects: Effect[],
+  pendulumEffects: Effect[] | string,
+  monsterEffects: Effect[] | string,
   cardId: string,
 }): ReactNode {
   return (

@@ -1,16 +1,8 @@
 import {ReactNode} from "react";
 import BaseDbCard from "../abstract/BaseDbCard.ts";
 import CardTemplate from "../abstract/display/elements/CardTemplate.tsx";
-import {useGetSettingsContext} from "../../settings/SettingsProvider.tsx";
-import CardDetailNoFormatting from "./CardDetailNoFormatting.tsx";
 
-export default function CardDetail({card}: { card: BaseDbCard }): ReactNode {
-  const { settings } = useGetSettingsContext();
-
-  if (settings.disableCardFormatting) {
-    return CardDetailNoFormatting({card});
-  }
-
+export default function CardDetailNoFormatting({card}: { card: BaseDbCard }): ReactNode {
   return (
     <div>
       <CardTemplate
@@ -18,7 +10,7 @@ export default function CardDetail({card}: { card: BaseDbCard }): ReactNode {
         name={card.name}
         artSrc={card.art}
         infoLine={card.getInfoLine()}
-        effectBlock={card.getEffectBlock()}
+        effectBlock={card.getEffectBlockNoFormatting()}
         cardKind={card.kind}
         cardSubKind={card.subKind}
         overrideArtSrc={true}

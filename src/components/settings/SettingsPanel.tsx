@@ -1,14 +1,8 @@
-import {ChangeEvent, useContext} from "react";
-import {SettingsContext} from "./SettingsProvider.tsx";
+import {ChangeEvent} from "react";
+import {useGetSettingsContext} from "./SettingsProvider.tsx";
 
 export default function SettingsPanel() {
-  const context = useContext(SettingsContext);
-
-  if (!context) {
-    throw new Error("SettingsContext not found");
-  }
-
-  const { settings, setSettings } = context;
+  const { settings, setSettings } = useGetSettingsContext();
 
   function setDisableCardFormatting(event: ChangeEvent<HTMLInputElement>) {
     const disableCardFormatting = event.target.checked;

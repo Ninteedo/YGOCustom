@@ -2,6 +2,7 @@ import React, {ReactNode, useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import {useGetOfficialCard} from "../components/card/abstract/parse/cardLoader.ts";
 import {LoadingSpinner} from "../components/card/LoadingSpinner.tsx";
+import CardDetail from "../components/card/display/CardDetail.tsx";
 
 const CardPage: React.FC = () => {
   const {cardId} = useParams<{ cardId: string }>();
@@ -19,7 +20,7 @@ const CardPage: React.FC = () => {
       setCardComponent(<div>Card "{cardId}" not found</div>);
       console.log("loading=" + loading + ", card=" + card + ", cardName=" + cardId)
     } else {
-      setCardComponent(card.toCardDetail());
+      setCardComponent(<CardDetail card={card} />);
       document.title = card.name;
     }
   }, [card, cardId, loading]);

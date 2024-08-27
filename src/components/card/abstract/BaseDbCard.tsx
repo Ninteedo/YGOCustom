@@ -1,4 +1,4 @@
-import React, {Fragment, ReactElement, ReactNode} from "react";
+import {Fragment, ReactElement, ReactNode} from "react";
 import CardTemplate from "./display/elements/CardTemplate.tsx";
 import StatLine from "./display/elements/StatLine.tsx";
 import EffectBlock from "./display/elements/EffectBlock.tsx";
@@ -6,7 +6,7 @@ import {parseEffects} from "./parse/parseEffects.ts";
 import {CardKind, isSpellTrapCard, readCardKind} from "./CardKind.ts";
 import {CardSubKind, isContinuousLike, isExtraDeck, readCardSubKind} from "./CardSubKind.ts";
 import PendulumEffectBlock from "./display/elements/PendulumEffectBlock.tsx";
-import {parsePendulumText} from "./parse/parsePendulum.ts";
+import {parsePendulumText, splitPendulumText} from "./parse/parsePendulum.ts";
 import NormalEffectLore from "./effect/NormalEffectLore.tsx";
 import {getMonsterSpecialKinds} from "./MonsterSpecialKind.ts";
 import {CardJsonEntry} from "../../../dbCompression.ts";
@@ -37,14 +37,6 @@ export default class BaseDbCard {
     this.json = cardEntry;
   }
 
-  toCardDetail(): React.ReactNode {
-    return this.toElement();
-  }
-
-  toCardElement(): React.ReactNode {
-    return this.toElement();
-  }
-
   toText(): string {
     return `${this.id}\n${this.name}\n${this.text}`
   }
@@ -53,7 +45,7 @@ export default class BaseDbCard {
     return `/card/official/${this.id}`
   }
 
-  protected getInfoLine(): ReactElement {
+  getInfoLine(): ReactElement {
     switch (this.kind) {
       case CardKind.MONSTER:
         return <p>{getLevelName(this.subKind, this.json)} {this.json.attribute} Monster</p>
@@ -68,7 +60,7 @@ export default class BaseDbCard {
     }
   }
 
-  protected getCategoryLine(): ReactElement | undefined {
+  getCategoryLine(): ReactElement | undefined {
     if (this.kind === CardKind.MONSTER) {
       const specialKinds = getMonsterSpecialKinds(this.json.type);
       if (!this.json.race) {
@@ -79,7 +71,7 @@ export default class BaseDbCard {
     }
   }
 
-  protected getStatLine(): ReactNode {
+  getStatLine(): ReactNode {
     if (this.kind === CardKind.MONSTER && this.json.atk) {
       const atk = parseInt(this.json.atk);
       const def = this.json.def ? parseInt(this.json.def) : 0;
@@ -104,7 +96,7 @@ export default class BaseDbCard {
     />;
   }
 
-  protected getEffectBlock(): ReactNode {
+  getEffectBlock(): ReactNode {
     try {
       if (this.kind == CardKind.MONSTER && this.isPendulum) {
         const {materials, pendulumEffects, monsterEffects} = parsePendulumText(
@@ -133,17 +125,30 @@ export default class BaseDbCard {
     }
   }
 
-  protected getMaterials(): string | undefined {
+  getEffectBlockNoFormatting(): ReactNode {
+    if (this.kind == CardKind.MONSTER && this.isPendulum) {
+      const {materials, pendulumText, monsterText} = splitPendulumText(
+        this.text, isExtraDeck(this.subKind));
+      return <PendulumEffectBlock materials={materials} pendulumEffects={pendulumText} monsterEffects={monsterText} cardId={this.id} />;
+    }
+
+    const materials = this.getMaterials();
+    const effectText = materials ? this.getEffectText() : this.text;
+
+    return <EffectBlock materials={materials} effects={effectText} cardId={this.id}/>;
+  }
+
+  getMaterials(): string | undefined {
     if (this.kind === CardKind.MONSTER && isExtraDeck(this.subKind)) {
       return readMaterialsText(this.text) || this.text;
     }
   }
 
-  protected getEffectText(): string {
+  getEffectText(): string {
     return readNonMaterialsText(this.text);
   }
 
-  private getCopyTextDiscordBasic(): string {
+  getCopyTextDiscordBasic(): string {
     return `**${this.name}**
 *${this.getInfoLine()}*
 ${this.getCategoryLine()}
