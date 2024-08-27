@@ -1,12 +1,6 @@
 import "./style/App.css"
-import {
-  createBrowserRouter,
-  Outlet,
-  RouterProvider,
-  ScrollRestoration,
-} from "react-router-dom";
+import {createBrowserRouter, Outlet, RouterProvider, ScrollRestoration} from "react-router-dom";
 import {CardPage} from "./pages/CardPage.tsx";
-import {HomePage} from "./pages/HomePage.tsx";
 import {CustomCardPage2} from "./pages/CustomCardPage2.tsx";
 import ArchetypePage from "./pages/ArchetypePage.tsx";
 import NavBar from "./components/NavBar.tsx";
@@ -38,7 +32,7 @@ function App() {
       children: [
         {
           index: true,
-          element: <HomePage/>,
+          element: <CardSearchPage/>,
         },
         {
           path: "card/official/:cardId",
