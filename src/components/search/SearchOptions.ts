@@ -26,7 +26,7 @@ function cardKindTest(kind: string): (card: BaseDbCard) => boolean {
 function cardKindSearchOption(kind: string): SearchOption {
   return {
     label: kind,
-    value: `kind-${kind}`,
+    value: `kind-${kind.toLowerCase()}`,
     category: SearchOptionCategory.CardKind,
     test: cardKindTest(kind),
   };
@@ -39,7 +39,7 @@ function subKindTest(subKind: CardSubKind): (card: BaseDbCard) => boolean {
 function subKindSearchOption(subKind: CardSubKind): SearchOption {
   return {
     label: subKind,
-    value: `subkind-${subKind}`,
+    value: `subkind-${subKind.toLowerCase()}`,
     category: SearchOptionCategory.SubType,
     test: subKindTest(subKind),
   };
@@ -83,7 +83,7 @@ function monsterTypeTest(type: MonsterType): (card: BaseDbCard) => boolean {
 function monsterTypeSearchOption(type: MonsterType): SearchOption {
   return {
     label: type,
-    value: `type-${type}`,
+    value: `type-${type.toLowerCase()}`,
     category: SearchOptionCategory.MonsterType,
     test: monsterTypeTest(type),
   };
@@ -96,7 +96,7 @@ function cardAttributeTest(attribute: string): (card: BaseDbCard) => boolean {
 function cardAttributeSearchOption(attribute: string): SearchOption {
   return {
     label: attribute,
-    value: `attribute-${attribute}`,
+    value: `attribute-${attribute.toLowerCase()}`,
     category: SearchOptionCategory.Attribute,
     test: cardAttributeTest(attribute),
   };

@@ -2,14 +2,11 @@ import {useSearchCards} from "./useSearchCards.tsx";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {SearchResult} from "./SearchResult.tsx";
 import {LoadingSpinner} from "../card/LoadingSpinner.tsx";
-import {SearchOption} from "./SearchOptions.ts";
-import {MultiValue} from "react-select";
+import SearchProps from "./SearchProps.ts";
 
 interface SearchResultsProps {
-  searchTerm: string;
+  search: SearchProps;
   toggleSearch: () => void;
-  filterOptions: MultiValue<SearchOption>;
-  fuzzySearch: boolean;
 }
 
 /**
@@ -19,11 +16,10 @@ interface SearchResultsProps {
  * @param toggleSearch Function to close the search box
  */
 export function SearchResults({
-  searchTerm,
+  search,
   toggleSearch,
-  filterOptions,
-  fuzzySearch,
 }: SearchResultsProps) {
+  const {query: searchTerm, options: filterOptions, fuzzy: fuzzySearch} = search;
   const {results, hits, isLoading} = useSearchCards(searchTerm, filterOptions, fuzzySearch);
   const observer = useRef<IntersectionObserver | null>(null);
   const resultsRef = useRef<HTMLDivElement | null>(null);
