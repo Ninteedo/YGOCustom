@@ -1,10 +1,10 @@
-import {BaseCard} from "../abstract/BaseCard.ts";
+import BaseDbCard from "../abstract/BaseDbCard.ts";
 import "../../../style/CardHoverPreview.scss";
 import CardDetail from "./CardDetail.tsx";
 import {useEffect, useRef, useState} from "react";
 
 interface CardHoverPreviewProps {
-  card: BaseCard;
+  card: BaseDbCard;
   mousePos: {x: number, y: number};
 }
 

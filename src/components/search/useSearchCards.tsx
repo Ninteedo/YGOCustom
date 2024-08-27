@@ -1,4 +1,3 @@
-import {BaseCard} from "../card/abstract/BaseCard.ts";
 import {useEffect, useState} from "react";
 import {useCardDbContext} from "../card/abstract/parse/cardDbUtility.ts";
 import {loadCard} from "../card/abstract/parse/cardLoader.ts";
@@ -9,14 +8,14 @@ import {SearchOption, SearchOptionCategory} from "./SearchOptions.ts";
 import {MultiValue} from "react-select";
 
 interface SearchResultsResponse {
-  results: BaseCard[];
+  results: BaseDbCard[];
   hits: number;
   isLoading: boolean;
 }
 
 export function useSearchCards(searchTerm: string, filterOptions: MultiValue<SearchOption>, fuzzySearch: boolean): SearchResultsResponse {
-  const [results, setResults] = useState<BaseCard[]>([]);
-  const [filteredResults, setFilteredResults] = useState<BaseCard[]>([]);
+  const [results, setResults] = useState<BaseDbCard[]>([]);
+  const [filteredResults, setFilteredResults] = useState<BaseDbCard[]>([]);
   const [loading, setLoading] = useState(false);
   const cardDb = useCardDbContext();
 
@@ -63,7 +62,7 @@ export function useSearchCards(searchTerm: string, filterOptions: MultiValue<Sea
 
     Promise.all(manifestEntries.map((entry) => loadCard(entry)))
       .then((manifestResults) => {
-        const filtered: BaseCard[] = manifestResults.filter(card => card !== null) as BaseCard[];
+        const filtered: BaseDbCard[] = manifestResults.filter(card => card !== null) as BaseDbCard[];
         const combinedResults = Array.from(new Set([...dbResults, ...filtered]));
         setFilteredResults(combinedResults);
         setResults(combinedResults);  //.slice(0, page * pageLength)); // Update to display initial results

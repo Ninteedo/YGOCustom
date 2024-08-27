@@ -1,4 +1,4 @@
-import {BaseCard} from "../abstract/BaseCard.ts";
+import BaseDbCard from "../abstract/BaseDbCard.ts";
 import {useEffect, useState} from "react";
 import {loadCard} from "../abstract/parse/cardLoader.ts";
 import CardError from "./CardError.tsx";
@@ -9,7 +9,7 @@ interface CardElementProps {
 }
 
 export default function CardElement({id}: CardElementProps) {
-  const [card, setCard] = useState<BaseCard | null>(null);
+  const [card, setCard] = useState<BaseDbCard | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 

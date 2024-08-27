@@ -1,4 +1,3 @@
-import {BaseCard} from "./BaseCard.ts";
 import React, {Fragment, ReactElement, ReactNode} from "react";
 import CardTemplate from "./display/elements/CardTemplate.tsx";
 import StatLine from "./display/elements/StatLine.tsx";
@@ -15,19 +14,24 @@ import {MonsterType, monsterTypeFromString} from "./monster/MonsterType.ts";
 import {CardAttribute, monsterAttributeFromString} from "./monster/CardAttribute.ts";
 import {readMaterialsText, readNonMaterialsText} from "./parse/parseMaterials.ts";
 
-export default class BaseDbCard extends BaseCard {
+export default class BaseDbCard {
+  public readonly id: string;
+  public readonly name: string;
+  public readonly art: string;
+  public readonly kind: CardKind;
+  public readonly subKind: CardSubKind;
+  public readonly isPendulum: boolean;
+
   public readonly text: string;
   public readonly json: CardJsonEntry;
 
   constructor(cardEntry: CardJsonEntry) {
-    super(
-      cardEntry.id,
-      cardEntry.name,
-      getBucketImageLink(cardEntry.imageId),
-      getDbCardKind(cardEntry),
-      getDbCardSubKind(cardEntry),
-      cardEntry.type.toLowerCase().includes("pendulum")
-    );
+    this.id = cardEntry.id;
+    this.name = cardEntry.name;
+    this.art = getBucketImageLink(cardEntry.imageId);
+    this.kind = getDbCardKind(cardEntry);
+    this.subKind = getDbCardSubKind(cardEntry);
+    this.isPendulum = cardEntry.type.toLowerCase().includes("pendulum");
 
     this.text = cardEntry.desc;
     this.json = cardEntry;

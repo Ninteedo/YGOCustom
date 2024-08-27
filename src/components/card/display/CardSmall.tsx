@@ -1,11 +1,11 @@
 import {CardArt} from "../CardArt.tsx";
 import "../../../style/CardSmall.scss";
-import {BaseCard} from "../abstract/BaseCard.ts";
+import BaseDbCard from "../abstract/BaseDbCard.ts";
 import React, {useState} from "react";
 import CardHoverPreview from "./CardHoverPreview.tsx";
 
 interface CardSmallProps {
-  card: BaseCard;
+  card: BaseDbCard;
   clickAction?: () => void;
   isPendulum?: boolean;
 }

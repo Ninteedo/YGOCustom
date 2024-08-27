@@ -1,7 +1,7 @@
 import {ReactNode} from "react";
-import {BaseCard} from "../abstract/BaseCard.ts";
+import BaseDbCard from "../abstract/BaseDbCard.ts";
 
-export default function CardDetail({card}: { card: BaseCard }): ReactNode {
+export default function CardDetail({card}: { card: BaseDbCard }): ReactNode {
   return (
     <div>
       {card?.toCardDetail()}
