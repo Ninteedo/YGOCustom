@@ -105,7 +105,7 @@ export default class BaseDbCard {
       }
 
       if (this.kind == CardKind.TOKEN || (this.kind == CardKind.MONSTER && this.subKind == CardSubKind.NORMAL)) {
-        return new NormalEffectLore(this.text).render()
+        return <EffectBlock effects={new NormalEffectLore(this.text)} cardId={this.id} />;
       }
 
       const materials = this.getMaterials();
@@ -117,7 +117,7 @@ export default class BaseDbCard {
           isSpellTrapCard(this.kind)
           && isContinuousLike(this.subKind)
         )
-      })
+      });
 
       return <EffectBlock materials={materials} effects={effects} cardId={this.id}/>;
     } catch (e) {

@@ -6,7 +6,7 @@ export default class NormalEffectLore extends Effect {
 
   constructor(lore: string) {
     super();
-    this.lore = lore;
+    this.lore = lore.trim();
   }
 
   render(): ReactNode {

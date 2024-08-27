@@ -44,12 +44,12 @@ export function splitPendulumText(text: string, isExtraDeck: boolean): {
 export function parsePendulumText(text: string, isNormalMonster: boolean, isExtraDeck: boolean): {
   materials: string | undefined,
   pendulumEffects: Effect[],
-  monsterEffects: Effect[]
+  monsterEffects: Effect[] | NormalEffectLore
 } {
   let materials: string | undefined = undefined;
 
   let pendulumEffectData: Effect[] | undefined = undefined;
-  let monsterEffectData: Effect[] | undefined = undefined;
+  let monsterEffectData: Effect[] | NormalEffectLore | undefined = undefined;
 
   const pendulumDelimiter = "[ Pendulum Effect ]";
   const monsterDelimiter = "[ Monster Effect ]";
@@ -62,7 +62,7 @@ export function parsePendulumText(text: string, isNormalMonster: boolean, isExtr
     pendulumEffectData = parseEffects({text: pendulumEffectText});
   } if (monsterIndex > -1) {
     if (isNormalMonster) {
-      monsterEffectData = [new NormalEffectLore(text.slice(monsterIndex + monsterDelimiter.length))];
+      monsterEffectData = new NormalEffectLore(text.slice(monsterIndex + monsterDelimiter.length));
     } else {
       let monsterEffectText = text.slice(monsterIndex + monsterDelimiter.length).trim();
       if (isExtraDeck) {
