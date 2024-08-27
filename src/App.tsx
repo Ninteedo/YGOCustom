@@ -12,17 +12,20 @@ import ArchetypePage from "./pages/ArchetypePage.tsx";
 import NavBar from "./components/NavBar.tsx";
 import CardSearchPage from "./pages/CardSearchPage.tsx";
 import {CardDbProvider} from "./components/card/abstract/parse/CardDb.tsx";
+import SettingsProvider from "./components/settings/SettingsProvider.tsx";
 
 function Layout() {
   return (
     <>
-      <CardDbProvider>
-        <NavBar/>
-        <ScrollRestoration/>
-        <div id={"content"}>
-          <Outlet/>
-        </div>
-      </CardDbProvider>
+      <SettingsProvider>
+        <CardDbProvider>
+          <NavBar/>
+          <ScrollRestoration/>
+          <div id={"content"}>
+            <Outlet/>
+          </div>
+        </CardDbProvider>
+      </SettingsProvider>
     </>
   );
 }
