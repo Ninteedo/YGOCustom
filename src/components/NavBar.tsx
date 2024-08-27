@@ -3,6 +3,7 @@ import "../style/NavBar.scss";
 import SearchBox from "./search/SearchBox.tsx";
 import ModalOverlay from "./ModalOverlay.tsx";
 import {Link} from "react-router-dom";
+import Icon from '../assets/icon.webp';
 
 export default function NavBar(): ReactNode {
   const [isSearchVisible, setSearchVisible] = useState(false);
@@ -16,7 +17,7 @@ export default function NavBar(): ReactNode {
   return (
     <div className={"nav-bar"}>
       <div className={"logo"}>
-        <img src={"/vite.svg"} alt={"Logo"}/>
+        <img src={Icon} alt={"Logo"}/>
       </div>
       <div className={"links"}>
         <Link to={"/"}>Home</Link>
