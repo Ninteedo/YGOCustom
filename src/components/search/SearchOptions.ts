@@ -17,6 +17,7 @@ export enum SearchOptionCategory {
   Level = "Level",
   MonsterType = "MonsterType",
   Attribute = "Attribute",
+  Pendulum = "Pendulum",
 }
 
 function cardKindTest(kind: string): (card: BaseDbCard) => boolean {
@@ -102,6 +103,19 @@ function cardAttributeSearchOption(attribute: string): SearchOption {
   };
 }
 
+function pendulumTest(card: BaseDbCard): boolean {
+  return card.isPendulum;
+}
+
+function pendulumSearchOption(): SearchOption {
+  return {
+    label: "Pendulum",
+    value: "pendulum",
+    category: SearchOptionCategory.Pendulum,
+    test: pendulumTest,
+  };
+}
+
 const cardKindSearchOptions: SearchOption[] = Array.from(Object.values(CardKind), cardKindSearchOption);
 
 const subKindSearchOptions: SearchOption[] = Array.from(Object.values(CardSubKind), subKindSearchOption);
@@ -119,5 +133,6 @@ export const searchOptions: SearchOption[] = [
   extraDeckSearchOption(),
   ...levelSearchOptions,
   ...monsterTypeSearchOptions,
-  ...attributeSearchOptions
+  ...attributeSearchOptions,
+  pendulumSearchOption(),
 ];
