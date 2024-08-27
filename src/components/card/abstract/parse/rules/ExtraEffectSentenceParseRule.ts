@@ -17,6 +17,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
         || sentence.startsWith("It ")
         || sentence.startsWith("The ")
         || sentence.startsWith("Then")
+        || sentence.startsWith("Its ")
         || sentence.startsWith("After choosing ")
         || sentence.startsWith("You can also ")
         || sentence.startsWith("You can use this effect ")

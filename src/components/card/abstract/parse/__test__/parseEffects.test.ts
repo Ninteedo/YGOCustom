@@ -919,4 +919,46 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Arcana Force XXI - The World', () => {
+    const text = "When this card is Summoned, toss a coin: ● Heads: During your End Phase, you can send 2 monsters you control to the Graveyard to skip your opponent's next turn. ● Tails: During your opponent's Draw Phase, add the top card of their Graveyard to their hand."
+    const effects = [
+      new TriggerEffect([
+        new EffectConditionClause("When this card is Summoned, toss a coin"),
+        new SubEffectClause([
+          new EffectConditionClause("Heads"),
+          new EffectMainClause("During your End Phase, you can send 2 monsters you control to the Graveyard to skip your opponent's next turn.")
+        ]),
+        new SubEffectClause([
+          new EffectConditionClause("Tails"),
+          new EffectMainClause("During your opponent's Draw Phase, add the top card of their Graveyard to their hand.")
+        ]),
+      ])
+    ];
+    testParseEffects({text}, effects);
+  });
+
+  test('Arcana Force EX - The Dark Ruler', () => {
+    const text = "Cannot be Normal Summoned/Set. Must be Special Summoned (from your hand) by sending 3 monsters you control to the Graveyard, and cannot be Special Summoned by other ways. When this card is Special Summoned: Toss a coin and gain the appropriate effect.\n" +
+      "● Heads: This card can make a second attack during each Battle Phase, but if it does so using this effect, change it to Defense Position at the end of the Battle Phase. Its battle position cannot be changed until the end of your next turn.\n" +
+      "● Tails: If this card is destroyed, destroy all cards on the field.";
+    const effects = [
+      new SummoningCondition(new EffectMainClause("Cannot be Normal Summoned/Set.")),
+      new SummoningCondition(new EffectMainClause("Must be Special Summoned (from your hand) by sending 3 monsters you control to the Graveyard, and cannot be Special Summoned by other ways.")),
+      new TriggerEffect([
+        new EffectConditionClause("When this card is Special Summoned"),
+        new EffectMainClause("Toss a coin and gain the appropriate effect."),
+        new SubEffectClause([
+          new EffectConditionClause("Heads"),
+          new EffectMainClause("This card can make a second attack during each Battle Phase, but if it does so using this effect, change it to Defense Position at the end of the Battle Phase."),
+          new EffectMainClause("Its battle position cannot be changed until the end of your next turn.")
+        ]),
+        new SubEffectClause([
+          new EffectConditionClause("Tails"),
+          new EffectMainClause("If this card is destroyed, destroy all cards on the field.")
+        ]),
+      ])
+    ];
+    testParseEffects({text}, effects);
+  });
 });

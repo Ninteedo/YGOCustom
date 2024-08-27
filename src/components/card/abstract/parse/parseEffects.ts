@@ -192,6 +192,10 @@ function splitSentences(text: string): string[] {
       }
     } else if (isSentenceTerminator(char) && !inQuotes && !inBrackets) {
       endSentence();
+    } else if (char === "●" && i > 0) {
+      i -= 1;
+      endSentence();
+      i += 1;
     }
   }
   endSentence();
