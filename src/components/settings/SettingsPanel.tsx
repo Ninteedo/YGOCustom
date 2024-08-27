@@ -1,5 +1,6 @@
 import {ChangeEvent} from "react";
 import {useGetSettingsContext} from "./SettingsProvider.tsx";
+import "../../style/SettingsPanel.scss";
 
 export default function SettingsPanel() {
   const { settings, setSettings } = useGetSettingsContext();
