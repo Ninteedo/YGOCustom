@@ -9,7 +9,7 @@ import PendulumEffectBlock from "./display/elements/PendulumEffectBlock.tsx";
 import {parsePendulumText, splitPendulumText} from "./parse/parsePendulum.ts";
 import NormalEffectLore from "./effect/NormalEffectLore.tsx";
 import {getMonsterSpecialKinds} from "./MonsterSpecialKind.ts";
-import {CardJsonEntry} from "../../../dbCompression.ts";
+import {CardJsonEntry, parseForbiddenValue} from "../../../dbCompression.ts";
 import {MonsterType, monsterTypeFromString} from "./monster/MonsterType.ts";
 import {CardAttribute, monsterAttributeFromString} from "./monster/CardAttribute.ts";
 import {readMaterialsText, readNonMaterialsText} from "./parse/parseMaterials.ts";
@@ -25,6 +25,9 @@ export default class BaseDbCard {
   public readonly text: string;
   public readonly json: CardJsonEntry;
 
+  public readonly limitedTcg: number;
+  public readonly limitedOcg: number;
+
   constructor(cardEntry: CardJsonEntry) {
     this.id = cardEntry.id;
     this.name = cardEntry.name;
@@ -35,6 +38,8 @@ export default class BaseDbCard {
 
     this.text = cardEntry.desc;
     this.json = cardEntry;
+
+    [this.limitedTcg, this.limitedOcg] = parseForbiddenValue(cardEntry.forbidden);
   }
 
   toText(): string {

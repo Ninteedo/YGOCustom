@@ -1,17 +1,18 @@
 const mappings: [string, string][] = [
-  ["id", "i"],
-  ["name", "n"],
-  ["type", "y"],
-  ["frameType", "f"],
-  ["desc", "t"],
   ["atk", "a"],
-  ["def", "d"],
-  ["race", "r"],
   ["attribute", "b"],
+  ["def", "d"],
+  ["forbidden", "g"],
+  ["frameType", "f"],
   ["archetype", "h"],
-  ["imageId", "u"],
+  ["id", "i"],
   ["level", "l"],
+  ["name", "n"],
+  ["race", "r"],
+  ["desc", "t"],
+  ["imageId", "u"],
   ["linkval", "v"],
+  ["type", "y"],
   // ["card_sets", "s"],
 ];
 // const ignoredEntries: string[] = [
@@ -42,6 +43,7 @@ export class CardJsonEntry {
   public readonly imageId: string;
   public readonly level: string | undefined;
   public readonly linkval: string | undefined;
+  public readonly forbidden: string | undefined;
   // public readonly cardSets: CardSet[];
 
   constructor(json: any, isCompressed: boolean) {
@@ -54,6 +56,7 @@ export class CardJsonEntry {
     this.archetype = getMappingSafe(json, "archetype", isCompressed);
     this.level = getMappingSafe(json, "level", isCompressed);
     this.linkval = getMappingSafe(json, "linkval", isCompressed);
+    this.forbidden = getMappingSafe(json, "forbidden", isCompressed);
 
     if (isCompressed) {
       this.imageId = getMapping(json, "imageId", isCompressed);
@@ -79,6 +82,15 @@ export class CardJsonEntry {
       this.attribute = getMappingSafe(json, "attribute", isCompressed);
       this.frameType = getMapping(json, "frameType", isCompressed);
       this.type = getMapping(json, "type", isCompressed);
+
+      if (json["banlist_info"]) {
+        const banlistInfo = json["banlist_info"];
+        const tcg = banlistInfo["ban_tcg"];
+        const ocg = banlistInfo["ban_ocg"];
+        this.forbidden = getForbiddenValue(tcg, ocg);
+      } else {
+        this.forbidden = undefined;
+      }
     }
     // this.cardSets = (json[getMapping("card_sets", isCompressed)]; as Object[]).map(setJson => new CardSet(setJson));
   }
@@ -301,6 +313,41 @@ function shortToType(short: string): string {
     throw new Error(`Type ${part} not found`);
   });
   return longParts.join(" ");
+}
+
+function getForbiddenValue(tcg: string | undefined, ocg: string | undefined): string | undefined {
+  function parseValue(value: string | undefined): number {
+    if (value === undefined) {
+      return 3;
+    }
+    switch (value.toLowerCase()) {
+      case "forbidden":
+        return 0;
+      case "limited":
+        return 1;
+      case "semi-limited":
+        return 2;
+      default:
+        return 3;
+    }
+  }
+
+  const tcgValue = parseValue(tcg);
+  const ocgValue = parseValue(ocg);
+
+  if (tcgValue === 3 && ocgValue === 3) {
+    return undefined;
+  }
+
+  return (tcgValue + 4 * ocgValue).toString();
+}
+
+export function parseForbiddenValue(value: string | undefined): [number, number] {
+  if (value === undefined) {
+    return [3, 3];
+  }
+  const parsed = parseInt(value);
+  return [parsed % 4, Math.floor(parsed / 4)];
 }
 
 // class CardSet {
