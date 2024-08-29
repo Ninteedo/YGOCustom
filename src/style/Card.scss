@@ -123,10 +123,26 @@
       }
     }
 
-    .statline {
+    .card-footer {
       display: flex;
-      justify-content: right;
-      margin-top: 10px;
+      justify-content: space-between;
+
+      .limited-container {
+        display: flex;
+        justify-content: left;
+
+        img {
+          height: 1.5em;
+          vertical-align: bottom;
+          margin-right: 5px;
+        }
+      }
+
+      .statline {
+        display: flex;
+        justify-content: right;
+        margin-top: 10px;
+      }
     }
   }
 }

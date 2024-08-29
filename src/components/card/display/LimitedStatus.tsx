@@ -15,8 +15,8 @@ export default function LimitedStatus({card}: LimitedStatusParams) {
 
   return (
     <div className={"limited-container"}>
-      TCG: <img src={getLimitedImage(card.limitedTcg)} alt={"TCG Limited Status"}/>
-      OCG: <img src={getLimitedImage(card.limitedOcg)} alt={"OCG Limited Status"}/>
+      <div>TCG: <img src={getLimitedImage(card.limitedTcg)} alt={"TCG Limited Status"}/></div>
+      <div>OCG: <img src={getLimitedImage(card.limitedOcg)} alt={"OCG Limited Status"}/></div>
     </div>
   );
 }

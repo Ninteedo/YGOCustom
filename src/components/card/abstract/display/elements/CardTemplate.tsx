@@ -11,6 +11,7 @@ interface CardTemplateProps {
   categoryLine?: ReactNode;
   effectBlock: ReactNode;
   statLine?: ReactNode;
+  limitedStatus?: ReactNode;
   cardKind: string;
   cardSubKind: string;
   overrideArtSrc?: boolean;
@@ -26,6 +27,7 @@ export default function CardTemplate({
   categoryLine,
   effectBlock,
   statLine,
+  limitedStatus,
   cardKind,
   cardSubKind,
   overrideArtSrc,
@@ -49,7 +51,10 @@ export default function CardTemplate({
           {categoryLine}
         </div>
         {effectBlock}
-        {statLine}
+        <div className={"card-footer"}>
+          {limitedStatus}
+          {statLine}
+        </div>
       </div>
     </div>
   );
