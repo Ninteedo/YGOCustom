@@ -126,6 +126,7 @@
     .card-footer {
       display: flex;
       justify-content: space-between;
+      padding: 0.25em;
 
       .limited-container {
         display: flex;
@@ -141,7 +142,6 @@
       .statline {
         display: flex;
         justify-content: right;
-        margin-top: 10px;
       }
     }
   }
