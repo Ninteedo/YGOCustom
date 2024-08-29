@@ -60,7 +60,7 @@ export function monsterAttributeFromString(attribute: string): CardAttribute {
  * @param attribute The attribute to get the image for.
  * @returns The path to the image for the given attribute.
  */
-export function MonsterAttributeImage(attribute: CardAttribute): string {
+export function monsterAttributeImagePath(attribute: CardAttribute): string {
   switch (attribute) {
     case CardAttribute.LIGHT:
       return LightSvg;
@@ -79,4 +79,9 @@ export function MonsterAttributeImage(attribute: CardAttribute): string {
     default:
       throw new Error(`Unknown attribute: ${attribute}`);
   }
+}
+
+export function MonsterAttributeImage({attribute}: { attribute: CardAttribute }) {
+  const attributeIcon = monsterAttributeImagePath(attribute);
+  return <img className={"attribute-icon"} src={attributeIcon} alt={attribute + " icon"}/>;
 }

@@ -11,7 +11,7 @@ import NormalEffectLore from "./effect/NormalEffectLore.tsx";
 import {getMonsterSpecialKinds} from "./MonsterSpecialKind.ts";
 import {CardJsonEntry, parseForbiddenValue} from "../../../dbCompression.ts";
 import {MonsterType, monsterTypeFromString} from "./monster/MonsterType.ts";
-import {CardAttribute, monsterAttributeFromString} from "./monster/CardAttribute.ts";
+import {CardAttribute, monsterAttributeFromString, MonsterAttributeImage} from "./monster/CardAttribute.tsx";
 import {readMaterialsText, readNonMaterialsText} from "./parse/parseMaterials.ts";
 
 export default class BaseDbCard {
@@ -53,7 +53,8 @@ export default class BaseDbCard {
   getInfoLine(): ReactElement {
     switch (this.kind) {
       case CardKind.MONSTER:
-        return <p>{getLevelName(this.subKind, this.json)} {this.json.attribute} Monster</p>
+        const attribute = this.getAttribute();
+        return <p>{getLevelName(this.subKind, this.json)} {this.json.attribute} {attribute && <MonsterAttributeImage attribute={attribute}/>} Monster</p>
       case CardKind.SPELL:
         return <p>{this.subKind} Spell</p>
       case CardKind.TRAP:

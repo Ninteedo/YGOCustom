@@ -1,7 +1,7 @@
 import BaseDbCard from "../card/abstract/BaseDbCard.tsx";
 import {CardSubKind, isExtraDeck} from "../card/abstract/CardSubKind.ts";
 import {MonsterType} from "../card/abstract/monster/MonsterType.ts";
-import {MONSTER_ATTRIBUTES} from "../card/abstract/monster/CardAttribute.ts";
+import {MONSTER_ATTRIBUTES} from "../card/abstract/monster/CardAttribute.tsx";
 import {CardKind} from "../card/abstract/CardKind.ts";
 
 export interface SearchOption {
