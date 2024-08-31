@@ -74,7 +74,8 @@ export default class BaseDbCard {
       }
       const categories: string[] = [this.json.race.toString(), ...specialKinds.map(k => k.toString()), this.subKind];
 
-      if (this.subKind !== CardSubKind.NORMAL && this.subKind !== CardSubKind.EFFECT && this.getEffectText().length > 0) {
+      if ((isExtraDeck(this.subKind) && this.getEffectText().length > 0)
+        || (!categories.includes("Effect") && this.json.type.includes("Effect"))) {
         categories.push("Effect");
       }
 
