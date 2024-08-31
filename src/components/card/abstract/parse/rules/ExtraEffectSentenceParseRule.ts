@@ -11,6 +11,10 @@ import SummoningCondition from "../../effect/SummoningCondition.tsx";
  */
 export default class ExtraEffectSentenceParseRule extends EffectParseRule {
   match({sentence, lastEffect}: EffectParseProps): boolean {
+    if (!(lastEffect instanceof TriggerEffect || lastEffect instanceof IgnitionEffect || lastEffect instanceof QuickEffect || lastEffect instanceof SummoningCondition)) {
+      return false;
+    }
+
     if (lastEffect) {
       const lastEffectText = lastEffect.toText();
       if (lastEffectText.startsWith("(") && lastEffectText.endsWith(")")) {

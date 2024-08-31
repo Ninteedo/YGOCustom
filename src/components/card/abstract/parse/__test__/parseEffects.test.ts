@@ -1039,5 +1039,23 @@ describe('parseEffects of card', () => {
       new EffectRestriction("You can only use this effect of \"Traptrip Garden\" once per turn.")
     ];
     testParseEffects({text, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, effects);
-  })
+  });
+
+  test('Wynn the Wind Channeler', () => {
+    const text = "(This card is always treated as a \"Charmer\" card.)\n" +
+      "You can discard this card and 1 other WIND monster; add 1 WIND monster with 1500 or less DEF from your Deck to your hand, except \"Wynn the Wind Channeler\", also you cannot activate monster effects for the rest of this turn, except WIND monsters. When a WIND monster you control is destroyed by battle while this card is in your hand: You can Special Summon this card. You can only use each effect of \"Wynn the Wind Channeler\" once per turn.";
+    const effects = [
+      new AlwaysTreatedAs("This card is always treated as a \"Charmer\" card."),
+      new IgnitionEffect([
+        new EffectCostClause("You can discard this card and 1 other WIND monster"),
+        new EffectMainClause("add 1 WIND monster with 1500 or less DEF from your Deck to your hand, except \"Wynn the Wind Channeler\", also you cannot activate monster effects for the rest of this turn, except WIND monsters.")
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("When a WIND monster you control is destroyed by battle while this card is in your hand"),
+        new EffectMainClause("You can Special Summon this card.")
+      ]),
+      new EffectRestriction("You can only use each effect of \"Wynn the Wind Channeler\" once per turn.")
+    ];
+    testParseEffects({text}, effects);
+  });
 });
