@@ -38,7 +38,7 @@ export default function CardDetail({card}: { card: BaseDbCard }): ReactNode {
       cardSubKind={card.subKind}
       overrideArtSrc={true}
       statLine={card.getStatLine()}
-      limitedStatus={<LimitedStatus card={card} />}
+      limitedStatus={LimitedStatus({card})}
       categoryLine={card.getCategoryLine()}
       isPendulum={card.isPendulum}
       copyTextDiscord={card.getCopyTextDiscordBasic()}

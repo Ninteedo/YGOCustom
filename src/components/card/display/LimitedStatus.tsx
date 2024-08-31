@@ -10,7 +10,7 @@ interface LimitedStatusParams {
 
 export default function LimitedStatus({card}: LimitedStatusParams) {
   if (card.limitedTcg === 3 && card.limitedOcg === 3) {
-    return <div/>;
+    return undefined;
   }
 
   return (
