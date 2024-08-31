@@ -53,8 +53,8 @@ export default function CardTemplate({
         </div>
         {effectBlock}
         {(limitedStatus || statLine) && <div className={"card-footer"}>
-          {limitedStatus}
-          {statLine}
+          {limitedStatus || <div/>}
+          {statLine || <div/>}
         </div>}
       </div>
     </div>
