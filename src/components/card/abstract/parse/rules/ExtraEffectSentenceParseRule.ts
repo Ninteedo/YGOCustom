@@ -24,6 +24,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
         || sentence.startsWith("You can use this effect ")
         || sentence.startsWith("This is a Quick Effect if ")
         || sentence.startsWith("For the rest of this turn, ")
+        || sentence.startsWith("For the rest of this turn after this card resolves")
         || sentence.startsWith("You must also ")
         || sentence.startsWith("If Set")
         || sentence.includes(" activate this effect")
@@ -43,6 +44,8 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
       } else {
         lastEffect.clauses.push(new EffectMainClause(sentence));
       }
+    } else {
+      throw new Error(`Unexpected last effect: ${lastEffect}`);
     }
     return null;
   }
