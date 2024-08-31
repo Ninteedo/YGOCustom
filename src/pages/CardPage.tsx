@@ -1,10 +1,11 @@
 import React, {ReactNode, useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {useGetOfficialCard} from "../components/card/abstract/parse/cardLoader.ts";
 import {LoadingSpinner} from "../components/card/LoadingSpinner.tsx";
 import CardDetail from "../components/card/display/CardDetail.tsx";
+import BaseDbCard from "../components/card/abstract/BaseDbCard.tsx";
 
-const CardPage: React.FC = () => {
+export const CardPage: React.FC = () => {
   const {cardId} = useParams<{ cardId: string }>();
   const [CardComponent, setCardComponent] = useState<ReactNode | null>(null);
 
@@ -32,8 +33,27 @@ const CardPage: React.FC = () => {
   return (
     <div>
       {CardComponent}
+      {card && <CardLinks card={card} />}
     </div>
   )
 }
 
-export {CardPage}
+function CardLinks({ card }: { card: BaseDbCard }) {
+  return (
+    <div>
+      <ul>
+        <li><Link to={"https://yugipedia.com/wiki/" + encodeURIComponent(card.name)}>Yugipedia</Link></li>
+        <li><Link to={cardmarketUrl(card.name)}>Cardmarket</Link></li>
+        <li><Link to={tcgPlayerUrl(card.name)}>TCGPlayer</Link></li>
+      </ul>
+    </div>
+  )
+}
+
+function cardmarketUrl(name: string) {
+  return "https://www.cardmarket.com/en/YuGiOh/Cards/" + name.replace(/ /g, "-").replace(/[^a-zA-Z0-9-]/g, "");
+}
+
+function tcgPlayerUrl(name: string) {
+  return "https://www.tcgplayer.com/search/yugioh/product?Language=English&productLineName=yugioh&view=grid&q=" + encodeURIComponent(name);
+}
