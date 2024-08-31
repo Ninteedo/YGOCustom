@@ -2,6 +2,7 @@ import Effect from "./Effect.tsx";
 import EffectClause from "./clause/EffectClause.ts";
 import {ReactNode} from "react";
 import SpecialSummonIcon from "../../../../assets/images/properties/SpecialSummon.svg";
+import {AttributeIcon} from "../../display/AttributeIcon.tsx";
 
 export default class SummoningCondition extends Effect {
   public readonly clause: EffectClause;
@@ -14,7 +15,7 @@ export default class SummoningCondition extends Effect {
   public render(): ReactNode {
     return (
       <>
-        <img className={"inline-logo"} src={SpecialSummonIcon} alt={"Continuous Icon"} title={"Continuous Effect"}/>
+        <AttributeIcon src={SpecialSummonIcon} alt={"Special Summon Icon"} title={"Special Summon"}/>
         <span className={"summoning-condition"}>{this.clause.render()}</span>
       </>
     )

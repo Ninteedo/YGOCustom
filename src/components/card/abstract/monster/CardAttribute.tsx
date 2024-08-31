@@ -5,6 +5,7 @@ import FireSvg from "../../../../assets/images/attributes/FIRE.svg";
 import WaterSvg from "../../../../assets/images/attributes/WATER.svg";
 import WindSvg from "../../../../assets/images/attributes/WIND.svg";
 import DivineSvg from "../../../../assets/images/attributes/DIVINE.svg";
+import {AttributeIcon} from "../../display/AttributeIcon.tsx";
 
 export enum CardAttribute {
   LIGHT = "LIGHT",
@@ -83,5 +84,5 @@ export function monsterAttributeImagePath(attribute: CardAttribute): string {
 
 export function MonsterAttributeImage({attribute}: { attribute: CardAttribute }) {
   const attributeIcon = monsterAttributeImagePath(attribute);
-  return <img className={"attribute-icon"} src={attributeIcon} alt={attribute + " icon"}/>;
+  return <AttributeIcon src={attributeIcon} alt={attribute + " icon"}/>;
 }

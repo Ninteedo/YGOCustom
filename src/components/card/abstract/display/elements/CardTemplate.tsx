@@ -1,6 +1,7 @@
 import CardName from "./CardName.tsx";
 import {CardArt} from "../../../CardArt.tsx";
 import {ReactNode} from "react";
+import {AttributeIcon} from "../../../display/AttributeIcon.tsx";
 
 interface CardTemplateProps {
   id: string;
@@ -44,7 +45,7 @@ export default function CardTemplate({
         <div className={"card-header"}>
           <div className={"name-row"}>
             <CardName name={name} id={id} link={false}/>
-            {attrIcon && <img src={attrIcon} className={"attribute-icon"} />}
+            {attrIcon && <AttributeIcon src={attrIcon}/>}
           </div>
           {infoLine}
           <CardArt src={artSrc} alt={`Art for ${name}`} overrideLink={overrideArtSrc} canExpand={true}/>

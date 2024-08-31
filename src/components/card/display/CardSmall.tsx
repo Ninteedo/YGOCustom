@@ -6,6 +6,7 @@ import CardHoverPreview from "./CardHoverPreview.tsx";
 import {CardKind} from "../abstract/CardKind.ts";
 import {monsterAttributeImagePath} from "../abstract/monster/CardAttribute.tsx";
 import {CardSubKind, getSpellTrapPropertyIconPath} from "../abstract/CardSubKind.ts";
+import {AttributeIcon} from "./AttributeIcon.tsx";
 
 interface CardSmallProps {
   card: BaseDbCard;
@@ -63,7 +64,7 @@ export default function CardSmall({card, clickAction}: CardSmallProps) {
         <div className={"card-content"}>
           <div className={"card-header"}>
             <SmallCardName name={name}/>
-            {attrIcon && <img src={attrIcon} className={"attribute-icon"} />}
+            {attrIcon && <AttributeIcon src={attrIcon}/>}
           </div>
           <SmallCardArt name={name} art={art}/>
         </div>

@@ -77,6 +77,7 @@ export function CardArt({src, alt, canExpand}: CardArtProps): ReactNode {
         src={imageSrc}
         alt={alt}
         onClick={toggleExpand}
+        draggable={false}
       />
     );
   }
