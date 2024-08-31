@@ -11,6 +11,13 @@ import SummoningCondition from "../../effect/SummoningCondition.tsx";
  */
 export default class ExtraEffectSentenceParseRule extends EffectParseRule {
   match({sentence, lastEffect}: EffectParseProps): boolean {
+    if (lastEffect) {
+      const lastEffectText = lastEffect.toText();
+      if (lastEffectText.startsWith("(") && lastEffectText.endsWith(")")) {
+        return true;
+      }
+    }
+
     return (
       !!lastEffect && !this.hasCondition(sentence) && !this.hasCost(sentence) && (
         sentence.startsWith("Otherwise, ")

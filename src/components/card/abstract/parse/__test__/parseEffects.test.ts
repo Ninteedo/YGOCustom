@@ -1007,4 +1007,21 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
   });
+
+  test('Gunkan Suship Daily Special', () => {
+    const text = "(When you activate this card, you can also reveal 1 \"Gunkan Suship Shari\" in your hand.) Reveal 3 \"Gunkan\" monsters from your Deck, your opponent chooses 1 of them for you to add to your hand, also shuffle the rest into your Deck. If you revealed \"Gunkan Suship Shari\" in your hand at activation, you can choose the card to add to your hand, instead of your opponent choosing. If this card is in your GY, except the turn it was sent there: You can banish this card, then target 3 \"Gunkan\" monsters in your GY; shuffle them into the Deck, then draw 1 card.";
+    const effects = [
+      new QuickEffect([
+        new EffectMainClause("(When you activate this card, you can also reveal 1 \"Gunkan Suship Shari\" in your hand.)"),
+        new EffectMainClause("Reveal 3 \"Gunkan\" monsters from your Deck, your opponent chooses 1 of them for you to add to your hand, also shuffle the rest into your Deck."),
+        new EffectMainClause("If you revealed \"Gunkan Suship Shari\" in your hand at activation, you can choose the card to add to your hand, instead of your opponent choosing.")
+      ]),
+      new QuickEffect([
+        new EffectConditionClause("If this card is in your GY, except the turn it was sent there"),
+        new EffectCostClause("You can banish this card, then target 3 \"Gunkan\" monsters in your GY"),
+        new EffectMainClause("shuffle them into the Deck, then draw 1 card.")
+      ])
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
+  });
 });
