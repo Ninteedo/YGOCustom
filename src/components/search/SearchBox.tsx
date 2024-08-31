@@ -83,7 +83,7 @@ export default function SearchBox({toggleSearch, isSearchBoxOpen, isModal, initi
             name={"fuzzy-search"}
             className={"fuzzy-search"}
             id={"fuzzy-search"}
-            onInput={() => setEnableFuzzySearch(!enableFuzzySearch)}
+            onChange={() => setEnableFuzzySearch(!enableFuzzySearch)}
             checked={enableFuzzySearch}
             tabIndex={3}
           />
