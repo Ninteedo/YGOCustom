@@ -970,4 +970,24 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Agave Dragon', () => {
+    const text = "If this card is Link Summoned: You can apply these effects in sequence, depending on the Types of monsters in the GYs (skip over any that do not apply). You can only use this effect of \"Agave Dragon\" once per turn.\n" +
+      "● Inflict 100 damage to your opponent for each Dragon.\n" +
+      "● This card gains 200 ATK for each Dinosaur.\n" +
+      "● All monsters your opponent currently controls lose 300 ATK for each Sea Serpent.\n" +
+      "● You gain 400 LP for each Wyrm.";
+    const effects = [
+      new TriggerEffect([
+        new EffectConditionClause("If this card is Link Summoned"),
+        new EffectMainClause("You can apply these effects in sequence, depending on the Types of monsters in the GYs (skip over any that do not apply)."),
+        new SubEffectClause([new EffectMainClause("Inflict 100 damage to your opponent for each Dragon.")]),
+        new SubEffectClause([new EffectMainClause("This card gains 200 ATK for each Dinosaur.")]),
+        new SubEffectClause([new EffectMainClause("All monsters your opponent currently controls lose 300 ATK for each Sea Serpent.")]),
+        new SubEffectClause([new EffectMainClause("You gain 400 LP for each Wyrm.")]),
+      ]),
+      new EffectRestriction("You can only use this effect of \"Agave Dragon\" once per turn.")
+    ];
+    testParseEffects({text}, effects);
+  });
 });

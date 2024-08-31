@@ -27,6 +27,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
         || sentence.startsWith("For the rest of this turn after this card resolves")
         || sentence.startsWith("You must also ")
         || sentence.startsWith("If Set")
+        || sentence.startsWith("If Summoned this way")
         || sentence.includes(" activate this effect")
         || sentence.includes(" by this effect")
         || sentence.includes(" this effect's activation")

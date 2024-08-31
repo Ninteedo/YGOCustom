@@ -24,6 +24,7 @@ import SubEffectParseRule from "./rules/SubEffectParseRule.ts";
 import QuickDuringMainPhase from "./rules/QuickDuringMainPhase.tsx";
 import {containsIgnoreQuotes, takeUntilIgnoreQuotes} from "../../../../utils/stringParse.ts";
 import BasicIgnitionParseRuleParseRule from "./rules/BasicIgnitionParseRule.ts";
+import EffectRestriction from "../effect/EffectRestriction.tsx";
 
 interface EffectSentence {
   text: string;
@@ -139,6 +140,14 @@ function parseSentenceNew(
   props: ParseEffectsProps,
   parsers: EffectParseRule[],
 ): void {
+  let lastEffectIndex: number | undefined = undefined;
+  for (let i = effects.length - 1; i >= 0; i--) {
+    if (!(effects[i].effect instanceof EffectRestriction)) {
+      lastEffectIndex = i;
+      break;
+    }
+  }
+
   const parseProps: EffectParseProps = {
     text: props.text,
     sentence,
@@ -146,8 +155,8 @@ function parseSentenceNew(
     isFastCard: props.isFastCard || false,
     isContinuous: props.isContinuousSpellTrapCard || false,
     isFirstSentence: !effects.find(({effect}) => effect.isProperEffect()),
-    lastEffect: effects.length > 0 ? effects[effects.length - 1].effect : null,
-    lastIsSub: effects.length > 0 ? effects[effects.length - 1].isSub : null,
+    lastEffect: lastEffectIndex !== undefined ? effects[lastEffectIndex].effect : null,
+    lastIsSub: lastEffectIndex !== undefined ? effects[lastEffectIndex].isSub : null,
     isSub,
   };
   const matchingRule = parsers.find((rule) => rule.match(parseProps));
