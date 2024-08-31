@@ -73,6 +73,11 @@ export default class BaseDbCard {
         throw new Error(`Missing race for card ${this.id} "${this.name}"`);
       }
       const categories: string[] = [this.json.race.toString(), ...specialKinds.map(k => k.toString()), this.subKind];
+
+      if (this.subKind !== CardSubKind.NORMAL && this.subKind !== CardSubKind.EFFECT && this.getEffectText().length > 0) {
+        categories.push("Effect");
+      }
+
       return <p>[{categories.join(" / ")}]</p>;
     }
   }
