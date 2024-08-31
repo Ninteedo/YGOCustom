@@ -2,7 +2,7 @@ import {ReactNode} from "react";
 import BaseDbCard from "../abstract/BaseDbCard.ts";
 import CardTemplate from "../abstract/display/elements/CardTemplate.tsx";
 
-export default function CardDetailNoFormatting({card}: { card: BaseDbCard }): ReactNode {
+export default function CardDetailNoFormatting({card, attrIcon}: { card: BaseDbCard, attrIcon?: string }): ReactNode {
   return (
     <div>
       <CardTemplate
@@ -18,6 +18,7 @@ export default function CardDetailNoFormatting({card}: { card: BaseDbCard }): Re
         categoryLine={card.getCategoryLine()}
         isPendulum={card.isPendulum}
         copyTextDiscord={card.getCopyTextDiscordBasic()}
+        attrIcon={attrIcon}
       />
     </div>
   )

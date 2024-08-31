@@ -11,20 +11,18 @@ import {CardSubKind, getSpellTrapPropertyIconPath} from "../abstract/CardSubKind
 export default function CardDetail({card}: { card: BaseDbCard }): ReactNode {
   const { settings } = useGetSettingsContext();
 
-  if (settings.disableCardFormatting) {
-    return CardDetailNoFormatting({card});
-  }
-
   let attrIcon;
   if (card.kind === CardKind.MONSTER) {
     const attribute = card.getAttribute();
     if (attribute) {
       attrIcon = monsterAttributeImagePath(attribute);
     }
-  } else {
-    if (card.subKind !== CardSubKind.NORMAL) {
-      attrIcon = getSpellTrapPropertyIconPath(card.subKind);
-    }
+  } else if (card.subKind !== CardSubKind.NORMAL) {
+    attrIcon = getSpellTrapPropertyIconPath(card.subKind);
+  }
+
+  if (settings.disableCardFormatting) {
+    return CardDetailNoFormatting({card, attrIcon});
   }
 
   return <div>
