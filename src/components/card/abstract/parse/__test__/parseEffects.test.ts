@@ -1024,4 +1024,20 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
   });
+
+  test('Traptrip Garden', () => {
+    const text = "During your Main Phase, you can Normal Summon 1 \"Traptrix\" monster, in addition to your Normal Summon/Set. (You can only gain this effect once per turn.) The first time each Insect or Plant monster you control would be destroyed by battle each turn, it is not destroyed. You can banish 1 monster you control; Special Summon 1 \"Traptrix\" monster from your hand or GY. You can only use this effect of \"Traptrip Garden\" once per turn.";
+    const effects = [
+      new ContinuousEffect(
+        new EffectMainClause("During your Main Phase, you can Normal Summon 1 \"Traptrix\" monster, in addition to your Normal Summon/Set. (You can only gain this effect once per turn.)"),
+      ),
+      new ContinuousEffect(new EffectMainClause("The first time each Insect or Plant monster you control would be destroyed by battle each turn, it is not destroyed.")),
+      new IgnitionEffect([
+        new EffectCostClause("You can banish 1 monster you control"),
+        new EffectMainClause("Special Summon 1 \"Traptrix\" monster from your hand or GY.")
+      ]),
+      new EffectRestriction("You can only use this effect of \"Traptrip Garden\" once per turn.")
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, effects);
+  })
 });

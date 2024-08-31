@@ -23,7 +23,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
         sentence.startsWith("Otherwise, ")
         || sentence.startsWith("That ")
         || sentence.startsWith("It ")
-        || sentence.startsWith("The ")
+        || sentence.startsWith("The Set ")
         || sentence.startsWith("Then")
         || sentence.startsWith("Its ")
         || sentence.startsWith("After choosing ")
