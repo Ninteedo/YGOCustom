@@ -5,18 +5,18 @@ import SpecialSummonIcon from "../../../../assets/images/properties/SpecialSummo
 import {AttributeIcon} from "../../display/AttributeIcon.tsx";
 
 export default class SummoningCondition extends Effect {
-  public readonly clause: EffectClause;
+  public readonly clauses: EffectClause[];
 
-  constructor(clause: EffectClause) {
+  constructor(...clauses: EffectClause[]) {
     super();
-    this.clause = clause;
+    this.clauses = clauses;
   }
 
   public render(): ReactNode {
     return (
       <>
         <AttributeIcon src={SpecialSummonIcon} alt={"Special Summon Icon"} title={"Special Summon"}/>
-        <span className={"summoning-condition"}>{this.clause.render()}</span>
+        <span className={"summoning-condition"}>{this.renderClauses(this.clauses)}</span>
       </>
     )
   }
@@ -26,6 +26,6 @@ export default class SummoningCondition extends Effect {
   }
 
   public toText(): string {
-    return this.clause.toText();
+    return `${this.clauses.map(c => c.toText()).join(" ")}`;
   }
 }

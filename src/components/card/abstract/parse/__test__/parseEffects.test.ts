@@ -961,4 +961,13 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Skull Guardian', () => {
+    const text = "This monster can only be Ritual Summoned with the Ritual Spell Card, \"Novox's Prayer\". You must also offer monsters whose total Level Stars equal 7 or more as a Tribute from the field or your hand.";
+    const effects = [
+      new SummoningCondition(new EffectMainClause("This monster can only be Ritual Summoned with the Ritual Spell Card, \"Novox's Prayer\"."),
+        new EffectMainClause("You must also offer monsters whose total Level Stars equal 7 or more as a Tribute from the field or your hand."))
+    ];
+    testParseEffects({text}, effects);
+  });
 });

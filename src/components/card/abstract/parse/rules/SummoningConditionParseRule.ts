@@ -18,7 +18,7 @@ export default class SummoningConditionParseRule extends EffectParseRule {
 
     const summoningTypes = ["Ritual", "Fusion", "Synchro", "Xyz", "Link", "Special", "Tribute", "Normal"];
     const summoningTypeDisjunction = "(" + summoningTypes.join("|") + ")";
-    const positivePattern = `you can (also )?${summoningTypeDisjunction} summon (this card|")`;
+    const positivePattern = `(this monster can only be |you (can|must) (also )?)${summoningTypeDisjunction} summon(ed)? (this card|")?`;
     const negativePattern = `cannot be ${summoningTypeDisjunction} summoned`;
     return !!(
       sentence.match(/^Must (first )?be (either )?(\w)+ Summoned/)
