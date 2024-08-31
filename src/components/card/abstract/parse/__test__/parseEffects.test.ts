@@ -990,4 +990,21 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Awakening of the Crystal Ultimates', () => {
+    const text = "Reveal 1 \"Ultimate Crystal\" monster in your hand, then activate 1 of these effects. If you control an \"Ultimate Crystal\" monster, you can activate 1 or 2 of these effects in sequence, instead (and do not have to reveal a monster).\n" +
+      "● Take 1 \"Rainbow Bridge\" card or 1 \"Rainbow Refraction\" from your Deck, and either add it to your hand or send it to the GY.\n" +
+      "● Special Summon 1 \"Crystal Beast\" Monster Card from your hand, Deck, GY, or Spell & Trap Zone.\n" +
+      "You can only activate 1 \"Awakening of the Crystal Ultimates\" per turn.";
+    const effects = [
+      new QuickEffect([
+        new EffectMainClause("Reveal 1 \"Ultimate Crystal\" monster in your hand, then activate 1 of these effects."),
+        new EffectMainClause("If you control an \"Ultimate Crystal\" monster, you can activate 1 or 2 of these effects in sequence, instead (and do not have to reveal a monster)."),
+        new SubEffectClause([new EffectMainClause("Take 1 \"Rainbow Bridge\" card or 1 \"Rainbow Refraction\" from your Deck, and either add it to your hand or send it to the GY.")]),
+        new SubEffectClause([new EffectMainClause("Special Summon 1 \"Crystal Beast\" Monster Card from your hand, Deck, GY, or Spell & Trap Zone.")]),
+      ]),
+      new EffectRestriction("You can only activate 1 \"Awakening of the Crystal Ultimates\" per turn.")
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
+  });
 });

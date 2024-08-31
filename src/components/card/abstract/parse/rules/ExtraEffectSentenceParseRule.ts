@@ -33,6 +33,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
         || sentence.includes(" this effect's activation")
         || sentence.includes(" that same effect ")
         || (sentence.startsWith("(") && sentence.endsWith(")"))
+        || (sentence.startsWith("If you ") && sentence.includes(" instead"))
       )
     );
   }
