@@ -1,4 +1,4 @@
-import {Fragment, ReactElement, ReactNode} from "react";
+import {ReactElement, ReactNode} from "react";
 import CardTemplate from "./display/elements/CardTemplate.tsx";
 import StatLine from "./display/elements/StatLine.tsx";
 import EffectBlock from "./display/elements/EffectBlock.tsx";
@@ -133,7 +133,7 @@ export default class BaseDbCard {
 
       return <EffectBlock materials={materials} effects={effects} cardId={this.id}/>;
     } catch (e) {
-      return <p>{this.text.split("\n").map((s, index) => <Fragment key={index}>{s}<br/></Fragment>)}</p>;
+      return <EffectBlock effects={this.text} cardId={this.id}/>;
     }
   }
 
