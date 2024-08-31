@@ -1,8 +1,6 @@
 import Effect from "./Effect.tsx";
 import {ReactNode} from "react";
-import ContinuousIcon from "../../../../assets/images/properties/Continuous.svg";
 import EffectClause from "./clause/EffectClause.ts";
-import {AttributeIcon} from "../../display/AttributeIcon.tsx";
 
 export default class ContinuousEffect extends Effect {
   public readonly clauses: EffectClause[];
@@ -15,7 +13,7 @@ export default class ContinuousEffect extends Effect {
   public render(): ReactNode {
     return (
       <>
-        <AttributeIcon src={ContinuousIcon} alt={"Continuous Icon"} title={"Continuous Effect"}/>
+        {/*<AttributeIcon src={ContinuousIcon} alt={"Continuous Icon"} title={"Continuous Effect"}/>*/}
         <span className={"continuous-effect"}>{this.renderClauses(this.clauses)}</span>
       </>
     )

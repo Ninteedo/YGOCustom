@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="77.312" height="77.314">
+    <defs>
+        <linearGradient id="c">
+            <stop offset="0" style="stop-color:red;stop-opacity:1"/>
+            <stop offset="1" style="stop-color:#f60;stop-opacity:1"/>
+        </linearGradient>
+        <linearGradient xlink:href="#a" id="f" x1="9.933" x2="65.161" y1="60.072" y2="26.923"
+                        gradientUnits="userSpaceOnUse"/>
+        <linearGradient id="a">
+            <stop offset="0" style="stop-color:#4d3c2f;stop-opacity:1"/>
+            <stop offset=".229" style="stop-color:#251a11;stop-opacity:1"/>
+            <stop offset=".377" style="stop-color:#33221a;stop-opacity:1"/>
+            <stop offset=".517" style="stop-color:#442e1d;stop-opacity:1"/>
+            <stop offset=".632" style="stop-color:#49321b;stop-opacity:1"/>
+            <stop offset=".856" style="stop-color:#1e150e;stop-opacity:1"/>
+            <stop offset="1" style="stop-color:#1b1d1e;stop-opacity:1"/>
+        </linearGradient>
+        <linearGradient xlink:href="#b" id="h" x1="59.556" x2="13.456" y1="68.01" y2="10.726"
+                        gradientTransform="matrix(1.00807 0 0 .95488 335.887 495.72)" gradientUnits="userSpaceOnUse"/>
+        <linearGradient id="b">
+            <stop offset="0" style="stop-color:#eaeaeb;stop-opacity:1"/>
+            <stop offset=".178" style="stop-color:#a3a3a3;stop-opacity:1"/>
+            <stop offset=".476" style="stop-color:#dad9d9;stop-opacity:1"/>
+            <stop offset=".696" style="stop-color:#f0f3f5;stop-opacity:1"/>
+            <stop offset="1" style="stop-color:#a4a4a4;stop-opacity:1"/>
+        </linearGradient>
+        <linearGradient xlink:href="#c" id="e" x1="143.5" x2="106.25" y1="22.902" y2="22.402"
+                        gradientTransform="translate(310.095 520.096)scale(.4843)" gradientUnits="userSpaceOnUse"/>
+        <filter id="g" width="1" height="1" x="0" y="0" color-interpolation-filters="sRGB">
+            <feTurbulence baseFrequency=".037" numOctaves="3" result="result0"/>
+            <feSpecularLighting result="result1" specularExponent="24.3" surfaceScale="2">
+                <feDistantLight azimuth="225" elevation="45"/>
+            </feSpecularLighting>
+            <feDiffuseLighting diffuseConstant="1.21" in="result0" result="result2" surfaceScale="3">
+                <feDistantLight azimuth="225" elevation="42"/>
+            </feDiffuseLighting>
+            <feBlend in2="SourceGraphic" mode="multiply" result="result91"/>
+            <feComposite in="result1" in2="result91" k2="1" k3="1" operator="arithmetic" result="result92"/>
+            <feComposite in2="SourceAlpha" operator="in" result="result2"/>
+        </filter>
+        <filter id="i" width="1" height="1" x="0" y="0" color-interpolation-filters="sRGB">
+            <feTurbulence baseFrequency=".037" numOctaves="3" result="result0"/>
+            <feSpecularLighting result="result1" specularExponent="24.3" surfaceScale="2">
+                <feDistantLight azimuth="225" elevation="45"/>
+            </feSpecularLighting>
+            <feDiffuseLighting diffuseConstant="1.21" in="result0" result="result2" surfaceScale="3">
+                <feDistantLight azimuth="225" elevation="42"/>
+            </feDiffuseLighting>
+            <feBlend in2="SourceGraphic" mode="multiply" result="result91"/>
+            <feComposite in="result1" in2="result91" k2="1" k3="1" operator="arithmetic" result="result92"/>
+            <feComposite in2="SourceAlpha" operator="in" result="result2"/>
+        </filter>
+        <path id="path0"
+              d="M375 521A1 1 0 00375 543 1 1 0 00375 521M374.472 497.513c-12.13.067-23.861 7.06-29.78 17.624-6.352 10.94-5.959 25.394.927 35.998 4.092 6.355 10.271 11.378 17.406 13.933 7.182 2.752 15.265 2.824 22.573.48 9.588-2.968 17.594-10.432 21.533-19.629 3.664-8.754 3.621-19.033-.286-27.703-4.92-11.446-16.455-19.61-28.86-20.582a35 35 0 00-3.513-.121m.554 4.106c10.184-.101 20.146 5.32 25.662 13.847 6.483 9.611 6.737 22.967.622 32.817-4.453 7.354-12.046 12.744-20.552 14.291-2.824.473-5.732.588-8.587.43-9.748-.82-18.778-6.695-23.7-15.076-3.092-5.176-4.515-11.26-4.134-17.279.404-11.3 7.749-21.834 18.062-26.343a31 31 0 0112.627-2.687"
+              transform="translate(-336.344 -493.705)"
+        />
+    </defs>
+    <g style="display:inline">
+        <text xml:space="preserve" x="355.983" y="531.793" style="font-size:19.37196732px;font-style:normal;font-weight:400;line-height:125%;letter-spacing:0;word-spacing:0;fill:url(#e);fill-opacity:1;stroke:none;font-family:StoneSerITCStd Medium;-inkscape-font-specification:StoneSerITCStd Medium" transform="translate(-335.18 -492.436)"><tspan x="355.983" y="531.793" style="font-size:2.90579534px;fill:url(#e);fill-opacity:1">Created by Falzar FZ</tspan></text>
+        <path d="M72.952 36.456c0 20.103-16.365 36.4-36.552 36.4S-.152 56.558-.152 36.455 16.213.055 36.4.055s36.552 16.296 36.552 36.4z"
+              style="fill:url(#f);fill-opacity:1;stroke:#131b40;stroke-width:0;stroke-miterlimit:4.0999999;stroke-opacity:1;stroke-dasharray:none"
+              transform="matrix(1.05182 0 0 1.05625 .37 .15)"/>
+    </g>
+    <g style="opacity:.11000001;fill:#666;display:inline;filter:url(#g)"
+       transform="scale(-1 1)rotate(-15 -1702.62 1851.47)">
+        <text xml:space="preserve" x="355.983" y="531.793" style="font-size:19.37196732px;font-style:normal;font-weight:400;line-height:125%;letter-spacing:0;word-spacing:0;fill:#666;fill-opacity:1;stroke:none;font-family:StoneSerITCStd Medium;-inkscape-font-specification:StoneSerITCStd Medium"><tspan x="355.983" y="531.793" style="font-size:2.90579534px;fill:#666;fill-opacity:1">Created by Falzar FZ</tspan></text>
+        <path d="M72.952 36.456c0 20.103-16.365 36.4-36.552 36.4S-.152 56.558-.152 36.455 16.213.055 36.4.055s36.552 16.296 36.552 36.4z"
+              style="fill:#666;fill-opacity:1;stroke:#131b40;stroke-width:0;stroke-miterlimit:4.0999999;stroke-opacity:1;stroke-dasharray:none"
+              transform="matrix(1.05182 0 0 1.05625 335.55 492.586)"/>
+    </g>
+    <use xlink:href="#path0" style="fill:#070506;fill-opacity:1;stroke:none;display:inline" transform="translate(1, 1)"/>
+    <use xlink:href="#path0" style="fill:url(#h);fill-opacity:1;stroke:none;display:inline"/>
+    <use xlink:href="#path0" style="opacity:.08999999;fill:#666;fill-opacity:1;stroke:none;display:inline;filter:url(#i)"/>
+</svg>

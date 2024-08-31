@@ -1,6 +1,8 @@
 import Effect from "./Effect.tsx";
 import {ReactNode} from "react";
 import EffectClause from "./clause/EffectClause.ts";
+import {AttributeIcon} from "../../display/AttributeIcon.tsx";
+import IgnitionIcon from "../../../../assets/images/properties/Ignition.svg";
 
 export default class IgnitionEffect extends Effect {
   public readonly clauses: EffectClause[];
@@ -13,6 +15,7 @@ export default class IgnitionEffect extends Effect {
   public render(): ReactNode {
     return (
       <>
+        <AttributeIcon src={IgnitionIcon} alt={"Ignition Icon"} title={"Ignition Effect"}/>
         <span className={"ignition-effect"}>{this.renderClauses(this.clauses)}</span>
       </>
     )
