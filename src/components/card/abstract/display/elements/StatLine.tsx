@@ -1,6 +1,6 @@
 import {ReactNode} from "react";
 
-export default function StatLine({atk, def}: { atk: number, def: number }): ReactNode {
+export default function StatLine({atk, def}: { atk: number, def: number | null }): ReactNode {
   function formatStat(stat: number): string {
     if (stat === -1) {
       return "?";
@@ -10,7 +10,7 @@ export default function StatLine({atk, def}: { atk: number, def: number }): Reac
 
   return (
     <div className="statline">
-      <span><span><b>ATK</b>/{formatStat(atk)}</span>&nbsp;<span><b>DEF</b>/{formatStat(def)}</span></span>
+      <span><span><b>ATK</b>/{formatStat(atk)}</span>&nbsp;{def && <span><b>DEF</b>/{formatStat(def)}</span>}</span>
     </div>
   );
 }
