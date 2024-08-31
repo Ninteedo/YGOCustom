@@ -1,4 +1,10 @@
 import {CardKind} from "./CardKind.ts";
+import QuickPlayIcon from "../../../assets/images/properties/Quick-Play.svg";
+import ContinuousIcon from "../../../assets/images/properties/Continuous.svg";
+import EquipIcon from "../../../assets/images/properties/Equip.svg";
+import FieldIcon from "../../../assets/images/properties/Field.svg";
+import CounterIcon from "../../../assets/images/properties/Counter.svg";
+import RitualIcon from "../../../assets/images/properties/Ritual.svg";
 
 export enum CardSubKind {
   NORMAL = 'Normal',
@@ -67,4 +73,23 @@ export function isExtraDeck(subKind: CardSubKind): boolean {
 
 export function isContinuousLike(subKind: CardSubKind): boolean {
   return subKind === CardSubKind.CONTINUOUS || subKind === CardSubKind.FIELD || subKind === CardSubKind.EQUIP;
+}
+
+export function getSpellTrapPropertyIconPath(subKind: CardSubKind): string | undefined {
+  switch (subKind) {
+    case CardSubKind.QUICK_PLAY:
+      return QuickPlayIcon;
+    case CardSubKind.CONTINUOUS:
+      return ContinuousIcon;
+    case CardSubKind.EQUIP:
+      return EquipIcon;
+    case CardSubKind.FIELD:
+      return FieldIcon;
+    case CardSubKind.COUNTER:
+      return CounterIcon;
+    case CardSubKind.RITUAL:
+      return RitualIcon;
+    default:
+      return undefined;
+  }
 }

@@ -5,11 +5,28 @@
   pointer-events: bounding-box;
 
   .card-content {
-    width: 180px;
+    width: 10rem;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      height: 2.1rem;
+
+      .card-name {
+        font-size: 0.7rem;
+        height: 2rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+    }
 
     img.card-art {
       width: 100%;
@@ -17,16 +34,7 @@
     }
   }
 
-  .card-name {
-    font-size: 0.7rem;
-    height: 2.5rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
 
-  }
 
   &.has-click-action {
     cursor: pointer;

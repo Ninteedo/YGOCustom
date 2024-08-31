@@ -4,12 +4,27 @@ import CardTemplate from "../abstract/display/elements/CardTemplate.tsx";
 import {useGetSettingsContext} from "../../settings/SettingsProvider.tsx";
 import CardDetailNoFormatting from "./CardDetailNoFormatting.tsx";
 import LimitedStatus from "./LimitedStatus.tsx";
+import {CardKind} from "../abstract/CardKind.ts";
+import {monsterAttributeImagePath} from "../abstract/monster/CardAttribute.tsx";
+import {CardSubKind, getSpellTrapPropertyIconPath} from "../abstract/CardSubKind.ts";
 
 export default function CardDetail({card}: { card: BaseDbCard }): ReactNode {
   const { settings } = useGetSettingsContext();
 
   if (settings.disableCardFormatting) {
     return CardDetailNoFormatting({card});
+  }
+
+  let attrIcon;
+  if (card.kind === CardKind.MONSTER) {
+    const attribute = card.getAttribute();
+    if (attribute) {
+      attrIcon = monsterAttributeImagePath(attribute);
+    }
+  } else {
+    if (card.subKind !== CardSubKind.NORMAL) {
+      attrIcon = getSpellTrapPropertyIconPath(card.subKind);
+    }
   }
 
   return <div>
@@ -27,6 +42,7 @@ export default function CardDetail({card}: { card: BaseDbCard }): ReactNode {
       categoryLine={card.getCategoryLine()}
       isPendulum={card.isPendulum}
       copyTextDiscord={card.getCopyTextDiscordBasic()}
+      attrIcon={attrIcon}
     />
   </div>
 }

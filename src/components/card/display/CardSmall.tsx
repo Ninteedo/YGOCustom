@@ -3,6 +3,9 @@ import "../../../style/CardSmall.scss";
 import BaseDbCard from "../abstract/BaseDbCard.ts";
 import React, {useState} from "react";
 import CardHoverPreview from "./CardHoverPreview.tsx";
+import {CardKind} from "../abstract/CardKind.ts";
+import {monsterAttributeImagePath} from "../abstract/monster/CardAttribute.tsx";
+import {CardSubKind, getSpellTrapPropertyIconPath} from "../abstract/CardSubKind.ts";
 
 interface CardSmallProps {
   card: BaseDbCard;
@@ -36,6 +39,18 @@ export default function CardSmall({card, clickAction}: CardSmallProps) {
     rootClasses.push("card-pendulum");
   }
 
+  let attrIcon;
+  if (card.kind === CardKind.MONSTER) {
+    const attribute = card.getAttribute();
+    if (attribute) {
+      attrIcon = monsterAttributeImagePath(attribute);
+    }
+  } else {
+    if (card.subKind !== CardSubKind.NORMAL) {
+      attrIcon = getSpellTrapPropertyIconPath(card.subKind);
+    }
+  }
+
   return (
     <>
       <div
@@ -46,7 +61,10 @@ export default function CardSmall({card, clickAction}: CardSmallProps) {
         onMouseLeave={handleMouseLeave}
       >
         <div className={"card-content"}>
-          <SmallCardName name={name}/>
+          <div className={"card-header"}>
+            <SmallCardName name={name}/>
+            {attrIcon && <img src={attrIcon} className={"attribute-icon"} />}
+          </div>
           <SmallCardArt name={name} art={art}/>
         </div>
       </div>

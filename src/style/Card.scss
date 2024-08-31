@@ -28,6 +28,11 @@
       .name-row {
         display: flex;
         justify-content: space-between;
+        min-height: 2rem;
+
+        img.attribute-icon {
+          height: 2rem;
+        }
       }
 
       .card-name {

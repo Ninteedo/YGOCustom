@@ -1,7 +1,6 @@
 import CardName from "./CardName.tsx";
 import {CardArt} from "../../../CardArt.tsx";
 import {ReactNode} from "react";
-import CopyClipboardButton from "./CopyClipboardButton.tsx";
 
 interface CardTemplateProps {
   id: string;
@@ -17,6 +16,7 @@ interface CardTemplateProps {
   overrideArtSrc?: boolean;
   isPendulum?: boolean;
   copyTextDiscord?: string;
+  attrIcon?: string;
 }
 
 export default function CardTemplate({
@@ -32,7 +32,7 @@ export default function CardTemplate({
   cardSubKind,
   overrideArtSrc,
   isPendulum,
-  copyTextDiscord,
+  attrIcon,
 }: CardTemplateProps) {
   const classes = ["card", "card-" + cardKind.toLowerCase(), "card-" + cardSubKind.toLowerCase()];
   if (isPendulum) {
@@ -44,7 +44,7 @@ export default function CardTemplate({
         <div className={"card-header"}>
           <div className={"name-row"}>
             <CardName name={name} id={id} link={false}/>
-            {copyTextDiscord && <CopyClipboardButton text={copyTextDiscord}/>}
+            {attrIcon && <img src={attrIcon} className={"attribute-icon"} />}
           </div>
           {infoLine}
           <CardArt src={artSrc} alt={`Art for ${name}`} overrideLink={overrideArtSrc} canExpand={true}/>
