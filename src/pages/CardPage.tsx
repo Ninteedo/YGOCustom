@@ -51,7 +51,7 @@ function CardLinks({ card }: { card: BaseDbCard }) {
 }
 
 function cardmarketUrl(name: string) {
-  return "https://www.cardmarket.com/en/YuGiOh/Cards/" + name.replace(/ /g, "-").replace(/[^a-zA-Z0-9-]/g, "");
+  return "https://www.cardmarket.com/en/YuGiOh/Cards/" + name.replace(/[^a-zA-Z0-9 ]/g, "").replace(/ +/g, "-");
 }
 
 function tcgPlayerUrl(name: string) {
