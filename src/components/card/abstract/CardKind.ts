@@ -2,7 +2,6 @@ export enum CardKind {
   MONSTER = 'Monster',
   SPELL = 'Spell',
   TRAP = 'Trap',
-  TOKEN = 'Token',
 }
 
 export function readCardKind(kind: string): CardKind {
@@ -12,8 +11,6 @@ export function readCardKind(kind: string): CardKind {
     return CardKind.SPELL;
   } else if (kind.includes("trap")) {
     return CardKind.TRAP;
-  } else if (kind.includes("token")) {
-    return CardKind.TOKEN;
   }
   throw new Error(`Unknown card kind: ${kind}`);
 }

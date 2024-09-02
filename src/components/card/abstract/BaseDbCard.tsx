@@ -57,8 +57,6 @@ export default class BaseDbCard {
         return <p>{this.subKind} Spell</p>
       case CardKind.TRAP:
         return <p>{this.subKind} Trap</p>
-      case CardKind.TOKEN:
-        return <p>Token</p>
       default:
         return <p>Unknown</p>
     }
@@ -112,7 +110,7 @@ export default class BaseDbCard {
         return <PendulumEffectBlock materials={materials} pendulumEffects={pendulumEffects} monsterEffects={monsterEffects} cardId={this.id} />;
       }
 
-      if (this.kind == CardKind.TOKEN || (this.kind == CardKind.MONSTER && this.subKind == CardSubKind.NORMAL)) {
+      if (this.kind == CardKind.MONSTER && this.subKind == CardSubKind.NORMAL) {
         return <EffectBlock effects={new NormalEffectLore(this.text)} cardId={this.id} />;
       }
 

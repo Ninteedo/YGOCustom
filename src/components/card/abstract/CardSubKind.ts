@@ -19,7 +19,6 @@ export enum CardSubKind {
   EQUIP = 'Equip',
   FIELD = 'Field',
   COUNTER = 'Counter',
-  TOKEN = 'Token',
 }
 
 export function readCardSubKind(kind: CardKind, race: string, frameType: string | undefined): CardSubKind {
@@ -28,9 +27,7 @@ export function readCardSubKind(kind: CardKind, race: string, frameType: string 
     frameType = frameType.toLowerCase();
   }
 
-  if (kind === CardKind.TOKEN) {
-    return CardSubKind.TOKEN;
-  } else if (kind == CardKind.MONSTER && frameType) {
+  if (kind == CardKind.MONSTER && frameType) {
     if (race.includes("link")) {
       return CardSubKind.LINK;
     } else if (race.includes("xyz")) {
