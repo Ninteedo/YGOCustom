@@ -28,10 +28,11 @@ export enum MonsterType {
 }
 
 export function monsterTypeFromString(value: string): MonsterType {
-  switch (value) {
+  switch (value.trim()) {
     case "Aqua": return MonsterType.Aqua;
     case "Beast": return MonsterType.Beast;
     case "Beast-Warrior": return MonsterType.BeastWarrior;
+    case "Creator God": return MonsterType.CreatorGod;
     case "Creator-God": return MonsterType.CreatorGod;
     case "Cyberse": return MonsterType.Cyberse;
     case "Dinosaur": return MonsterType.Dinosaur;
