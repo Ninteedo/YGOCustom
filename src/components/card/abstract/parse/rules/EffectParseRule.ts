@@ -80,7 +80,7 @@ export abstract class EffectParseRule {
    * @protected
    */
   protected isSlowCondition(sentence: string): boolean {
-    return sentence.startsWith("If you control ") || sentence.startsWith("If this card is in ");
+    return sentence.startsWith("If you control ") || sentence.startsWith("If this card is in ") || sentence.includes(" are ");
   }
 
   protected getTriggerOrIgnition(sentence: string, isTrigger: boolean): Effect {

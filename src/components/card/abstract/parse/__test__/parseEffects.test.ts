@@ -1120,4 +1120,25 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Gold Pride - Captain Carrie', () => {
+    const text = "If your LP are lower than your opponent's: You can Special Summon this card from your hand. If this card is Normal or Special Summoned: You can add 1 \"Gold Pride\" Trap from your Deck to your hand. If this card is sent to the GY: You can target 1 \"Gold Pride\" monster you control that was Special Summoned from the Extra Deck; banish up to 3 \"Gold Pride\" cards from your GY, and if you do, that monster gains 500 ATK for each card banished this way. You can only use each effect of \"Gold Pride - Captain Carrie\" once per turn.";
+    const effects = [
+      new IgnitionEffect([
+        new EffectConditionClause("If your LP are lower than your opponent's"),
+        new EffectMainClause("You can Special Summon this card from your hand.")
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("If this card is Normal or Special Summoned"),
+        new EffectMainClause("You can add 1 \"Gold Pride\" Trap from your Deck to your hand.")
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("If this card is sent to the GY"),
+        new EffectCostClause("You can target 1 \"Gold Pride\" monster you control that was Special Summoned from the Extra Deck"),
+        new EffectMainClause("banish up to 3 \"Gold Pride\" cards from your GY, and if you do, that monster gains 500 ATK for each card banished this way.")
+      ]),
+      new EffectRestriction("You can only use each effect of \"Gold Pride - Captain Carrie\" once per turn.")
+    ];
+    testParseEffects({text}, effects);
+  });
 });
