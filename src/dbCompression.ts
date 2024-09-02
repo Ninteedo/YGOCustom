@@ -1,7 +1,6 @@
-export function compressDbCardJson(cardJson: Object): any {
+export function compressDbCardJson(cardJson: Object): CompressedCardEntry {
   const yamlYugiEntry = new YamlYugiEntry(cardJson);
-  const compressedCardEntry = CompressedCardEntry.fromYamlYugiEntry(yamlYugiEntry);
-  return compressedCardEntry.toCompressedJson();
+  return CompressedCardEntry.fromYamlYugiEntry(yamlYugiEntry);
 }
 
 export function decompressDbCardJson(compressedCardJson: Object): CompressedCardEntry {
@@ -313,7 +312,7 @@ export class CompressedCardEntry {
       entry.attribute,  // attribute
       entry.level ? entry.level : entry.rank ? entry.rank : entry.getLinkRating(),  // level
       entry.limitRegulation ? getForbiddenValue(entry.limitRegulation.tcg, entry.limitRegulation.ocg) : undefined,  // forbidden
-      entry.ygoProDeckImages && entry.ygoProDeckImages[0].id.toString(),  // imageId
+      (entry.ygoProDeckImages && entry.ygoProDeckImages[0].id.toString()) || password,  // imageId
       entry.atk,  // atk
       entry.def  // def
     )

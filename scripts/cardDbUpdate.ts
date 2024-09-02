@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import fs from "fs";
 import { ListObjectsV2CommandInput, S3 } from "@aws-sdk/client-s3";
-import {compressDbCardJson} from "../src/dbCompression";
+import {compressDbCardJson, CompressedCardEntry} from "../src/dbCompression";
 
 import dotenv from "dotenv";
 if (process.env.NODE_ENV !== 'production') {
@@ -28,15 +28,16 @@ async function loadYgoProDeckCardDb(): Promise<any> {
     });
 }
 
-function saveDb(cardDb: any, ygoProDeckCardDb: any): void {
+function saveDb(cardDb: any, ygoProDeckCardDb: any): CompressedCardEntry[] {
   // const db = cardDb['data'];
   // const dbNoSkills = db;  //.filter((card: any) => !isSkillCard(card));
   const zippedCardDb = zipCardDbImages(cardDb, ygoProDeckCardDb);
-  const compressedDb = zippedCardDb.map((card: any) => compressCard(card)).filter((card: any) => card !== null);
+  const compressedDb: CompressedCardEntry[] = zippedCardDb.map((card: any) => compressCard(card)).filter((card: any) => card !== null);
 
   console.log(`Saving card DB.`)
-  fs.writeFileSync(DB_FILE, JSON.stringify(compressedDb, null, undefined), "utf8");
+  fs.writeFileSync(DB_FILE, JSON.stringify(compressedDb.map(c => c.toCompressedJson()), null, undefined), "utf8");
   console.log(`Saved ${DB_FILE}`);
+  return compressedDb;
 }
 
 function zipCardDbImages(cardDb: any, ygoProDeckCardDb: any): any {
@@ -56,9 +57,9 @@ function zipCardDbImages(cardDb: any, ygoProDeckCardDb: any): any {
 async function main(): Promise<void> {
   const cardDb = await loadCardDb();
   const ygoProDeckCardDb = await loadYgoProDeckCardDb();
-  saveDb(cardDb, ygoProDeckCardDb);
+  const compressedDb = saveDb(cardDb, ygoProDeckCardDb);
 
-  const failedUploads = await saveNewCardImages(ygoProDeckCardDb);
+  const failedUploads = await saveNewCardImages(compressedDb);
   writeMissingImagesList(failedUploads);
 }
 
@@ -161,7 +162,7 @@ async function uploadCardImage(croppedUrl: string, imageId: string, s3: S3, buck
  * Downloads and uploads new card images to R2.
  * @return a list of image IDs that failed to upload.
  */
-async function saveNewCardImages(cardDb: any): Promise<string[]> {
+async function saveNewCardImages(cardDb: CompressedCardEntry[]): Promise<string[]> {
   const r2Images = await listR2Images();
   const s3 = configureR2Client();
   const bucketName = process.env.R2_BUCKET_NAME;
@@ -172,25 +173,18 @@ async function saveNewCardImages(cardDb: any): Promise<string[]> {
 
   const failedUploads: string[] = [];
 
-  for (const card of cardDb["data"]) {
-    const imagesList = card["card_images"];
-    for (const dict of imagesList) {
-      const imageId = `${dict["id"]}.jpg`;
-      const croppedUrl = dict["image_url_cropped"];
+  for (const card of cardDb) {
+    const imageFile = `${card.imageId}.jpg`;
+    const croppedUrl = "https://images.ygoprodeck.com/images/cards_cropped/" + imageFile;
 
-      if (isSkillCard(card)) {
-        continue;
+    if (!r2Images.has(imageFile)) {
+      console.log(`Downloading ${croppedUrl}`);
+      const failedUpload = await uploadCardImage(croppedUrl, imageFile, s3, bucketName);
+      if (failedUpload) {
+        failedUploads.push(imageFile);
       }
-
-      if (!r2Images.has(imageId)) {
-        console.log(`Downloading ${croppedUrl}`);
-        const failedUpload = await uploadCardImage(croppedUrl, imageId, s3, bucketName);
-        if (failedUpload) {
-          failedUploads.push(imageId);
-        }
-        // Wait to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 200));
-      }
+      // Wait to respect rate limiting
+      await new Promise(resolve => setTimeout(resolve, 200));
     }
   }
 
@@ -198,11 +192,7 @@ async function saveNewCardImages(cardDb: any): Promise<string[]> {
   return failedUploads;
 }
 
-function isSkillCard(card: any): boolean {
-  return card["type"].toLowerCase() === "skill card";
-}
-
-function compressCard(card: any): any | null {
+function compressCard(card: any): CompressedCardEntry | null {
   try {
     return compressDbCardJson(card);
   } catch (e) {
