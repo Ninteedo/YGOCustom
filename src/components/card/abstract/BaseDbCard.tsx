@@ -89,8 +89,12 @@ export default class BaseDbCard {
 
   getStatLine(): ReactNode {
     if (this.kind === CardKind.MONSTER) {
-      const atk = this.json.atk ? parseInt(this.json.atk) : 0;
-      const def = this.subKind === CardSubKind.LINK ? null : this.json.def ? parseInt(this.json.def) : 0;
+      function parseStat(stat: string | undefined): number {
+        return stat === "?" ? -1 : stat !== undefined ? parseInt(stat) : 0
+      }
+
+      const atk = parseStat(this.json.atk);
+      const def = this.subKind === CardSubKind.LINK ? null : parseStat(this.json.def);
       return <StatLine atk={atk} def={def} />;
     }
   }

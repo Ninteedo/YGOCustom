@@ -10,7 +10,7 @@ export default function StatLine({atk, def}: { atk: number, def: number | null }
 
   return (
     <div className="statline">
-      <span><span><b>ATK</b>/{formatStat(atk)}</span>&nbsp;{def && <span><b>DEF</b>/{formatStat(def)}</span>}</span>
+      <span><span><b>ATK</b>/{formatStat(atk)}</span>&nbsp;{def !== null && <span><b>DEF</b>/{formatStat(def)}</span>}</span>
     </div>
   );
 }
