@@ -7,7 +7,6 @@ import {CardKind, isSpellTrapCard, readCardKind} from "./CardKind.ts";
 import {CardSubKind, isContinuousLike, isExtraDeck, readCardSubKind} from "./CardSubKind.ts";
 import PendulumEffectBlock from "./display/elements/PendulumEffectBlock.tsx";
 import NormalEffectLore from "./effect/NormalEffectLore.tsx";
-import {getMonsterSpecialKinds} from "./MonsterSpecialKind.ts";
 import {CompressedCardEntry, parseForbiddenValue} from "../../../dbCompression.ts";
 import {MonsterType, monsterTypeFromString} from "./monster/MonsterType.ts";
 import {CardAttribute, monsterAttributeFromString, MonsterAttributeImage} from "./monster/CardAttribute.tsx";
@@ -71,19 +70,7 @@ export default class BaseDbCard {
         throw new Error(`Missing monster type line for monster card ${this.id} "${this.name}"`);
       }
 
-      const specialKinds = getMonsterSpecialKinds(this.json.monsterTypeLine);
-      const monsterType = this.getMonsterType();
-      if (!monsterType) {
-        throw new Error(`Missing race for card ${this.id} "${this.name}"`);
-      }
-      const categories: string[] = [monsterType.toString(), ...specialKinds.map(k => k.toString()), this.subKind];
-
-      if ((isExtraDeck(this.subKind) && this.getEffectText().length > 0)
-        || (!categories.includes("Effect") && this.json.monsterTypeLine?.includes("Effect"))) {
-        categories.push("Effect");
-      }
-
-      return <p>[{categories.join(" / ")}]</p>;
+      return <p>[{this.json.monsterTypeLine.join(" / ")}]</p>;
     }
   }
 

@@ -8,6 +8,7 @@ export enum MonsterSpecialKind {
 }
 
 export function getMonsterSpecialKinds(monsterTypes: string[]): MonsterSpecialKind[] {
+  monsterTypes = monsterTypes.map(type => type.toLowerCase());
   const kinds: MonsterSpecialKind[] = [];
   if (monsterTypes.includes("flip")) {
     kinds.push(MonsterSpecialKind.FLIP);
