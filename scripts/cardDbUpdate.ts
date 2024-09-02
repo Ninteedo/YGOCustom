@@ -64,6 +64,7 @@ function zipCardDbImages(cardDb: any, ygoProDeckCardDb: any): any {
     const ygoProDeckCard = ygoProDeckCardDb["data"].find((ygoProDeckCard: any) => ygoProDeckCard["name"] === card["name"]["en"]);
     if (ygoProDeckCard) {
       newCard["card_images_new"] = ygoProDeckCard["card_images"];
+      newCard["id_alt"] = ygoProDeckCard["id"];
     }
     result.push(newCard);
   }
@@ -213,7 +214,7 @@ function compressCard(card: any): any | null {
   try {
     return compressDbCardJson(card);
   } catch (e) {
-    console.error(`Error compressing card ${card["id"]} "${card["name"]}"`, e);
+    console.error(`Error compressing card ${card["password"]} "${card["name"]["en"]}"`, e);
     return null;
   }
 }

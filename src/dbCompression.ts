@@ -212,7 +212,7 @@ class YamlYugiEntry {
 
   constructor(json: any) {
     this.konamiId = json["konami_id"];
-    this.password = json["password"];
+    this.password = json["password"] || json["id_alt"];
     this.name = json["name"];
     this.text = json["text"];
     this.cardType = json["card_type"];
@@ -251,7 +251,7 @@ class YamlYugiEntry {
 }
 
 export class CompressedCardEntry {
-  public readonly id: string | undefined;
+  public readonly id: string;
   public readonly name: string;
   public readonly text: string;
   public readonly superType: string;
@@ -267,7 +267,7 @@ export class CompressedCardEntry {
   public readonly def: string | undefined;
 
   constructor(
-    id: string | undefined,
+    id: string,
     name: string,
     desc: string,
     superType: string,
@@ -300,7 +300,7 @@ export class CompressedCardEntry {
 
   static fromYamlYugiEntry(entry: YamlYugiEntry) {
     const monsterCategories = entry.getMonsterCategories();
-    const password = entry.password !== null ? entry.password.toString() : undefined;
+    const password = entry.password.toString();
     return new CompressedCardEntry(
       password,  // id
       entry.name["en"],  // name

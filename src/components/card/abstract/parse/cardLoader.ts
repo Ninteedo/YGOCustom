@@ -99,23 +99,27 @@ export async function loadCard(id: string | undefined): Promise<BaseDbCard | nul
 //   return clauses;
 // }
 
-export function useGetOfficialCard(id: string | undefined): [BaseDbCard | undefined, boolean] {
+export function useGetOfficialCard(name: string | undefined): [BaseDbCard | undefined, boolean] {
   const [result, setResult] = useState<BaseDbCard | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const cardDb = useCardDbContext();
 
   useEffect(() => {
     const fetchResults = async () => {
+      if (!name) {
+        return;
+      }
+
       setLoading(true);
 
-      const found = cardDb.find(c => c.id == id);
+      const found = cardDb.find(c => c.name == decodeURI(name));
 
       setResult(found);
       setLoading(false);
     }
 
     fetchResults();
-  }, [id, cardDb]);
+  }, [name, cardDb]);
 
   return [result, loading];
 }

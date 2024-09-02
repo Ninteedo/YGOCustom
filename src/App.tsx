@@ -35,7 +35,7 @@ function App() {
           element: <CardSearchPage/>,
         },
         {
-          path: "card/official/:cardId",
+          path: "card/official/:name",
           element: <CardPage/>,
         },
         {

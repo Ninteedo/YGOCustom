@@ -6,10 +6,10 @@ import CardDetail from "../components/card/display/CardDetail.tsx";
 import BaseDbCard from "../components/card/abstract/BaseDbCard.tsx";
 
 export const CardPage: React.FC = () => {
-  const {cardId} = useParams<{ cardId: string }>();
+  const {name} = useParams<{ name: string }>();
   const [CardComponent, setCardComponent] = useState<ReactNode | null>(null);
 
-  const [card, loading] = useGetOfficialCard(cardId);
+  const [card, loading] = useGetOfficialCard(name);
 
   useEffect(() => {
     if (loading) {
@@ -18,13 +18,13 @@ export const CardPage: React.FC = () => {
     }
 
     if (card === undefined) {
-      setCardComponent(<div>Card "{cardId}" not found</div>);
-      console.log("loading=" + loading + ", card=" + card + ", cardName=" + cardId)
+      setCardComponent(<div>Card "{name}" not found</div>);
+      console.log("loading=" + loading + ", card=" + card + ", cardName=" + name)
     } else {
       setCardComponent(<CardDetail card={card} />);
       document.title = card.name;
     }
-  }, [card, cardId, loading]);
+  }, [card, name, loading]);
 
   if (loading) {
     return <LoadingSpinner />;

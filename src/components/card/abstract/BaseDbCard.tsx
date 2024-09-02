@@ -46,7 +46,7 @@ export default class BaseDbCard {
   }
 
   getLinkUrl(): string {
-    return `/card/official/${this.id}`
+    return `/card/official/${encodeURI(this.name)}`
   }
 
   getInfoLine(): ReactElement {
@@ -198,7 +198,7 @@ ${this.text}`;
   }
 }
 
-function getBucketImageLink(id: string): string {
+function getBucketImageLink(id: string | undefined): string {
   return `${process.env.IMAGE_BASE_URL}/${id}.jpg`;
 }
 
