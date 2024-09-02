@@ -225,8 +225,7 @@ function getDbCardSubKind(json: CompressedCardEntry): CardSubKind {
 function getLevelName(monsterSubKind: CardSubKind, json: CompressedCardEntry): string {
   const levelNumber = json.level;
   if (monsterSubKind === CardSubKind.LINK) {
-    const linkRating = json.level;
-    return `Link-${linkRating}`;
+    return `Link-${levelNumber}`;
   } else if (monsterSubKind === CardSubKind.XYZ) {
     return `Rank ${levelNumber}`;
   } else {

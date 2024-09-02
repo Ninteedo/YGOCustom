@@ -221,7 +221,7 @@ class YamlYugiEntry {
     this.attribute = json["attribute"];
     this.level = json["level"];
     this.rank = json["rank"];
-    this.linkarrows = json["linkarrows"];
+    this.linkarrows = json["link_arrows"];
     this.atk = json["atk"];
     this.def = json["def"];
     this.sets = json["sets"];
