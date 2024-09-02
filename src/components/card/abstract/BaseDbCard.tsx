@@ -6,7 +6,6 @@ import {parseEffects} from "./parse/parseEffects.ts";
 import {CardKind, isSpellTrapCard, readCardKind} from "./CardKind.ts";
 import {CardSubKind, isContinuousLike, isExtraDeck, readCardSubKind} from "./CardSubKind.ts";
 import PendulumEffectBlock from "./display/elements/PendulumEffectBlock.tsx";
-import {parsePendulumText, splitPendulumText} from "./parse/parsePendulum.ts";
 import NormalEffectLore from "./effect/NormalEffectLore.tsx";
 import {getMonsterSpecialKinds} from "./MonsterSpecialKind.ts";
 import {CompressedCardEntry, parseForbiddenValue} from "../../../dbCompression.ts";
@@ -116,8 +115,9 @@ export default class BaseDbCard {
   getEffectBlock(): ReactNode {
     try {
       if (this.kind == CardKind.MONSTER && this.isPendulum) {
-        const {materials, pendulumEffects, monsterEffects} = parsePendulumText(
-          this.text, this.subKind === CardSubKind.NORMAL, isExtraDeck(this.subKind));
+        const materials = this.getMaterials();
+        const monsterEffects = parseEffects({text: materials ? this.getEffectText() : this.text});
+        const pendulumEffects = parseEffects({text: this.json.pendulumText || "", isSpellTrapCard: true, isContinuousSpellTrapCard: true})
         return <PendulumEffectBlock materials={materials} pendulumEffects={pendulumEffects} monsterEffects={monsterEffects} cardId={this.id} />;
       }
 
@@ -143,14 +143,12 @@ export default class BaseDbCard {
   }
 
   getEffectBlockNoFormatting(): ReactNode {
-    if (this.kind == CardKind.MONSTER && this.isPendulum) {
-      const {materials, pendulumText, monsterText} = splitPendulumText(
-        this.text, isExtraDeck(this.subKind));
-      return <PendulumEffectBlock materials={materials} pendulumEffects={pendulumText} monsterEffects={monsterText} cardId={this.id} />;
-    }
-
     const materials = this.getMaterials();
     const effectText = materials ? this.getEffectText() : this.text;
+
+    if (this.kind == CardKind.MONSTER && this.isPendulum) {
+      return <PendulumEffectBlock materials={materials} pendulumEffects={this.json.pendulumText || ""} monsterEffects={effectText} cardId={this.id} />;
+    }
 
     return <EffectBlock materials={materials} effects={effectText} cardId={this.id}/>;
   }

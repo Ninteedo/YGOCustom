@@ -206,7 +206,7 @@ class YamlYugiEntry {
   public readonly yugipediaPageId: number;
   public readonly masterDuelRarity: string | undefined;
   public readonly pendulumScale: number | undefined;  // for Pendulum Monster cards
-  public readonly pendulumEffect: string | undefined;  // for Pendulum Monster cards
+  public readonly pendulumEffect: { [key: string]: string } | undefined;  // for Pendulum Monster cards
   public readonly series: string[] | undefined;  // archetypes
 
   constructor(json: any) {
@@ -305,7 +305,7 @@ export class CompressedCardEntry {
       entry.cardType,  // superType
       monsterCategories,  // monsterTypeLine
       entry.pendulumScale,  // pendulumScale
-      entry.pendulumEffect,  // pendulumText
+      entry.pendulumEffect && entry.pendulumEffect["en"],  // pendulumText
       entry.property,  // property
       entry.attribute,  // attribute
       entry.level ? entry.level : entry.rank ? entry.rank : entry.getLinkRating(),  // level
@@ -323,8 +323,8 @@ export class CompressedCardEntry {
       json[3],  // desc
       readOriginalMapping(cardSuperTypeMappings, json[4]),  // superType
       json[5],  // monsterTypeLine
-      json[12],  // pendulumScale
-      json[13],  // pendulumText
+      json[11],  // pendulumScale
+      json[12],  // pendulumText
       json[6],  // property
       json[7] ? attributeNumberToName(json[7]) : undefined,  // attribute
       json[8],  // level
