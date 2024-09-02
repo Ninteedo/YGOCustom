@@ -27,6 +27,7 @@
   .search-filter-container {
     //margin-top: 0.5em;
     width: 100%;
+    background: none;
   }
 
   input.search-term {
@@ -35,7 +36,7 @@
     padding: 0.5rem;
     border: #6c6c6c solid 1px;
     border-radius: 5px;
-    background: #333;
+    background: rgba(0, 0, 0, 0.5);
     color: #fff;
   }
 
@@ -56,6 +57,7 @@
 
     .search-sort-container {
       //width: 20%;
+      margin-left: 0.5rem;
       .search-sort-select {
         height: 2rem;
         width: 10rem;
@@ -66,7 +68,6 @@
   .search-filter-select {
     width: 100%;
     height: 2rem;
-    background-color: #242424;
   }
 
   .close-button {
@@ -82,7 +83,6 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
     grid-gap: 0.5%;
-    overflow: auto;
     justify-items: center;
 
     width: 100%;
@@ -94,6 +94,7 @@
     border-radius: 5px;
 
     overflow-y: scroll;
+    overflow-x: hidden;
 
     user-select: none;
 

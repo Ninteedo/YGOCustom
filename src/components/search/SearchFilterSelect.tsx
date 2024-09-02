@@ -25,6 +25,7 @@ export function SearchFilterSelect({options, selectedOptions, setSelectedOptions
         className={"search-filter-select"}
         theme={customSelectTheme}
         tabIndex={tabIndex}
+        placeholder={"Filter..."}
       />
     </div>
   )
