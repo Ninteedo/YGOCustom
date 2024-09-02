@@ -159,7 +159,7 @@ export default class BaseDbCard {
 
   getMaterials(): string | undefined {
     if (this.kind === CardKind.MONSTER && isExtraDeck(this.subKind)) {
-      return readMaterialsText(this.text) || this.text;
+      return readMaterialsText(this.text);
     }
   }
 
