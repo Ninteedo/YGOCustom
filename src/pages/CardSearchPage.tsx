@@ -9,7 +9,7 @@ export default function CardSearchPage(): ReactNode {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
 
-  const indexedSearchOptions = searchOptions.filter((option) => params.has(option.value))
+  const indexedSearchOptions = searchOptions.flatMap(a => a.options).filter((option) => params.has(option.value))
     .map((option) => ({...option, index: parseInt(params.get(option.value) || "0")}));
 
   const orderedSearchOptions = indexedSearchOptions.sort((a, b) => a.index - b.index);

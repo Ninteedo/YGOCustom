@@ -22,6 +22,12 @@ export enum SearchOptionCategory {
   Pendulum = "Pendulum",
 }
 
+export interface SearchOptionGroup {
+  label: string;
+  options: SearchOption[];
+}
+
+
 function cardKindTest(kind: string): (card: BaseDbCard) => boolean {
   return (card: BaseDbCard) => card.kind === kind;
 }
@@ -131,26 +137,46 @@ function monsterSpecialKindSearchOption(specialKind: MonsterSpecialKind): Search
   };
 }
 
-const cardKindSearchOptions: SearchOption[] = Array.from(Object.values(CardKind), cardKindSearchOption);
+const cardKindSearchOptions: SearchOptionGroup = {
+  label: "Kind",
+  options: Array.from(Object.values(CardKind), cardKindSearchOption)
+};
 
-const subKindSearchOptions: SearchOption[] = Array.from(Object.values(CardSubKind), subKindSearchOption);
+const subKindSearchOptions: SearchOptionGroup = {
+  label: "Sub-Kind",
+  options: [
+    ...Array.from(Object.values(CardSubKind), subKindSearchOption),
+    mainDeckSearchOption(),
+    extraDeckSearchOption(),
+    pendulumSearchOption()
+  ]
+};
 
-const levelSearchOptions: SearchOption[] = Array.from({length: 12}, (_, i) => levelSearchOption(i + 1));
+const levelSearchOptions: SearchOptionGroup = {
+  label: "Level/Rank/Link",
+  options: Array.from({length: 12}, (_, i) => levelSearchOption(i + 1))
+};
 
-const monsterTypeSearchOptions: SearchOption[] = Array.from(Object.values(MonsterType), monsterTypeSearchOption);
+const monsterTypeSearchOptions: SearchOptionGroup = {
+  label: "Monster Type",
+  options: Array.from(Object.values(MonsterType), monsterTypeSearchOption)
+};
 
-const attributeSearchOptions: SearchOption[] = Array.from(Object.values(MONSTER_ATTRIBUTES), cardAttributeSearchOption);
+const attributeSearchOptions: SearchOptionGroup = {
+  label: "Attribute",
+  options: Array.from(Object.values(MONSTER_ATTRIBUTES), cardAttributeSearchOption)
+};
 
-const monsterSpecialSearchOptions: SearchOption[] = Array.from(Object.values(MonsterSpecialKind), monsterSpecialKindSearchOption);
+const monsterSpecialSearchOptions: SearchOptionGroup = {
+  label: "Special",
+  options: Array.from(Object.values(MonsterSpecialKind), monsterSpecialKindSearchOption)
+};
 
-export const searchOptions: SearchOption[] = [
-  ...cardKindSearchOptions,
-  ...subKindSearchOptions,
-  mainDeckSearchOption(),
-  extraDeckSearchOption(),
-  pendulumSearchOption(),
-  ...levelSearchOptions,
-  ...monsterTypeSearchOptions,
-  ...attributeSearchOptions,
-  ...monsterSpecialSearchOptions,
+export const searchOptions: SearchOptionGroup[] = [
+  cardKindSearchOptions,
+  subKindSearchOptions,
+  levelSearchOptions,
+  monsterTypeSearchOptions,
+  attributeSearchOptions,
+  monsterSpecialSearchOptions,
 ];

@@ -1,9 +1,10 @@
 import {ReactNode} from "react";
 import Select, {ActionMeta, MultiValue} from "react-select";
-import {SearchOption} from "./SearchOptions.ts";
+import {SearchOption, SearchOptionGroup} from "./SearchOptions.ts";
+import {customSelectTheme} from "./SelectStyle.ts";
 
 export interface SearchFilterSelectProps {
-  options: SearchOption[];
+  options: SearchOptionGroup[];
   selectedOptions: MultiValue<SearchOption>;
   setSelectedOptions: (selected: MultiValue<SearchOption>) => void;
   tabIndex: number;
@@ -14,23 +15,6 @@ export function SearchFilterSelect({options, selectedOptions, setSelectedOptions
     setSelectedOptions(selected);
   };
 
-  const customTheme = (theme: any) => ({
-    ...theme,
-    colors: {
-      ...theme.colors,
-      primary25: '#333',
-      primary: '#555',
-      neutral0: '#222', // background color
-      neutral80: '#fff', // font color
-      neutral50: '#888', // border color
-      neutral20: '#444', // hover color
-      neutral5: '#666', // selected color
-      neutral10: '#555', // selected hover color
-      neutral30: '#333', // selected border color
-      neutral40: '#222', // selected font color
-    },
-  });
-
   return (
     <div className={"search-filter-container"}>
       <Select
@@ -39,7 +23,7 @@ export function SearchFilterSelect({options, selectedOptions, setSelectedOptions
         value={selectedOptions}
         onChange={handleChange}
         className={"search-filter-select"}
-        theme={customTheme}
+        theme={customSelectTheme}
         tabIndex={tabIndex}
       />
     </div>
