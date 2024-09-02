@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {useCardDbContext} from "../card/abstract/parse/cardDbUtility.ts";
 import {loadCard} from "../card/abstract/parse/cardLoader.ts";
 import Fuse, {FuseResult} from "fuse.js";
-import {CardJsonEntry} from "../../dbCompression.ts";
+import {CompressedCardEntry} from "../../dbCompression.ts";
 import BaseDbCard from "../card/abstract/BaseDbCard.tsx";
 import {SearchOption, SearchOptionCategory} from "./SearchOptions.ts";
 import {MultiValue} from "react-select";
@@ -22,7 +22,7 @@ export function useSearchCards(searchTerm: string, filterOptions: MultiValue<Sea
   const options = {
     keys: [
       { name: 'name', weight: 0.6 },
-      { name: 'desc', weight: 0.4 },
+      { name: 'text', weight: 0.4 },
     ],
     includeScore: false,
     threshold: 0.5
@@ -45,8 +45,8 @@ export function useSearchCards(searchTerm: string, filterOptions: MultiValue<Sea
     }
     if (searchTerm) {
       if (fuzzySearch) {
-        const fuseResults: FuseResult<CardJsonEntry>[] = (() => {
-          const fuse: Fuse<CardJsonEntry> = new Fuse(dbResults.map(card => card.json), options);
+        const fuseResults: FuseResult<CompressedCardEntry>[] = (() => {
+          const fuse: Fuse<CompressedCardEntry> = new Fuse(dbResults.map(card => card.json), options);
           return fuse.search(searchTerm);
         })();
         dbResults = fuseResults.map(({item}) => new BaseDbCard(item));
