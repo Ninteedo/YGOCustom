@@ -202,6 +202,7 @@ class YamlYugiEntry {
   public readonly def: string | undefined;  // for Monster cards
   public readonly sets: { [key: string]: {set_number: string, set_name: string, rarities: string[]}[] }
   public readonly images: { index: number, image: string}[];
+  public readonly ygoProDeckImages: { id: number, image_url: string, image_url_small: string, image_url_cropped: string }[]
   public readonly limitRegulation: { tcg: string, ocg: string };
   public readonly yugipediaPageId: number;
   public readonly masterDuelRarity: string | undefined;
@@ -231,6 +232,7 @@ class YamlYugiEntry {
     this.pendulumScale = json["pendulum_scale"];
     this.pendulumEffect = json["pendulum_effect"];
     this.series = json["series"];
+    this.ygoProDeckImages = json["card_images_new"];
   }
 
   getLinkRating(): number | undefined {
@@ -249,7 +251,7 @@ class YamlYugiEntry {
 }
 
 export class CompressedCardEntry {
-  public readonly id: string;
+  public readonly id: string | undefined;
   public readonly name: string;
   public readonly text: string;
   public readonly superType: string;
@@ -260,12 +262,12 @@ export class CompressedCardEntry {
   public readonly attribute: string | undefined;
   public readonly level: number | undefined;
   public readonly forbidden: string | undefined;
-  public readonly imageId: string;
+  public readonly imageId: string | undefined;
   public readonly atk: string | undefined;
   public readonly def: string | undefined;
 
   constructor(
-    id: string,
+    id: string | undefined,
     name: string,
     desc: string,
     superType: string,
@@ -276,7 +278,7 @@ export class CompressedCardEntry {
     attribute: string | undefined,
     level: number | undefined,
     forbidden: string | undefined,
-    imageId: string,
+    imageId: string | undefined,
     atk: string | undefined,
     def: string | undefined
   ) {
@@ -298,8 +300,9 @@ export class CompressedCardEntry {
 
   static fromYamlYugiEntry(entry: YamlYugiEntry) {
     const monsterCategories = entry.getMonsterCategories();
+    const password = entry.password !== null ? entry.password.toString() : undefined;
     return new CompressedCardEntry(
-      (entry.password && entry.password.toString()) || entry.name["en"],  // id
+      password,  // id
       entry.name["en"],  // name
       entry.text["en"],  // desc
       entry.cardType,  // superType
@@ -310,7 +313,7 @@ export class CompressedCardEntry {
       entry.attribute,  // attribute
       entry.level ? entry.level : entry.rank ? entry.rank : entry.getLinkRating(),  // level
       entry.limitRegulation ? getForbiddenValue(entry.limitRegulation.tcg, entry.limitRegulation.ocg) : undefined,  // forbidden
-      entry.password.toString(),  // imageId
+      entry.ygoProDeckImages && entry.ygoProDeckImages[0].id.toString(),  // imageId
       entry.atk,  // atk
       entry.def  // def
     )

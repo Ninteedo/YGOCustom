@@ -33,7 +33,7 @@ export default class BaseDbCard {
     this.art = getBucketImageLink(cardEntry.imageId);
     this.kind = getDbCardKind(cardEntry);
     this.subKind = getDbCardSubKind(cardEntry);
-    this.isPendulum = cardEntry.monsterTypeLine && cardEntry.monsterTypeLine.includes("Pendulum") || false;
+    this.isPendulum = cardEntry.getIsPendulum();
 
     this.text = cardEntry.text;
     this.json = cardEntry;

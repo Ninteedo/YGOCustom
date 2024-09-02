@@ -37,14 +37,37 @@ async function loadCardDb(): Promise<any> {
     });
 }
 
-function saveDb(cardDb: any): void {
+async function loadYgoProDeckCardDb(): Promise<any> {
+  return await fetch("https://db.ygoprodeck.com/api/v7/cardinfo.php")
+    .then(response => response.json())
+    .then(data => {
+      console.log("YGOProDeck card data loaded.");
+      return data;
+    });
+}
+
+function saveDb(cardDb: any, ygoProDeckCardDb: any): void {
   // const db = cardDb['data'];
   // const dbNoSkills = db;  //.filter((card: any) => !isSkillCard(card));
-  const compressedDb = cardDb.map((card: any) => compressCard(card));
+  const zippedCardDb = zipCardDbImages(cardDb, ygoProDeckCardDb);
+  const compressedDb = zippedCardDb.map((card: any) => compressCard(card)).filter((card: any) => card !== null);
 
   console.log(`Saving card DB.`)
   fs.writeFileSync(DB_FILE, JSON.stringify(compressedDb, null, undefined), "utf8");
   console.log(`Saved ${DB_FILE}`);
+}
+
+function zipCardDbImages(cardDb: any, ygoProDeckCardDb: any): any {
+  const result: any = [];
+  for (const card of cardDb) {
+    const newCard = card;
+    const ygoProDeckCard = ygoProDeckCardDb["data"].find((ygoProDeckCard: any) => ygoProDeckCard["name"] === card["name"]["en"]);
+    if (ygoProDeckCard) {
+      newCard["card_images_new"] = ygoProDeckCard["card_images"];
+    }
+    result.push(newCard);
+  }
+  return result;
 }
 
 async function main(): Promise<void> {
@@ -58,10 +81,11 @@ async function main(): Promise<void> {
   console.log("Database update required. " + currentDbVersion + " -> " + latestDbVersion);
 
   const cardDb = await loadCardDb();
-  saveDb(cardDb);
+  const ygoProDeckCardDb = await loadYgoProDeckCardDb();
+  saveDb(cardDb, ygoProDeckCardDb);
   fs.writeFileSync(DB_VERSION_FILE, latestDbVersion, "utf8");
 
-  await saveNewCardImages(cardDb);
+  await saveNewCardImages(ygoProDeckCardDb);
 }
 
 function configureR2Client() {
@@ -185,12 +209,12 @@ function isSkillCard(card: any): boolean {
   return card["type"].toLowerCase() === "skill card";
 }
 
-function compressCard(card: any): any {
+function compressCard(card: any): any | null {
   try {
     return compressDbCardJson(card);
   } catch (e) {
     console.error(`Error compressing card ${card["id"]} "${card["name"]}"`, e);
-    return card;
+    return null;
   }
 }
 
