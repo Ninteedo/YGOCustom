@@ -47,7 +47,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
         || sentence.includes(" to activate and to resolve this effect")
         || sentence.includes(" to activate and resolve this effect")
         || (sentence.startsWith("(") && sentence.endsWith(")"))
-        || (sentence.startsWith("If you ") && sentence.includes(" instead"))
+        || (sentence.startsWith("If ") && !sentence.includes(" would ") && sentence.includes(" instead"))
       )
     );
   }

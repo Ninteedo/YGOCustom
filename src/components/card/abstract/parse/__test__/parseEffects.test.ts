@@ -1074,4 +1074,50 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
   });
+
+  test('Arcana Reading', () => {
+    const text = "Toss a coin and apply this effect. If \"Light Barrier\" is in your Field Zone, you can choose the effect instead.\n" +
+      "● Heads: Add 1 card from your Deck to your hand that has a coin tossing effect, except \"Arcana Reading\".\n" +
+      "● Tails: Your opponent adds 1 card from their Deck to their hand.\n" +
+      "You can banish this card from your GY; immediately after this effect resolves, Normal Summon 1 \"Arcana Force\" monster.\n" +
+      "You can only use each effect of \"Arcana Reading\" once per turn.";
+    const effects = [
+      new IgnitionEffect([
+        new EffectMainClause("Toss a coin and apply this effect."),
+        new EffectMainClause("If \"Light Barrier\" is in your Field Zone, you can choose the effect instead."),
+        new SubEffectClause([
+          new EffectConditionClause("Heads"),
+          new EffectMainClause("Add 1 card from your Deck to your hand that has a coin tossing effect, except \"Arcana Reading\".")
+        ]),
+        new SubEffectClause([
+          new EffectConditionClause("Tails"),
+          new EffectMainClause("Your opponent adds 1 card from their Deck to their hand.")
+        ]),
+      ]),
+      new IgnitionEffect([
+        new EffectCostClause("You can banish this card from your GY"),
+        new EffectMainClause("immediately after this effect resolves, Normal Summon 1 \"Arcana Force\" monster.")
+      ]),
+      new EffectRestriction("You can only use each effect of \"Arcana Reading\" once per turn.")
+    ];
+    testParseEffects({text, isSpellTrapCard: true}, effects);
+  });
+
+  test('Dingirsu, the Orcust of the Evening Star', () => {
+    const text = "You can only Special Summon \"Dingirsu, the Orcust of the Evening Star(s)\" once per turn. You can also Xyz Summon this card by using an \"Orcust\" Link Monster you control as material. If a card(s) you control would be destroyed by battle or card effect, you can detach 1 material from this card instead. If this card is Special Summoned: You can activate 1 of these effects;\n" +
+      "● Send 1 card your opponent controls to the GY.\n" +
+      "● Attach 1 of your banished Machine monsters to this card as material.";
+    const effects = [
+      new EffectRestriction("You can only Special Summon \"Dingirsu, the Orcust of the Evening Star(s)\" once per turn."),
+      new SummoningCondition(new EffectMainClause("You can also Xyz Summon this card by using an \"Orcust\" Link Monster you control as material.")),
+      new ContinuousEffect(new EffectMainClause("If a card(s) you control would be destroyed by battle or card effect, you can detach 1 material from this card instead.")),
+      new TriggerEffect([
+        new EffectConditionClause("If this card is Special Summoned"),
+        new EffectCostClause("You can activate 1 of these effects"),
+        new SubEffectClause([new EffectMainClause("Send 1 card your opponent controls to the GY.")]),
+        new SubEffectClause([new EffectMainClause("Attach 1 of your banished Machine monsters to this card as material.")]),
+      ])
+    ];
+    testParseEffects({text}, effects);
+  });
 });
