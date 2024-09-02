@@ -14,6 +14,7 @@ export interface EffectParseProps {
   lastEffect: Effect | null;
   isSub: boolean;
   lastIsSub: boolean | null;
+  hasPrecedingNewLine: boolean;
 }
 
 export abstract class EffectParseRule {

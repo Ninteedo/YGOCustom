@@ -1058,4 +1058,20 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Switch Point', () => {
+    const text = "Choose 1 monster your opponent controls, and your opponent sends either of the following to the GY.\n" +
+      "● The chosen monster.\n" +
+      "● The other monsters they control.\n" +
+      "Your opponent must control 3 or more monsters for you to activate and resolve this effect."
+    const effects = [
+      new QuickEffect([
+        new EffectMainClause("Choose 1 monster your opponent controls, and your opponent sends either of the following to the GY."),
+        new SubEffectClause([new EffectMainClause("The chosen monster.")]),
+        new SubEffectClause([new EffectMainClause("The other monsters they control.")]),
+        new EffectMainClause("Your opponent must control 3 or more monsters for you to activate and resolve this effect.")
+      ])
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
+  });
 });

@@ -16,6 +16,7 @@ export default class SubEffectParseRule extends EffectParseRule {
       || lastEffectText.includes("the following effect")
       || lastEffectText.includes(" the appropriate effect")
       || lastEffectText.toLowerCase().includes("toss a coin")
+      || lastEffectText.includes(" of the following ")
     );
   }
 

@@ -29,6 +29,7 @@ import EffectRestriction from "../effect/EffectRestriction.tsx";
 interface EffectSentence {
   text: string;
   isSub: boolean;
+  precedingNewLine: boolean;
 }
 
 interface EffectDetail {
@@ -91,8 +92,7 @@ const parsers: EffectParseRule[] = [
 
 export function parseEffects(props: ParseEffectsProps): Effect[] {
   const {text} = props;
-  const sentences: EffectSentence[] = splitSentences(text)
-    .map((sentence: string) => ({ text: sentence, isSub: false }));
+  const sentences: EffectSentence[] = splitSentences(text);
 
   for (let i = 1; i < sentences.length; i++) {
     let {text: sentence} = sentences[i];
@@ -116,7 +116,7 @@ export function parseEffects(props: ParseEffectsProps): Effect[] {
       sentences.splice(i + 1, 1);
     }
     if (sentence.startsWith("●")) {
-      sentences[i] = {text: sentence.substring(1).trimStart(), isSub: true};
+      sentences[i] = {text: sentence.substring(1).trimStart(), isSub: true, precedingNewLine: sentences[i].precedingNewLine};
     }
   }
 
@@ -126,8 +126,8 @@ export function parseEffects(props: ParseEffectsProps): Effect[] {
 
   const effects: EffectDetail[] = [];
   for (let i = 0; i < sentences.length; i++) {
-    const {text: sentence, isSub} = sentences[i];
-    parseSentenceNew(sentence, isSub, effects, props, parsers);
+    const {text: sentence, isSub, precedingNewLine} = sentences[i];
+    parseSentenceNew(sentence, isSub, precedingNewLine, effects, props, parsers);
   }
 
   return effects.map(({effect}) => effect);
@@ -136,6 +136,7 @@ export function parseEffects(props: ParseEffectsProps): Effect[] {
 function parseSentenceNew(
   sentence: string,
   isSub: boolean,
+  precedingNewLine: boolean,
   effects: EffectDetail[],
   props: ParseEffectsProps,
   parsers: EffectParseRule[],
@@ -158,6 +159,7 @@ function parseSentenceNew(
     lastEffect: lastEffectIndex !== undefined ? effects[lastEffectIndex].effect : null,
     lastIsSub: lastEffectIndex !== undefined ? effects[lastEffectIndex].isSub : null,
     isSub,
+    hasPrecedingNewLine: precedingNewLine,
   };
   const matchingRule = parsers.find((rule) => rule.match(parseProps));
   if (!matchingRule) {
@@ -169,19 +171,23 @@ function parseSentenceNew(
   }
 }
 
-function splitSentences(text: string): string[] {
-  const sentences: string[] = [];
+function splitSentences(text: string): EffectSentence[] {
+  const sentences: EffectSentence[] = [];
   let inQuotes = false;
   let inBrackets = false;
   let prevSentenceEnd = 0;
-  let i = 0
+  let i = 0;
+  let endsInNewLine = false;
 
-  function endSentence() {
+  function endSentence(): void {
     const newSentence = text.substring(prevSentenceEnd, i + 1).trim();
     if (newSentence.length > 0) {
-      sentences.push(newSentence);
+      endsInNewLine = newSentence.startsWith("\n") || sentences.length > 0 && text[prevSentenceEnd - 1] === "\n";
+      const isSub = newSentence.startsWith("●");
+      sentences.push({text: newSentence, isSub, precedingNewLine: endsInNewLine});
     }
     prevSentenceEnd = i + 1;
+    endsInNewLine = false;
   }
 
   function isSentenceTerminator(char: string): boolean {
@@ -227,14 +233,14 @@ function isGeminiCard(sentences: string[]): boolean {
 }
 
 function parseGeminiCard(sentences: EffectSentence[], props: ParseEffectsProps, parsers: EffectParseRule[]): GeminiEffect {
-  const effectSentences: EffectSentence[] = sentences.slice(2).map((sentence) => ({text: sentence.text, isSub: false}));
+  const effectSentences: EffectSentence[] = sentences.slice(2).map((sentence) => ({text: sentence.text, isSub: false, precedingNewLine: false}));
   if (sentences[1].text.startsWith("While this card is face-up on the field, you can Normal Summon it to have it be treated as an Effect Monster with this effect:\n●")) {
     // effectSentences = [[sentences[1][0].substring(sentences[1].indexOf("●") + 1, sentences[1].length - 1).trimStart()].concat(effectSentences), effectSentences[1]];
     // effectSentences =
   }
   const effects: EffectDetail[] = [];
   for (let i = 0; i < effectSentences.length; i++) {
-    parseSentenceNew(effectSentences[i].text, effectSentences[i].isSub, effects, props, parsers);
+    parseSentenceNew(effectSentences[i].text, effectSentences[i].isSub, effectSentences[i].precedingNewLine, effects, props, parsers);
   }
   return new GeminiEffect(effects.map(({effect}) => effect));
 }
