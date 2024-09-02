@@ -154,7 +154,7 @@ const subKindSearchOptions: SearchOptionGroup = {
 
 const levelSearchOptions: SearchOptionGroup = {
   label: "Level/Rank/Link",
-  options: Array.from({length: 12}, (_, i) => levelSearchOption(i + 1))
+  options: Array.from({length: 13}, (_, i) => levelSearchOption(i + 1))
 };
 
 const monsterTypeSearchOptions: SearchOptionGroup = {
