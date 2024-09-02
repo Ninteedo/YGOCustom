@@ -58,7 +58,8 @@ async function main(): Promise<void> {
   const ygoProDeckCardDb = await loadYgoProDeckCardDb();
   saveDb(cardDb, ygoProDeckCardDb);
 
-  await saveNewCardImages(ygoProDeckCardDb);
+  const failedUploads = await saveNewCardImages(ygoProDeckCardDb);
+  writeMissingImagesList(failedUploads);
 }
 
 function configureR2Client() {
@@ -111,13 +112,17 @@ async function listR2Images(): Promise<Set<string>> {
   return imageSet;
 }
 
-async function uploadCardImage(croppedUrl: string, imageId: string, s3: S3, bucketName: string): Promise<void> {
+/**
+ * Uploads a card image to R2.
+ * @return false if the image was uploaded successfully, true if there was an error.
+ */
+async function uploadCardImage(croppedUrl: string, imageId: string, s3: S3, bucketName: string): Promise<boolean> {
   try {
     const response = await fetch(croppedUrl);
 
     if (!response.ok) {
       console.error(`Failed to download ${croppedUrl}: ${response.status}`);
-      return;
+      return true;
     }
 
     const arrayBuffer = await response.arrayBuffer();
@@ -126,7 +131,7 @@ async function uploadCardImage(croppedUrl: string, imageId: string, s3: S3, buck
     // Check if the image is empty
     if (buffer.byteLength === 0) {
       console.error(`Empty image ${imageId}`);
-      return;
+      return true;
     }
 
     console.log(`${imageId} size: ${buffer.byteLength}`);
@@ -141,15 +146,22 @@ async function uploadCardImage(croppedUrl: string, imageId: string, s3: S3, buck
       });
 
       console.log(`Uploaded ${imageId} to R2 https://images.ygo.rgh.dev/${imageId}`);
+      return false;
     } catch (e) {
       console.error(`Error uploading ${imageId}`, e);
+      return true;
     }
   } catch (e) {
     console.error(`Error downloading or uploading ${imageId}`, e);
+    return true;
   }
 }
 
-async function saveNewCardImages(cardDb: any): Promise<void> {
+/**
+ * Downloads and uploads new card images to R2.
+ * @return a list of image IDs that failed to upload.
+ */
+async function saveNewCardImages(cardDb: any): Promise<string[]> {
   const r2Images = await listR2Images();
   const s3 = configureR2Client();
   const bucketName = process.env.R2_BUCKET_NAME;
@@ -157,6 +169,8 @@ async function saveNewCardImages(cardDb: any): Promise<void> {
   if (!bucketName) {
     throw new Error("R2_BUCKET_NAME environment variable not set.");
   }
+
+  const failedUploads: string[] = [];
 
   for (const card of cardDb["data"]) {
     const imagesList = card["card_images"];
@@ -170,12 +184,18 @@ async function saveNewCardImages(cardDb: any): Promise<void> {
 
       if (!r2Images.has(imageId)) {
         console.log(`Downloading ${croppedUrl}`);
-        await uploadCardImage(croppedUrl, imageId, s3, bucketName);
+        const failedUpload = await uploadCardImage(croppedUrl, imageId, s3, bucketName);
+        if (failedUpload) {
+          failedUploads.push(imageId);
+        }
         // Wait to avoid rate limiting
         await new Promise(resolve => setTimeout(resolve, 200));
       }
     }
   }
+
+  console.log(`Finished uploading images. Failed: ${failedUploads.length}`);
+  return failedUploads;
 }
 
 function isSkillCard(card: any): boolean {
@@ -189,6 +209,13 @@ function compressCard(card: any): any | null {
     console.error(`Error compressing card ${card["password"]} "${card["name"]["en"]}"`, e);
     return null;
   }
+}
+
+function writeMissingImagesList(missingImages: string[]): void {
+  const missingImagesFile = "src/assets/missingImages.ts";
+  const imageIds = missingImages.map(id => id.substring(0, id.length - 4));
+  const missingImagesFileContents = "export const missingImageIds: number[] = [" + imageIds.join(", ") + "];\n";
+  fs.writeFileSync(missingImagesFile, missingImagesFileContents, "utf8");
 }
 
 await main();

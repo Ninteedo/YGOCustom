@@ -11,6 +11,7 @@ import {CompressedCardEntry, parseForbiddenValue} from "../../../dbCompression.t
 import {MonsterType, monsterTypeFromString} from "./monster/MonsterType.ts";
 import {CardAttribute, monsterAttributeFromString, MonsterAttributeImage} from "./monster/CardAttribute.tsx";
 import {readMaterialsText, readNonMaterialsText} from "./parse/parseMaterials.ts";
+import {missingImageIds} from "../../../assets/missingImages.ts";
 
 export default class BaseDbCard {
   public readonly id: string;
@@ -188,6 +189,9 @@ ${this.text}`;
 }
 
 function getBucketImageLink(id: string | undefined): string {
+  if (!id || missingImageIds.includes(parseInt(id))) {
+    return `${process.env.IMAGE_BASE_URL}/unknown.jpg`;
+  }
   return `${process.env.IMAGE_BASE_URL}/${id}.jpg`;
 }
 

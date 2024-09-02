@@ -68,7 +68,7 @@ export function CardArt({src, alt, canExpand}: CardArtProps): ReactNode {
   let imgElement;
   if (isLoading) {
     imgElement = <LoadingSpinner />;
-  } else if (error) {
+  } else if (error || imageSrc.endsWith('unknown.jpg')) {
     imgElement = <img
       className={`card-art missing-art`}
       src={`${process.env.IMAGE_BASE_URL}/unknown.jpg`}

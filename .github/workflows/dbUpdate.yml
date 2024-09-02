@@ -56,7 +56,7 @@ jobs:
       - name: Commit changes
         if: env.CHANGES_DETECTED == 'true'
         run: |
-          git add src/assets/cards.en.json
+          git add src/assets/cards.en.json src/assets/missingImages.ts
           git commit -m "Update card database"
 
       - name: Push changes
