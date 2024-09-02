@@ -251,7 +251,7 @@ class YamlYugiEntry {
 }
 
 export class CompressedCardEntry {
-  public readonly id: string;
+  public readonly id: string | undefined;
   public readonly name: string;
   public readonly text: string;
   public readonly superType: string;
@@ -267,7 +267,7 @@ export class CompressedCardEntry {
   public readonly def: string | undefined;
 
   constructor(
-    id: string,
+    id: string | undefined,
     name: string,
     desc: string,
     superType: string,
@@ -300,7 +300,7 @@ export class CompressedCardEntry {
 
   static fromYamlYugiEntry(entry: YamlYugiEntry) {
     const monsterCategories = entry.getMonsterCategories();
-    const password = entry.password.toString();
+    const password = entry.password !== undefined ? entry.password.toString() : undefined;
     return new CompressedCardEntry(
       password,  // id
       entry.name["en"],  // name

@@ -28,7 +28,7 @@ export default class BaseDbCard {
   public readonly limitedOcg: number;
 
   constructor(cardEntry: CompressedCardEntry) {
-    this.id = cardEntry.id;
+    this.id = cardEntry.id || "undefined";
     this.name = cardEntry.name;
     this.art = getBucketImageLink(cardEntry.imageId);
     this.kind = getDbCardKind(cardEntry);
