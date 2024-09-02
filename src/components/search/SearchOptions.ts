@@ -3,6 +3,7 @@ import {CardSubKind, isExtraDeck} from "../card/abstract/CardSubKind.ts";
 import {MonsterType} from "../card/abstract/monster/MonsterType.ts";
 import {MONSTER_ATTRIBUTES} from "../card/abstract/monster/CardAttribute.tsx";
 import {CardKind} from "../card/abstract/CardKind.ts";
+import {MonsterSpecialKind} from "../card/abstract/MonsterSpecialKind.ts";
 
 export interface SearchOption {
   label: string;
@@ -17,6 +18,7 @@ export enum SearchOptionCategory {
   Level = "Level",
   MonsterType = "MonsterType",
   Attribute = "Attribute",
+  MonsterSpecial = "MonsterSpecial",
   Pendulum = "Pendulum",
 }
 
@@ -116,6 +118,19 @@ function pendulumSearchOption(): SearchOption {
   };
 }
 
+function monsterSpecialKindTest(specialKind: MonsterSpecialKind): (card: BaseDbCard) => boolean {
+  return (card: BaseDbCard) => !!card.json.monsterTypeLine?.includes(specialKind);
+}
+
+function monsterSpecialKindSearchOption(specialKind: MonsterSpecialKind): SearchOption {
+  return {
+    label: specialKind,
+    value: `special-${specialKind.toLowerCase()}`,
+    category: SearchOptionCategory.MonsterSpecial,
+    test: monsterSpecialKindTest(specialKind),
+  };
+}
+
 const cardKindSearchOptions: SearchOption[] = Array.from(Object.values(CardKind), cardKindSearchOption);
 
 const subKindSearchOptions: SearchOption[] = Array.from(Object.values(CardSubKind), subKindSearchOption);
@@ -126,13 +141,16 @@ const monsterTypeSearchOptions: SearchOption[] = Array.from(Object.values(Monste
 
 const attributeSearchOptions: SearchOption[] = Array.from(Object.values(MONSTER_ATTRIBUTES), cardAttributeSearchOption);
 
+const monsterSpecialSearchOptions: SearchOption[] = Array.from(Object.values(MonsterSpecialKind), monsterSpecialKindSearchOption);
+
 export const searchOptions: SearchOption[] = [
   ...cardKindSearchOptions,
   ...subKindSearchOptions,
   mainDeckSearchOption(),
   extraDeckSearchOption(),
+  pendulumSearchOption(),
   ...levelSearchOptions,
   ...monsterTypeSearchOptions,
   ...attributeSearchOptions,
-  pendulumSearchOption(),
+  ...monsterSpecialSearchOptions,
 ];
