@@ -9,7 +9,7 @@ import PendulumEffectBlock from "./display/elements/PendulumEffectBlock.tsx";
 import {parsePendulumText, splitPendulumText} from "./parse/parsePendulum.ts";
 import NormalEffectLore from "./effect/NormalEffectLore.tsx";
 import {getMonsterSpecialKinds} from "./MonsterSpecialKind.ts";
-import {CardJsonEntry, parseForbiddenValue} from "../../../dbCompression.ts";
+import {CompressedCardEntry, parseForbiddenValue} from "../../../dbCompression.ts";
 import {MonsterType, monsterTypeFromString} from "./monster/MonsterType.ts";
 import {CardAttribute, monsterAttributeFromString, MonsterAttributeImage} from "./monster/CardAttribute.tsx";
 import {readMaterialsText, readNonMaterialsText} from "./parse/parseMaterials.ts";
@@ -23,20 +23,20 @@ export default class BaseDbCard {
   public readonly isPendulum: boolean;
 
   public readonly text: string;
-  public readonly json: CardJsonEntry;
+  public readonly json: CompressedCardEntry;
 
   public readonly limitedTcg: number;
   public readonly limitedOcg: number;
 
-  constructor(cardEntry: CardJsonEntry) {
+  constructor(cardEntry: CompressedCardEntry) {
     this.id = cardEntry.id;
     this.name = cardEntry.name;
     this.art = getBucketImageLink(cardEntry.imageId);
     this.kind = getDbCardKind(cardEntry);
     this.subKind = getDbCardSubKind(cardEntry);
-    this.isPendulum = cardEntry.type.toLowerCase().includes("pendulum");
+    this.isPendulum = cardEntry.monsterTypeLine && cardEntry.monsterTypeLine.includes("Pendulum") || false;
 
-    this.text = cardEntry.desc;
+    this.text = cardEntry.text;
     this.json = cardEntry;
 
     [this.limitedTcg, this.limitedOcg] = parseForbiddenValue(cardEntry.forbidden);
@@ -68,14 +68,19 @@ export default class BaseDbCard {
 
   getCategoryLine(): ReactElement | undefined {
     if (this.kind === CardKind.MONSTER) {
-      const specialKinds = getMonsterSpecialKinds(this.json.type);
-      if (!this.json.race) {
+      if (!this.json.monsterTypeLine) {
+        throw new Error(`Missing monster type line for monster card ${this.id} "${this.name}"`);
+      }
+
+      const specialKinds = getMonsterSpecialKinds(this.json.monsterTypeLine);
+      const monsterType = this.getMonsterType();
+      if (!monsterType) {
         throw new Error(`Missing race for card ${this.id} "${this.name}"`);
       }
-      const categories: string[] = [this.json.race.toString(), ...specialKinds.map(k => k.toString()), this.subKind];
+      const categories: string[] = [monsterType.toString(), ...specialKinds.map(k => k.toString()), this.subKind];
 
       if ((isExtraDeck(this.subKind) && this.getEffectText().length > 0)
-        || (!categories.includes("Effect") && this.json.type.includes("Effect"))) {
+        || (!categories.includes("Effect") && this.json.monsterTypeLine?.includes("Effect"))) {
         categories.push("Effect");
       }
 
@@ -174,13 +179,13 @@ ${this.text}`;
    */
   getAnyLevelNumber(): number | undefined {
     if (this.kind === CardKind.MONSTER) {
-      return parseInt(this.json.level || this.json.linkval || "0");
+      return this.json.level;
     }
   }
 
   getMonsterType(): MonsterType | undefined {
-    if (this.kind === CardKind.MONSTER && this.json.race) {
-      return monsterTypeFromString(this.json.race);
+    if (this.kind === CardKind.MONSTER && this.json.monsterTypeLine) {
+      return monsterTypeFromString(this.json.monsterTypeLine[0]);
     }
   }
 
@@ -199,26 +204,26 @@ function getBucketImageLink(id: string): string {
   return `${process.env.IMAGE_BASE_URL}/${id}.jpg`;
 }
 
-function getDbCardKind(json: CardJsonEntry): CardKind {
-  return readCardKind(json.type.toLowerCase());
+function getDbCardKind(json: CompressedCardEntry): CardKind {
+  return readCardKind(json.superType.toLowerCase());
 }
 
-function getDbCardSubKind(json: CardJsonEntry): CardSubKind {
-  const typeString = json.type.toLowerCase();
+function getDbCardSubKind(json: CompressedCardEntry): CardSubKind {
   const kind = getDbCardKind(json);
-  const frameType = json.frameType || undefined;
+  const frameType = json.superType || undefined;
 
-  if (!json.race) {
+  const race = json.property || json.getMonsterKind();
+  if (!race) {
     throw new Error(`Missing race for card ${json.id} "${json.name}"`);
   }
 
-  return readCardSubKind(kind, typeString, json.race, frameType);
+  return readCardSubKind(kind, race, frameType);
 }
 
-function getLevelName(monsterSubKind: CardSubKind, json: CardJsonEntry): string {
+function getLevelName(monsterSubKind: CardSubKind, json: CompressedCardEntry): string {
   const levelNumber = json.level;
   if (monsterSubKind === CardSubKind.LINK) {
-    const linkRating = json.linkval;
+    const linkRating = json.level;
     return `Link-${linkRating}`;
   } else if (monsterSubKind === CardSubKind.XYZ) {
     return `Rank ${levelNumber}`;

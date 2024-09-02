@@ -7,8 +7,7 @@ export enum MonsterSpecialKind {
   TUNER = 'Tuner'
 }
 
-export function getMonsterSpecialKinds(monsterType: string): MonsterSpecialKind[] {
-  const monsterTypes = monsterType.toLowerCase().split(" ");
+export function getMonsterSpecialKinds(monsterTypes: string[]): MonsterSpecialKind[] {
   const kinds: MonsterSpecialKind[] = [];
   if (monsterTypes.includes("flip")) {
     kinds.push(MonsterSpecialKind.FLIP);

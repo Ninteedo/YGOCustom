@@ -1,205 +1,81 @@
-const mappings: [string, string][] = [
-  ["atk", "a"],
-  ["attribute", "b"],
-  ["def", "d"],
-  ["forbidden", "g"],
-  ["frameType", "f"],
-  ["archetype", "h"],
-  ["id", "i"],
-  ["level", "l"],
-  ["name", "n"],
-  ["race", "r"],
-  ["desc", "t"],
-  ["imageId", "u"],
-  ["linkval", "v"],
-  ["type", "y"],
-  // ["card_sets", "s"],
-];
-// const ignoredEntries: string[] = [
-//   "ygoprodeck_url",
-//   "card_images",
-//   "card_prices",
-// ];
-
 export function compressDbCardJson(cardJson: Object): any {
-  return new CardJsonEntry(cardJson, false).toCompressed();
+  const yamlYugiEntry = new YamlYugiEntry(cardJson);
+  const compressedCardEntry = CompressedCardEntry.fromYamlYugiEntry(yamlYugiEntry);
+  return compressedCardEntry.toCompressedJson();
 }
 
-export function decompressDbCardJson(compressedCardJson: Object): any {
-  return new CardJsonEntry(compressedCardJson, true);
+export function decompressDbCardJson(compressedCardJson: Object): CompressedCardEntry {
+  return CompressedCardEntry.fromCompressedJson(compressedCardJson);
 }
 
-export class CardJsonEntry {
-  public readonly id: string;
-  public readonly name: string;
-  public readonly type: string;
-  public readonly frameType: string;
-  public readonly desc: string;
-  public readonly atk: string | undefined;
-  public readonly def: string | undefined;
-  public readonly race: string | undefined;
-  public readonly attribute: string | undefined;
-  public readonly archetype: string | undefined;
-  public readonly imageId: string;
-  public readonly level: string | undefined;
-  public readonly linkval: string | undefined;
-  public readonly forbidden: string | undefined;
-  // public readonly cardSets: CardSet[];
-
-  constructor(json: any, isCompressed: boolean) {
-    this.id = getMapping(json, "id", isCompressed);
-    this.name = getMapping(json, "name", isCompressed);
-    this.type = getMapping(json, "type", isCompressed);
-    this.desc = getMapping(json, "desc", isCompressed);
-    this.atk = getMappingSafe(json, "atk", isCompressed);
-    this.def = getMappingSafe(json, "def", isCompressed);
-    this.archetype = getMappingSafe(json, "archetype", isCompressed);
-    this.level = getMappingSafe(json, "level", isCompressed);
-    this.linkval = getMappingSafe(json, "linkval", isCompressed);
-    this.forbidden = getMappingSafe(json, "forbidden", isCompressed);
-
-    if (isCompressed) {
-      this.imageId = getMapping(json, "imageId", isCompressed);
-      const raceNumberString = getMappingSafe(json, "race", isCompressed);
-      if (raceNumberString !== undefined) {
-        this.race = raceNumberToName(parseInt(raceNumberString));
-      }
-      const attributeNumberString = getMappingSafe(json, "attribute", isCompressed);
-      if (attributeNumberString !== undefined) {
-        this.attribute = attributeNumberToName(parseInt(attributeNumberString));
-      }
-      const frameTypeNumberString = getMappingSafe(json, "frameType", isCompressed);
-      if (frameTypeNumberString !== undefined) {
-        this.frameType = frameTypeNumberToName(parseInt(frameTypeNumberString));
-      } else {
-        throw new Error("frameType not found");
-      }
-      const typeShort = getMapping(json, "type", isCompressed);
-      this.type = shortToType(typeShort);
-    } else {
-      this.imageId = json["card_images"][0]["id"];
-      this.race = getMappingSafe(json, "race", isCompressed);
-      this.attribute = getMappingSafe(json, "attribute", isCompressed);
-      this.frameType = getMapping(json, "frameType", isCompressed);
-      this.type = getMapping(json, "type", isCompressed);
-
-      if (json["banlist_info"]) {
-        const banlistInfo = json["banlist_info"];
-        const tcg = banlistInfo["ban_tcg"];
-        const ocg = banlistInfo["ban_ocg"];
-        this.forbidden = getForbiddenValue(tcg, ocg);
-      } else {
-        this.forbidden = undefined;
-      }
-    }
-    // this.cardSets = (json[getMapping("card_sets", isCompressed)]; as Object[]).map(setJson => new CardSet(setJson));
-  }
-
-  public toCompressed(): any {
-    const compressed: any = {};
-
-    for (const [key, compressedKey] of mappings) {
-      // @ts-ignore
-      compressed[compressedKey] = this[key];
-    }
-
-    compressed[frameTypeKeyShort] = frameTypeNameToNumber(this.frameType);
-    compressed[typeKeyShort] = typeToShort(this.type);
-    if (this.race) {
-      compressed[raceKeyShort] = raceNameToNumber(this.race);
-    }
-    if (this.attribute) {
-      compressed[attributeKeyShort] = attributeNameToNumber(this.attribute);
-    }
-
-    return compressed;
-  }
-}
-
-function getShortKey(key: string): string {
-  const found = mappings.find(([originalKey, _]) => originalKey === key);
+function readShortMapping(mappings: [string, number][], key: string): number {
+  const found = mappings.find(([name, _]) => name === key);
   if (found) {
     return found[1];
   }
-  throw new Error(`No mapping found for key ${key}`);
+  throw new Error(`${key} not found`);
 }
 
-function getMapping(json: any, key: string, isCompressed: boolean): string {
-  const found = mappings.find(([originalKey, _]) => originalKey === key)
-  if (found) {
-    const properKey = found[isCompressed ? 1 : 0];
-    if (json[properKey]) {
-      return json[properKey];
-    }
-  }
-  throw new Error(`No mapping found for key ${key}`);
-}
-
-function getMappingSafe(json: any, key: string, isCompressed: boolean): string | undefined {
-  const found = mappings.find(([originalKey, _]) => originalKey === key)
-  if (found) {
-    const properKey = found[isCompressed ? 1 : 0];
-    if (json[properKey]) {
-      return json[properKey];
-    }
-  }
-  return undefined;
-}
-
-const raceMappings: [string, number][] = [
-  ["Normal", 7],
-  ["Quick-Play", 1],
-  ["Continuous", 2],
-  ["Counter", 3],
-  ["Ritual", 4],
-  ["Equip", 5],
-  ["Field", 6],
-  ["Pyro", 8],
-  ["Rock", 9],
-  ["Winged Beast", 10],
-  ["Plant", 11],
-  ["Insect", 12],
-  ["Thunder", 13],
-  ["Dragon", 14],
-  ["Beast", 15],
-  ["Beast-Warrior", 16],
-  ["Dinosaur", 17],
-  ["Fish", 18],
-  ["Sea Serpent", 19],
-  ["Reptile", 20],
-  ["Psychic", 21],
-  ["Divine-Beast", 22],
-  ["Creator-God", 23],
-  ["Creator God", 23],
-  ["Wyrm", 24],
-  ["Cyberse", 25],
-  ["Illusion", 26],
-  ["Warrior", 27],
-  ["Spellcaster", 28],
-  ["Fairy", 29],
-  ["Fiend", 30],
-  ["Zombie", 31],
-  ["Machine", 32],
-  ["Aqua", 33],
-];
-
-const raceKeyShort = getShortKey("race");
-
-function raceNameToNumber(raceName: string): number {
-  const found = raceMappings.find(([name, _]) => name === raceName);
-  if (found) {
-    return found[1];
-  }
-  throw new Error(`Race ${raceName} not found`);
-}
-
-function raceNumberToName(raceNumber: number): string {
-  const found = raceMappings.find(([_, number]) => number === raceNumber);
+function readOriginalMapping(mappings: [string, number][], key: number): string {
+  const found = mappings.find(([_, number]) => number === key);
   if (found) {
     return found[0];
   }
-  throw new Error(`Race number ${raceNumber} not found`);
+  throw new Error(`${key} not found`);
 }
+
+// const raceMappings: [string, number][] = [
+//   ["Normal", 7],
+//   ["Quick-Play", 1],
+//   ["Continuous", 2],
+//   ["Counter", 3],
+//   ["Ritual", 4],
+//   ["Equip", 5],
+//   ["Field", 6],
+//   ["Pyro", 8],
+//   ["Rock", 9],
+//   ["Winged Beast", 10],
+//   ["Plant", 11],
+//   ["Insect", 12],
+//   ["Thunder", 13],
+//   ["Dragon", 14],
+//   ["Beast", 15],
+//   ["Beast-Warrior", 16],
+//   ["Dinosaur", 17],
+//   ["Fish", 18],
+//   ["Sea Serpent", 19],
+//   ["Reptile", 20],
+//   ["Psychic", 21],
+//   ["Divine-Beast", 22],
+//   ["Creator-God", 23],
+//   ["Creator God", 23],
+//   ["Wyrm", 24],
+//   ["Cyberse", 25],
+//   ["Illusion", 26],
+//   ["Warrior", 27],
+//   ["Spellcaster", 28],
+//   ["Fairy", 29],
+//   ["Fiend", 30],
+//   ["Zombie", 31],
+//   ["Machine", 32],
+//   ["Aqua", 33],
+// ];
+//
+// function raceNameToNumber(raceName: string): number {
+//   const found = raceMappings.find(([name, _]) => name === raceName);
+//   if (found) {
+//     return found[1];
+//   }
+//   throw new Error(`Race ${raceName} not found`);
+// }
+//
+// function raceNumberToName(raceNumber: number): string {
+//   const found = raceMappings.find(([_, number]) => number === raceNumber);
+//   if (found) {
+//     return found[0];
+//   }
+//   throw new Error(`Race number ${raceNumber} not found`);
+// }
 
 const attributeMappings: [string, number][] = [
   ["DARK", 1],
@@ -210,8 +86,6 @@ const attributeMappings: [string, number][] = [
   ["WIND", 6],
   ["DIVINE", 7],
 ]
-
-const attributeKeyShort = getShortKey("attribute");
 
 function attributeNameToNumber(attributeName: string): number {
   const found = attributeMappings.find(([name, _]) => name === attributeName);
@@ -229,98 +103,49 @@ function attributeNumberToName(attributeNumber: number): string {
   throw new Error(`Attribute number ${attributeNumber} not found`);
 }
 
-const frameTypeMappings: [string, number][] = [
-  ["effect", 1],
-  ["normal", 2],
-  ["fusion", 3],
-  ["xyz", 4],
-  ["synchro", 5],
-  ["ritual", 6],
-  ["link", 7],
-  ["spell", 8],
-  ["trap", 9],
-  ["effect_pendulum", 10],
-  ["normal_pendulum", 11],
-  ["fusion_pendulum", 12],
-  ["xyz_pendulum", 13],
-  ["synchro_pendulum", 14],
-  ["ritual_pendulum", 15],
-  ["link_pendulum", 16],
-  ["token", 17],
+// const typeMappings: [string, string][] = [
+//   ["Card", "C"],
+//   ["Monster", "M"],
+//   ["Spell", "S"],
+//   ["Trap", "T"],
+//   ["Normal", "N"],
+//   ["Effect", "E"],
+//   ["Fusion", "F"],
+//   ["Ritual", "R"],
+//   ["Synchro", "Y"],
+//   ["XYZ", "X"],
+//   ["Link", "L"],
+//   ["Pendulum", "P"],
+//   ["Token", "t"],
+//   ["Flip", "f"],
+//   ["Union", "u"],
+//   ["Spirit", "s"],
+//   ["Toon", "o"],
+//   ["Tuner", "n"],
+//   ["Gemini", "g"],
+// ];
+
+const cardSuperTypeMappings: [string, number][] = [
+  ["Monster", 1],
+  ["Spell", 2],
+  ["Trap", 3],
 ];
 
-const frameTypeKeyShort = getShortKey("frameType");
-
-function frameTypeNameToNumber(frameTypeName: string): number {
-  const found = frameTypeMappings.find(([name, _]) => name === frameTypeName);
-  if (found) {
-    return found[1];
-  }
-  throw new Error(`Frame type ${frameTypeName} not found`);
-}
-
-function frameTypeNumberToName(frameTypeNumber: number): string {
-  const found = frameTypeMappings.find(([_, number]) => number === frameTypeNumber);
-  if (found) {
-    return found[0];
-  }
-  throw new Error(`Frame type number ${frameTypeNumber} not found`);
-}
-
-const typeMappings: [string, string][] = [
-  ["Card", "C"],
-  ["Monster", "M"],
-  ["Spell", "S"],
-  ["Trap", "T"],
-  ["Normal", "N"],
-  ["Effect", "E"],
-  ["Fusion", "F"],
-  ["Ritual", "R"],
-  ["Synchro", "Y"],
-  ["XYZ", "X"],
-  ["Link", "L"],
-  ["Pendulum", "P"],
-  ["Token", "t"],
-  ["Flip", "f"],
-  ["Union", "u"],
-  ["Spirit", "s"],
-  ["Toon", "o"],
-  ["Tuner", "n"],
-  ["Gemini", "g"],
-]
-
-const typeKeyShort = getShortKey("type");
-
-function typeToShort(type: string): string {
-  const parts = type.split(" ");
-  const shortParts = parts.map(part => {
-    const found = typeMappings.find(([name, _]) => name === part);
-    if (found) {
-      return found[1];
-    }
-    throw new Error(`Type ${part} not found`);
-  });
-  return shortParts.join("");
-}
-
-function shortToType(short: string): string {
-  const parts = short.split("");
-  const longParts = parts.map(part => {
-    const found = typeMappings.find(([_, short]) => short === part);
-    if (found) {
-      return found[0];
-    }
-    throw new Error(`Type ${part} not found`);
-  });
-  return longParts.join(" ");
-}
+const monsterKindMappings: [string, number][] = [
+  ["Fusion", 1],
+  ["Ritual", 2],
+  ["Synchro", 3],
+  ["Xyz", 4],
+  ["Link", 5],
+  ["Normal", 6],
+];
 
 function getForbiddenValue(tcg: string | undefined, ocg: string | undefined): string | undefined {
   function parseValue(value: string | undefined): number {
     if (value === undefined) {
       return 3;
     }
-    switch (value.toLowerCase()) {
+    switch (value && value.toLowerCase()) {
       case "forbidden":
         return 0;
       case "limited":
@@ -360,3 +185,191 @@ export function parseForbiddenValue(value: string | undefined): [number, number]
 //
 //   }
 // }
+
+class YamlYugiEntry {
+  public readonly konamiId: number;
+  public readonly password: number;
+  public readonly name: { [key: string]: string };  // language -> name
+  public readonly text: { [key: string]: string };  // language -> text
+  public readonly cardType: string;  // Monster, Spell, Trap
+  public readonly property: string | undefined;  // for Spell and Trap cards, e.g. Continuous, Equip
+  public readonly monsterTypeLine: string | undefined;  // for Monster cards, e.g. "Warrior / Effect"
+  public readonly attribute: string | undefined;  // for Monster cards, e.g. DARK, FIRE
+  public readonly level: number | undefined;  // for Monster cards, except Xyz and Link
+  public readonly rank: number | undefined;  // for Xyz Monster cards
+  public readonly linkarrows: string[] | undefined;  // for Link Monster cards
+  public readonly atk: string | undefined;  // for Monster cards
+  public readonly def: string | undefined;  // for Monster cards
+  public readonly sets: { [key: string]: {set_number: string, set_name: string, rarities: string[]}[] }
+  public readonly images: { index: number, image: string}[];
+  public readonly limitRegulation: { tcg: string, ocg: string };
+  public readonly yugipediaPageId: number;
+  public readonly masterDuelRarity: string | undefined;
+  public readonly pendulumScale: number | undefined;  // for Pendulum Monster cards
+  public readonly pendulumEffect: string | undefined;  // for Pendulum Monster cards
+  public readonly series: string[] | undefined;  // archetypes
+
+  constructor(json: any) {
+    this.konamiId = json["konami_id"];
+    this.password = json["password"];
+    this.name = json["name"];
+    this.text = json["text"];
+    this.cardType = json["card_type"];
+    this.property = json["property"];
+    this.monsterTypeLine = json["monster_type_line"];
+    this.attribute = json["attribute"];
+    this.level = json["level"];
+    this.rank = json["rank"];
+    this.linkarrows = json["linkarrows"];
+    this.atk = json["atk"];
+    this.def = json["def"];
+    this.sets = json["sets"];
+    this.images = json["images"];
+    this.limitRegulation = json["limit_regulation"];
+    this.yugipediaPageId = json["yugipedia_page_id"];
+    this.masterDuelRarity = json["master_duel_rarity"];
+    this.pendulumScale = json["pendulum_scale"];
+    this.pendulumEffect = json["pendulum_effect"];
+    this.series = json["series"];
+  }
+
+  getLinkRating(): number | undefined {
+    if (this.linkarrows) {
+      return this.linkarrows.length;
+    }
+    return undefined;
+  }
+
+  getMonsterCategories(): string[] | undefined {
+    if (!this.monsterTypeLine) {
+      return undefined;
+    }
+    return this.monsterTypeLine.split(" / ");
+  }
+}
+
+export class CompressedCardEntry {
+  public readonly id: string;
+  public readonly name: string;
+  public readonly text: string;
+  public readonly superType: string;
+  public readonly monsterTypeLine: string[] | undefined;
+  public readonly pendulumScale: number | undefined;
+  public readonly pendulumText: string | undefined;
+  public readonly property: string | undefined;
+  public readonly attribute: string | undefined;
+  public readonly level: number | undefined;
+  public readonly forbidden: string | undefined;
+  public readonly imageId: string;
+  public readonly atk: string | undefined;
+  public readonly def: string | undefined;
+
+  constructor(
+    id: string,
+    name: string,
+    desc: string,
+    superType: string,
+    monsterTypeLine: string[] | undefined,
+    pendulumScale: number | undefined,
+    pendulumText: string | undefined,
+    property: string | undefined,
+    attribute: string | undefined,
+    level: number | undefined,
+    forbidden: string | undefined,
+    imageId: string,
+    atk: string | undefined,
+    def: string | undefined
+  ) {
+    this.id = id;
+    this.name = name;
+    this.text = desc;
+    this.superType = superType;
+    this.monsterTypeLine = monsterTypeLine;
+    this.pendulumScale = pendulumScale;
+    this.pendulumText = pendulumText;
+    this.property = property;
+    this.attribute = attribute;
+    this.level = level;
+    this.forbidden = forbidden;
+    this.imageId = imageId;
+    this.atk = atk;
+    this.def = def;
+  }
+
+  static fromYamlYugiEntry(entry: YamlYugiEntry) {
+    const monsterCategories = entry.getMonsterCategories();
+    return new CompressedCardEntry(
+      (entry.password && entry.password.toString()) || entry.name["en"],  // id
+      entry.name["en"],  // name
+      entry.text["en"],  // desc
+      entry.cardType,  // superType
+      monsterCategories,  // monsterTypeLine
+      entry.pendulumScale,  // pendulumScale
+      entry.pendulumEffect,  // pendulumText
+      entry.property,  // property
+      entry.attribute,  // attribute
+      entry.level ? entry.level : entry.rank ? entry.rank : entry.getLinkRating(),  // level
+      entry.limitRegulation ? getForbiddenValue(entry.limitRegulation.tcg, entry.limitRegulation.ocg) : undefined,  // forbidden
+      entry.password.toString(),  // imageId
+      entry.atk,  // atk
+      entry.def  // def
+    )
+  }
+
+  static fromCompressedJson(json: any) {
+    return new CompressedCardEntry(
+      json[1],  // id
+      json[2],  // name
+      json[3],  // desc
+      readOriginalMapping(cardSuperTypeMappings, json[4]),  // superType
+      json[5],  // monsterTypeLine
+      json[12],  // pendulumScale
+      json[13],  // pendulumText
+      json[6],  // property
+      json[7] ? attributeNumberToName(json[7]) : undefined,  // attribute
+      json[8],  // level
+      json[9],  // forbidden
+      json[10],  // imageId
+      json[13],  // atk
+      json[14]  // def
+    )
+  }
+
+  toCompressedJson(): any {
+    return {
+      1: this.id,
+      2: this.name,
+      3: this.text,
+      4: readShortMapping(cardSuperTypeMappings, this.superType),
+      5: this.monsterTypeLine,
+      6: this.property,
+      7: this.attribute && attributeNameToNumber(this.attribute),
+      8: this.level,
+      9: this.forbidden,
+      10: this.imageId,
+      11: this.pendulumScale,
+      12: this.pendulumText,
+      13: this.atk,
+      14: this.def,
+    }
+  }
+
+  getMonsterType(): string | undefined {
+    if (this.monsterTypeLine) {
+      return this.monsterTypeLine[0];
+    }
+    return undefined;
+  }
+
+  getIsPendulum(): boolean {
+    return this.pendulumScale !== undefined;
+  }
+
+  getMonsterKind(): string | undefined {
+    if (!this.monsterTypeLine) {
+      return undefined;
+    }
+    const res = monsterKindMappings.find(([kind, _]) => this.monsterTypeLine && this.monsterTypeLine.includes(kind));
+    return res && res[0] || "Effect";
+  }
+}

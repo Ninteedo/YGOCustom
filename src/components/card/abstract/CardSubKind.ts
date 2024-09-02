@@ -22,8 +22,7 @@ export enum CardSubKind {
   TOKEN = 'Token',
 }
 
-export function readCardSubKind(kind: CardKind, typeString: string, race: string, frameType: string | undefined): CardSubKind {
-  typeString = typeString.toLowerCase();
+export function readCardSubKind(kind: CardKind, race: string, frameType: string | undefined): CardSubKind {
   race = race.toLowerCase();
   if (frameType) {
     frameType = frameType.toLowerCase();
@@ -32,20 +31,20 @@ export function readCardSubKind(kind: CardKind, typeString: string, race: string
   if (kind === CardKind.TOKEN) {
     return CardSubKind.TOKEN;
   } else if (kind == CardKind.MONSTER && frameType) {
-    if (frameType.includes("link")) {
+    if (race.includes("link")) {
       return CardSubKind.LINK;
-    } else if (frameType.includes("xyz")) {
+    } else if (race.includes("xyz")) {
       return CardSubKind.XYZ;
-    } else if (frameType.includes("synchro")) {
+    } else if (race.includes("synchro")) {
       return CardSubKind.SYNCHRO;
-    } else if (frameType.includes("fusion")) {
+    } else if (race.includes("fusion")) {
       return CardSubKind.FUSION;
-    } else if (frameType.includes("ritual")) {
+    } else if (race.includes("ritual")) {
       return CardSubKind.RITUAL;
-    } else if (frameType.includes("effect")) {
-      return CardSubKind.EFFECT;
-    } else {
+    } else if (race.includes("normal")) {
       return CardSubKind.NORMAL;
+    } else {
+      return CardSubKind.EFFECT;
     }
   } else {
     if (race.includes("normal")) {
@@ -64,7 +63,7 @@ export function readCardSubKind(kind: CardKind, typeString: string, race: string
       return CardSubKind.RITUAL;
     }
   }
-  throw new Error(`Unknown card sub kind: ${typeString} ${race}`);
+  throw new Error(`Unknown card sub kind: ${race}`);
 }
 
 export function isExtraDeck(subKind: CardSubKind): boolean {

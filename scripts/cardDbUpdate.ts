@@ -29,7 +29,7 @@ async function fetchLatestDbVersion(): Promise<string> {
 }
 
 async function loadCardDb(): Promise<any> {
-  return await fetch("https://db.ygoprodeck.com/api/v7/cardinfo.php")
+  return await fetch("https://dawnbrandbots.github.io/yaml-yugi/cards.json")
     .then(response => response.json())
     .then(data => {
       console.log("Aggregate card data loaded.");
@@ -38,9 +38,9 @@ async function loadCardDb(): Promise<any> {
 }
 
 function saveDb(cardDb: any): void {
-  const db = cardDb['data'];
-  const dbNoSkills = db.filter((card: any) => !isSkillCard(card));
-  const compressedDb = dbNoSkills.map((card: any) => compressCard(card));
+  // const db = cardDb['data'];
+  // const dbNoSkills = db;  //.filter((card: any) => !isSkillCard(card));
+  const compressedDb = cardDb.map((card: any) => compressCard(card));
 
   console.log(`Saving card DB.`)
   fs.writeFileSync(DB_FILE, JSON.stringify(compressedDb, null, undefined), "utf8");
@@ -186,7 +186,12 @@ function isSkillCard(card: any): boolean {
 }
 
 function compressCard(card: any): any {
-  return compressDbCardJson(card);
+  try {
+    return compressDbCardJson(card);
+  } catch (e) {
+    console.error(`Error compressing card ${card["id"]} "${card["name"]}"`, e);
+    return card;
+  }
 }
 
 await main();
