@@ -10,7 +10,7 @@ export default class AlwaysTreatedAsParseRule extends EffectParseRule {
     return (
       isFirstSentence
       && !!(
-        sentence.match(/This card('s name)? is (always)? treated as /)
+        sentence.match(/This card('s name)? is (also )?(always)? treated as /)
         || sentence.match(/This card's name becomes /)
       )
     );

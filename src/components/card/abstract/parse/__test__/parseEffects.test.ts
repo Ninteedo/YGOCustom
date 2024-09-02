@@ -1162,4 +1162,30 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text, isSpellTrapCard: true}, effects);
   });
+
+  test('Blaze Cannon', () => {
+    const text = "(This card is also always treated as a \"Blaze Accelerator\" card.)\n" +
+      "One \"The Winged Dragon of Ra\" you control gains the following effects until the end of this turn. This card's activation and effect cannot be negated.\n" +
+      "● This card is unaffected by your opponent's card effects.\n" +
+      "● When an attack is declared involving this card: You can Tribute any number of other monsters that did not declare an attack this turn; this card gains ATK equal to the Tributed monsters' combined original ATK, until the end of this turn.\n" +
+      "● After damage calculation, if this card attacked: You can send all monsters your opponent controls to the GY.";
+    const effects = [
+      new AlwaysTreatedAs("This card is also always treated as a \"Blaze Accelerator\" card."),
+      new QuickEffect([
+        new EffectMainClause("One \"The Winged Dragon of Ra\" you control gains the following effects until the end of this turn."),
+        new EffectMainClause("This card's activation and effect cannot be negated."),
+        new SubEffectClause([new EffectMainClause("This card is unaffected by your opponent's card effects.")]),
+        new SubEffectClause([
+          new EffectConditionClause("When an attack is declared involving this card"),
+          new EffectCostClause("You can Tribute any number of other monsters that did not declare an attack this turn"),
+          new EffectMainClause("this card gains ATK equal to the Tributed monsters' combined original ATK, until the end of this turn.")
+        ]),
+        new SubEffectClause([
+          new EffectConditionClause("After damage calculation, if this card attacked"),
+          new EffectMainClause("You can send all monsters your opponent controls to the GY.")
+        ]),
+      ])
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
+  })
 });
