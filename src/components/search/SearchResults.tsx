@@ -19,8 +19,8 @@ export function SearchResults({
   search,
   toggleSearch,
 }: SearchResultsProps) {
-  const {query: searchTerm, options: filterOptions, fuzzy: fuzzySearch} = search;
-  const {results, hits, isLoading} = useSearchCards(searchTerm, filterOptions, fuzzySearch);
+  const {query: searchTerm, options: filterOptions, fuzzy, sort} = search;
+  const {results, hits, isLoading} = useSearchCards(searchTerm, filterOptions, fuzzy, sort);
   const observer = useRef<IntersectionObserver | null>(null);
   const resultsRef = useRef<HTMLDivElement | null>(null);
   const [page, setPage] = useState(1);

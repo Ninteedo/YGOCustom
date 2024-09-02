@@ -1,4 +1,4 @@
-import React, {ReactNode, useState, useEffect, useRef} from "react";
+import React, {ReactNode, useEffect, useRef, useState} from "react";
 import "../../style/SearchBox.scss";
 import {SearchResults} from "./SearchResults.tsx";
 import {SearchFilterSelect} from "./SearchFilterSelect.tsx";
@@ -6,6 +6,8 @@ import {MultiValue} from "react-select";
 import {SearchOption, searchOptions} from "./SearchOptions.ts";
 import {useNavigate} from "react-router-dom";
 import SearchProps from "./SearchProps.ts";
+import {searchSorts} from "./SearchSort.ts";
+import {SearchSortSelect} from "./SearchSortSelect.tsx";
 
 interface SearchBoxProps {
   toggleSearch: () => void;
@@ -18,15 +20,18 @@ export default function SearchBox({toggleSearch, isSearchBoxOpen, isModal, initi
   let initialQuery = "";
   let initialOptions: MultiValue<SearchOption> = [];
   let initialFuzzy = false;
+  let initialSort = searchSorts[0];
   if (initialSearch) {
     initialQuery = initialSearch.query;
     initialOptions = initialSearch.options;
     initialFuzzy = initialSearch.fuzzy;
+    initialSort = initialSearch.sort;
   }
 
   const [searchTerm, setSearchTerm] = useState(initialQuery);
   const [selectedOptions, setSelectedOptions] = useState<MultiValue<SearchOption>>(initialOptions);
   const [enableFuzzySearch, setEnableFuzzySearch] = useState(initialFuzzy);
+  const [sort, setSort] = useState(initialSort);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -62,6 +67,7 @@ export default function SearchBox({toggleSearch, isSearchBoxOpen, isModal, initi
     query: searchTerm,
     options: selectedOptions,
     fuzzy: enableFuzzySearch,
+    sort,
   };
 
   return (
@@ -89,12 +95,20 @@ export default function SearchBox({toggleSearch, isSearchBoxOpen, isModal, initi
           />
         </label>
       </div>
-      <SearchFilterSelect
-        options={searchOptions}
-        selectedOptions={selectedOptions}
-        setSelectedOptions={setSelectedOptions}
-        tabIndex={2}
-      />
+      <div className={"search-options-container"}>
+        <SearchFilterSelect
+          options={searchOptions}
+          selectedOptions={selectedOptions}
+          setSelectedOptions={setSelectedOptions}
+          tabIndex={2}
+        />
+        <SearchSortSelect
+          sorts={searchSorts}
+          selectedSort={sort}
+          setSelectedSort={(selected) => setSort(selected as any)}
+          tabIndex={4}
+        />
+      </div>
       <SearchResults search={searchProps} toggleSearch={toggleSearch}/>
     </div>
   )

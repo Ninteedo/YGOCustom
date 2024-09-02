@@ -6,6 +6,7 @@ import {CompressedCardEntry} from "../../dbCompression.ts";
 import BaseDbCard from "../card/abstract/BaseDbCard.tsx";
 import {SearchOption, SearchOptionCategory} from "./SearchOptions.ts";
 import {MultiValue} from "react-select";
+import {SearchSort} from "./SearchSort.ts";
 
 interface SearchResultsResponse {
   results: BaseDbCard[];
@@ -13,7 +14,12 @@ interface SearchResultsResponse {
   isLoading: boolean;
 }
 
-export function useSearchCards(searchTerm: string, filterOptions: MultiValue<SearchOption>, fuzzySearch: boolean): SearchResultsResponse {
+export function useSearchCards(
+  searchTerm: string,
+  filterOptions: MultiValue<SearchOption>,
+  fuzzySearch: boolean,
+  searchSort: SearchSort
+): SearchResultsResponse {
   const [results, setResults] = useState<BaseDbCard[]>([]);
   const [filteredResults, setFilteredResults] = useState<BaseDbCard[]>([]);
   const [loading, setLoading] = useState(false);
@@ -58,6 +64,8 @@ export function useSearchCards(searchTerm: string, filterOptions: MultiValue<Sea
       }
     }
 
+    dbResults.sort(searchSort.sort);
+
     const manifestEntries: string[] = [];
 
     Promise.all(manifestEntries.map((entry) => loadCard(entry)))
@@ -69,7 +77,7 @@ export function useSearchCards(searchTerm: string, filterOptions: MultiValue<Sea
         // setHasMore(combinedResults.length > page * pageLength);
         setLoading(false);
       });
-  }, [searchTerm, cardDb, filterOptions, fuzzySearch]);
+  }, [searchTerm, cardDb, filterOptions, fuzzySearch, searchSort]);
 
   return {results, hits: filteredResults.length, isLoading: loading};
 }

@@ -53,7 +53,7 @@ export function getCardDb() {
 }
 
 function loadCardDb(json: any): BaseDbCard[] {
-  return json.map((card: any) => parseDbCard(card)).filter((card: BaseDbCard | null) => card !== null);
+  return json.map((card: any) => parseDbCard(card)).filter((card: BaseDbCard | null) => card !== null).sort((a: BaseDbCard, b: BaseDbCard) => a.name.localeCompare(b.name));
 }
 
 function parseDbCard(json: any): BaseDbCard | null {
