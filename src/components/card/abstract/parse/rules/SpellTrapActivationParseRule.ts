@@ -14,9 +14,9 @@ import IgnitionEffect from "../../effect/IgnitionEffect.tsx";
  */
 export default class SpellTrapActivationParseRule extends EffectParseRule {
   match({sentence, isSpellTrap, isFirstSentence, isContinuous}: EffectParseProps): boolean {
-    return isSpellTrap && isFirstSentence && (
-      !isContinuous || sentence.startsWith("When this card is activated")
-    );
+    return isSpellTrap && isFirstSentence &&
+      (!isContinuous || sentence.startsWith("When this card is activated"))
+      && !sentence.startsWith("You can activate this card the turn it was Set, ");
   }
 
   parse({isContinuous, sentence, isFastCard}: EffectParseProps): Effect {

@@ -21,7 +21,7 @@ import ActivationWindowFallbackParseRule from "./rules/ActivationWindowFallbackP
 import AlwaysTreatedAsParseRule from "./rules/AlwaysTreatedAsParseRule.ts";
 import ExtraEffectSentenceParseRule from "./rules/ExtraEffectSentenceParseRule.ts";
 import SubEffectParseRule from "./rules/SubEffectParseRule.ts";
-import QuickDuringMainPhase from "./rules/QuickDuringMainPhase.tsx";
+import QuickDuringMainPhase from "./rules/QuickDuringMainPhase.ts";
 import {containsIgnoreQuotes, takeUntilIgnoreQuotes} from "../../../../utils/stringParse.ts";
 import BasicIgnitionParseRuleParseRule from "./rules/BasicIgnitionParseRule.ts";
 import EffectRestriction from "../effect/EffectRestriction.tsx";
