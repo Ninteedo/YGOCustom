@@ -1141,4 +1141,25 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Vaalmonica Scelta', () => {
+    const text = "Apply 1 of these effects. Unless you have a \"Vaalmonica\" card in your Pendulum Zone, your opponent chooses the effect.\n" +
+      "● Gain 500 LP, then you can place 1 card from your hand on the bottom of the Deck, then draw 2 cards.\n" +
+      "● Take 500 damage, then you can add 1 \"Vaalmonica\" Spell/Trap from your Deck to your hand, except \"Vaalmonica Scelta\".\n" +
+      "You can only activate 1 \"Vaalmonica Scelta\" per turn.";
+    const effects = [
+      new IgnitionEffect([
+        new EffectMainClause("Apply 1 of these effects."),
+        new EffectMainClause("Unless you have a \"Vaalmonica\" card in your Pendulum Zone, your opponent chooses the effect."),
+        new SubEffectClause([
+          new EffectMainClause("Gain 500 LP, then you can place 1 card from your hand on the bottom of the Deck, then draw 2 cards.")
+        ]),
+        new SubEffectClause([
+          new EffectMainClause("Take 500 damage, then you can add 1 \"Vaalmonica\" Spell/Trap from your Deck to your hand, except \"Vaalmonica Scelta\".")
+        ]),
+      ]),
+      new EffectRestriction("You can only activate 1 \"Vaalmonica Scelta\" per turn.")
+    ];
+    testParseEffects({text, isSpellTrapCard: true}, effects);
+  });
 });

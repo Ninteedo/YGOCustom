@@ -41,6 +41,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
         || sentence.startsWith("You must also ")
         || sentence.startsWith("If Set")
         || sentence.startsWith("If Summoned this way")
+        || sentence.startsWith("Unless ")
         || sentence.includes(" activate this effect")
         || sentence.includes(" by this effect")
         || sentence.includes(" this effect's activation")
