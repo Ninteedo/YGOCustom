@@ -9,24 +9,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const DB_FILE = "src/assets/cards.en.json";
-const DB_VERSION_FILE = "db_version.txt";
-
-async function fetchCurrentDbVersion(): Promise<string | null> {
-  if (!fs.existsSync(DB_VERSION_FILE)) {
-    return null;
-  }
-  return fs.readFileSync(DB_VERSION_FILE, "utf8");
-}
-
-interface DbVersionResponse {
-  database_version: string;
-}
-
-async function fetchLatestDbVersion(): Promise<string> {
-  return await fetch("https://db.ygoprodeck.com/api/v7/checkDBVer.php")
-    .then(response => response.json() as Promise<DbVersionResponse[]>)
-    .then((data: DbVersionResponse[]) => data[0]["database_version"]);
-}
 
 async function loadCardDb(): Promise<any> {
   return await fetch("https://dawnbrandbots.github.io/yaml-yugi/cards.json")
@@ -72,19 +54,9 @@ function zipCardDbImages(cardDb: any, ygoProDeckCardDb: any): any {
 }
 
 async function main(): Promise<void> {
-  const currentDbVersion = await fetchCurrentDbVersion();
-  const latestDbVersion = await fetchLatestDbVersion();
-
-  // if (currentDbVersion === latestDbVersion) {
-  //   console.log("Database is already up to date. " + currentDbVersion);
-  //   return;
-  // }
-  console.log("Database update required. " + currentDbVersion + " -> " + latestDbVersion);
-
   const cardDb = await loadCardDb();
   const ygoProDeckCardDb = await loadYgoProDeckCardDb();
   saveDb(cardDb, ygoProDeckCardDb);
-  fs.writeFileSync(DB_VERSION_FILE, latestDbVersion, "utf8");
 
   await saveNewCardImages(ygoProDeckCardDb);
 }
