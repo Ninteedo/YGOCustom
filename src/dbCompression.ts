@@ -137,6 +137,7 @@ const monsterKindMappings: [string, number][] = [
   ["Xyz", 4],
   ["Link", 5],
   ["Normal", 6],
+  ["Effect", 7],
 ];
 
 function getForbiddenValue(tcg: string | undefined, ocg: string | undefined): string | undefined {
@@ -372,6 +373,6 @@ export class CompressedCardEntry {
       return undefined;
     }
     const res = monsterKindMappings.find(([kind, _]) => this.monsterTypeLine && this.monsterTypeLine.includes(kind));
-    return res && res[0] || "Effect";
+    return res && res[0] || "Normal";
   }
 }
