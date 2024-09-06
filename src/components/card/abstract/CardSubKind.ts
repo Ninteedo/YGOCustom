@@ -21,6 +21,21 @@ export enum CardSubKind {
   COUNTER = 'Counter',
 }
 
+export const cardSubKindOrder = {
+  [CardSubKind.NORMAL]: 0,
+  [CardSubKind.EFFECT]: 1,
+  [CardSubKind.RITUAL]: 2,
+  [CardSubKind.FUSION]: 3,
+  [CardSubKind.SYNCHRO]: 4,
+  [CardSubKind.XYZ]: 5,
+  [CardSubKind.LINK]: 6,
+  [CardSubKind.QUICK_PLAY]: 7,
+  [CardSubKind.CONTINUOUS]: 8,
+  [CardSubKind.EQUIP]: 9,
+  [CardSubKind.FIELD]: 10,
+  [CardSubKind.COUNTER]: 11,
+};
+
 export function readCardSubKind(kind: CardKind, race: string, frameType: string | undefined): CardSubKind {
   race = race.toLowerCase();
   if (frameType) {

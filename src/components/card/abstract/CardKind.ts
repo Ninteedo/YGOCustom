@@ -4,6 +4,12 @@ export enum CardKind {
   TRAP = 'Trap',
 }
 
+export const cardKindOrder = {
+  [CardKind.MONSTER]: 0,
+  [CardKind.SPELL]: 1,
+  [CardKind.TRAP]: 2,
+};
+
 export function readCardKind(kind: string): CardKind {
   if (kind.includes("monster")) {
     return CardKind.MONSTER;

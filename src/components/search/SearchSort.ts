@@ -1,4 +1,6 @@
 import BaseDbCard from "../card/abstract/BaseDbCard.tsx";
+import {cardKindOrder} from "../card/abstract/CardKind.ts";
+import {cardSubKindOrder} from "../card/abstract/CardSubKind.ts";
 
 export interface SearchSort {
   label: string;
@@ -33,9 +35,9 @@ function nameSort(a: BaseDbCard, b: BaseDbCard): number {
 }
 
 function cardKindSort(a: BaseDbCard, b: BaseDbCard): number {
-  function getKind(card: BaseDbCard): string {
-    return card.kind + " " + card.subKind;
+  const kindOrderDiff = cardKindOrder[a.kind] - cardKindOrder[b.kind];
+  if (kindOrderDiff !== 0) {
+    return kindOrderDiff;
   }
-
-  return getKind(a).localeCompare(getKind(b));
+  return cardSubKindOrder[a.subKind] - cardSubKindOrder[b.subKind];
 }
