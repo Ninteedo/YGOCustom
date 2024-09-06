@@ -29,8 +29,6 @@ async function loadYgoProDeckCardDb(): Promise<any> {
 }
 
 function saveDb(cardDb: any, ygoProDeckCardDb: any): CompressedCardEntry[] {
-  // const db = cardDb['data'];
-  // const dbNoSkills = db;  //.filter((card: any) => !isSkillCard(card));
   const zippedCardDb = zipCardDbImages(cardDb, ygoProDeckCardDb);
   const compressedDb: CompressedCardEntry[] = zippedCardDb.map((card: any) => compressCard(card)).filter((card: any) => card !== null);
 
@@ -44,7 +42,8 @@ function zipCardDbImages(cardDb: any, ygoProDeckCardDb: any): any {
   const result: any = [];
   for (const card of cardDb) {
     const newCard = card;
-    const ygoProDeckCard = ygoProDeckCardDb["data"].find((ygoProDeckCard: any) => ygoProDeckCard["name"] === card["name"]["en"]);
+    const ygoProDeckCard = ygoProDeckCardDb["data"].find((ygoProDeckCard: any) =>
+      ygoProDeckCard["name"] === card["name"]["en"] || ygoProDeckCard["id"] === card["password"]);
     if (ygoProDeckCard) {
       newCard["card_images_new"] = ygoProDeckCard["card_images"];
       newCard["id_alt"] = ygoProDeckCard["id"];
@@ -203,8 +202,8 @@ function compressCard(card: any): CompressedCardEntry | null {
 
 function writeMissingImagesList(missingImages: string[]): void {
   const missingImagesFile = "src/assets/missingImages.ts";
-  const imageIds = missingImages.map(id => id.substring(0, id.length - 4));
-  const missingImagesFileContents = "export const missingImageIds: number[] = [" + imageIds.join(", ") + "];\n";
+  const imageIds = missingImages.filter(id => id !== "undefined.jpg").map(id => id.substring(0, id.length - 4));
+  const missingImagesFileContents = "export const missingImageIds: number[] = [\n" + imageIds.join(",\n  ") + "\n];\n";
   fs.writeFileSync(missingImagesFile, missingImagesFileContents, "utf8");
 }
 

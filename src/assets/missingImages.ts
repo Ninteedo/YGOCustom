@@ -1,1 +1,7 @@
-export const missingImageIds: number[] = [undefined, 100347018, undefined, 100347032, undefined, undefined, undefined, 100436000, 100347019, undefined, 63028558, undefined, 100347002, undefined, undefined, undefined, undefined, undefined, undefined, undefined];
+export const missingImageIds: number[] = [
+100347002,
+  100347019,
+  100436000,
+  100347018,
+  100347032
+];

@@ -152,8 +152,14 @@ function getForbiddenValue(tcg: string | undefined, ocg: string | undefined): st
         return 1;
       case "semi-limited":
         return 2;
-      default:
+      case "unlimited":
         return 3;
+      case "not yet released":
+        return 4;
+      case null:
+        return 5;
+      default:
+        throw new Error(`Unknown forbidden value ${value}`);
     }
   }
 
@@ -164,7 +170,7 @@ function getForbiddenValue(tcg: string | undefined, ocg: string | undefined): st
     return undefined;
   }
 
-  return (tcgValue + 4 * ocgValue).toString();
+  return (tcgValue + 6 * ocgValue).toString();
 }
 
 export function parseForbiddenValue(value: string | undefined): [number, number] {
@@ -172,7 +178,7 @@ export function parseForbiddenValue(value: string | undefined): [number, number]
     return [3, 3];
   }
   const parsed = parseInt(value);
-  return [parsed % 4, Math.floor(parsed / 4)];
+  return [parsed % 6, Math.floor(parsed / 6)];
 }
 
 // class CardSet {
