@@ -1187,5 +1187,27 @@ describe('parseEffects of card', () => {
       ])
     ];
     testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
-  })
+  });
+
+  test('Vaalmonica Chosen Melody', () => {
+    const text = "Apply 1 of these effects. You must control a \"Vaalmonica\" Monster Card to activate and to resolve this effect. If you control a \"Vaalmonica\" Link Monster, you can apply both effects in sequence.\n" +
+      "● Gain 500 LP, also for the rest of this turn, your opponent cannot target \"Vaalmonica\" Monster Cards you control with card effects.\n" +
+      "● Take 500 damage, then you can negate the effects of 1 Effect Monster your opponent controls, until the end of this turn.\n" +
+      "You can only activate 1 \"Vaalmonica Chosen Melody\" per turn.";
+    const effects = [
+      new QuickEffect([
+        new EffectMainClause("Apply 1 of these effects."),
+        new EffectMainClause("You must control a \"Vaalmonica\" Monster Card to activate and to resolve this effect."),
+        new EffectMainClause("If you control a \"Vaalmonica\" Link Monster, you can apply both effects in sequence."),
+        new SubEffectClause([
+          new EffectMainClause("Gain 500 LP, also for the rest of this turn, your opponent cannot target \"Vaalmonica\" Monster Cards you control with card effects.")
+        ]),
+        new SubEffectClause([
+          new EffectMainClause("Take 500 damage, then you can negate the effects of 1 Effect Monster your opponent controls, until the end of this turn.")
+        ])
+      ]),
+      new EffectRestriction("You can only activate 1 \"Vaalmonica Chosen Melody\" per turn.")
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
+  });
 });
