@@ -215,6 +215,7 @@ class YamlYugiEntry {
   public readonly pendulumScale: number | undefined;  // for Pendulum Monster cards
   public readonly pendulumEffect: { [key: string]: string } | undefined;  // for Pendulum Monster cards
   public readonly series: string[] | undefined;  // archetypes
+  public readonly isEffect: boolean;
 
   constructor(json: any) {
     this.konamiId = json["konami_id"];
@@ -239,6 +240,7 @@ class YamlYugiEntry {
     this.pendulumEffect = json["pendulum_effect"];
     this.series = json["series"];
     this.ygoProDeckImages = json["card_images_new"];
+    this.isEffect = json["is_effect"];
   }
 
   getLinkRating(): number | undefined {
@@ -271,6 +273,7 @@ export class CompressedCardEntry {
   public readonly imageId: string | undefined;
   public readonly atk: string | undefined;
   public readonly def: string | undefined;
+  public readonly isEffect: boolean | undefined;
 
   constructor(
     id: string | undefined,
@@ -286,7 +289,8 @@ export class CompressedCardEntry {
     forbidden: string | undefined,
     imageId: string | undefined,
     atk: string | undefined,
-    def: string | undefined
+    def: string | undefined,
+    isEffect: boolean | undefined
   ) {
     this.id = id;
     this.name = name;
@@ -302,6 +306,7 @@ export class CompressedCardEntry {
     this.imageId = imageId;
     this.atk = atk;
     this.def = def;
+    this.isEffect = isEffect;
   }
 
   static fromYamlYugiEntry(entry: YamlYugiEntry) {
@@ -321,7 +326,8 @@ export class CompressedCardEntry {
       entry.limitRegulation ? getForbiddenValue(entry.limitRegulation.tcg, entry.limitRegulation.ocg) : undefined,  // forbidden
       (entry.ygoProDeckImages && entry.ygoProDeckImages[0].id.toString()) || password,  // imageId
       entry.atk,  // atk
-      entry.def  // def
+      entry.def,  // def
+      entry.isEffect
     )
   }
 
@@ -340,7 +346,8 @@ export class CompressedCardEntry {
       json[9],  // forbidden
       json[10],  // imageId
       json[13],  // atk
-      json[14]  // def
+      json[14],  // def
+      json[15] === 1 ? true : json[15] === 0 ? false : undefined,  // isEffect
     )
   }
 
@@ -360,6 +367,7 @@ export class CompressedCardEntry {
       12: this.pendulumText,
       13: this.atk,
       14: this.def,
+      15: this.isEffect === undefined ? 2 : this.isEffect ? 1 : 0,
     }
   }
 
@@ -379,6 +387,9 @@ export class CompressedCardEntry {
       return undefined;
     }
     const res = monsterKindMappings.find(([kind, _]) => this.monsterTypeLine && this.monsterTypeLine.includes(kind));
-    return res && res[0] || "Normal";
+    if (res) {
+      return res[0];
+    }
+    return (this.isEffect || this.monsterTypeLine.includes("Effect")) ? "Effect" : "Normal";
   }
 }

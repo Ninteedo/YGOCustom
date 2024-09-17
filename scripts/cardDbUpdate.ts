@@ -47,6 +47,11 @@ function zipCardDbImages(cardDb: any, ygoProDeckCardDb: any): any {
     if (ygoProDeckCard) {
       newCard["card_images_new"] = ygoProDeckCard["card_images"];
       newCard["id_alt"] = ygoProDeckCard["id"];
+      if (ygoProDeckCard["humanReadableCardType"]) {
+        newCard["is_effect"] = ygoProDeckCard["humanReadableCardType"].includes("Effect");
+      } else {
+        newCard["is_effect"] = undefined;
+      }
     }
     result.push(newCard);
   }
@@ -174,6 +179,11 @@ async function saveNewCardImages(cardDb: CompressedCardEntry[]): Promise<string[
 
   for (const card of cardDb) {
     const imageFile = `${card.imageId}.jpg`;
+    if (imageFile === "undefined.jpg") {
+      failedUploads.push(imageFile);
+      continue;
+    }
+
     const croppedUrl = "https://images.ygoprodeck.com/images/cards_cropped/" + imageFile;
 
     if (!r2Images.has(imageFile)) {
@@ -203,7 +213,7 @@ function compressCard(card: any): CompressedCardEntry | null {
 function writeMissingImagesList(missingImages: string[]): void {
   const missingImagesFile = "src/assets/missingImages.ts";
   const imageIds = missingImages.filter(id => id !== "undefined.jpg").map(id => id.substring(0, id.length - 4));
-  const missingImagesFileContents = "export const missingImageIds: number[] = [\n" + imageIds.join(",\n  ") + "\n];\n";
+  const missingImagesFileContents = "export const missingImageIds: number[] = [\r\n  " + imageIds.join(",\r\n  ") + "\r\n];\r\n";
   fs.writeFileSync(missingImagesFile, missingImagesFileContents, "utf8");
 }
 

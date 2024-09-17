@@ -208,7 +208,7 @@ function getDbCardSubKind(json: CompressedCardEntry): CardSubKind {
     throw new Error(`Missing race for card ${json.id} "${json.name}"`);
   }
 
-  return readCardSubKind(kind, race, frameType);
+  return readCardSubKind(kind, race, frameType, json.isEffect);
 }
 
 function getLevelName(monsterSubKind: CardSubKind, json: CompressedCardEntry): string {
