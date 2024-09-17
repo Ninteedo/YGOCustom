@@ -1,3 +1,5 @@
+import {LinkArrow} from "./components/card/display/link/LinkArrow.ts";
+
 export function compressDbCardJson(cardJson: Object): CompressedCardEntry {
   const yamlYugiEntry = new YamlYugiEntry(cardJson);
   return CompressedCardEntry.fromYamlYugiEntry(yamlYugiEntry);
@@ -192,6 +194,29 @@ export function parseForbiddenValue(value: string | undefined): [number, number]
 //   }
 // }
 
+function arrowSymbolToLinkArrow(symbol: string): LinkArrow {
+  switch (symbol) {
+    case "⬆":
+      return LinkArrow.TOP;
+    case "↗":
+      return LinkArrow.TOP_RIGHT;
+    case "➡":
+      return LinkArrow.RIGHT;
+    case "↘":
+      return LinkArrow.BOTTOM_RIGHT;
+    case "⬇":
+      return LinkArrow.BOTTOM;
+    case "↙":
+      return LinkArrow.BOTTOM_LEFT;
+    case "⬅":
+      return LinkArrow.LEFT;
+    case "↖":
+      return LinkArrow.TOP_LEFT;
+    default:
+      throw new Error(`Unknown link arrow symbol ${symbol}`);
+  }
+}
+
 class YamlYugiEntry {
   public readonly konamiId: number;
   public readonly password: number;
@@ -271,6 +296,7 @@ export class CompressedCardEntry {
   public readonly imageId: string | undefined;
   public readonly atk: string | undefined;
   public readonly def: string | undefined;
+  public readonly linkArrows: number[] | undefined;
 
   constructor(
     id: string | undefined,
@@ -286,7 +312,8 @@ export class CompressedCardEntry {
     forbidden: string | undefined,
     imageId: string | undefined,
     atk: string | undefined,
-    def: string | undefined
+    def: string | undefined,
+    linkArrows: LinkArrow[] | undefined
   ) {
     this.id = id;
     this.name = name;
@@ -302,6 +329,7 @@ export class CompressedCardEntry {
     this.imageId = imageId;
     this.atk = atk;
     this.def = def;
+    this.linkArrows = linkArrows;
   }
 
   static fromYamlYugiEntry(entry: YamlYugiEntry) {
@@ -321,7 +349,8 @@ export class CompressedCardEntry {
       entry.limitRegulation ? getForbiddenValue(entry.limitRegulation.tcg, entry.limitRegulation.ocg) : undefined,  // forbidden
       (entry.ygoProDeckImages && entry.ygoProDeckImages[0].id.toString()) || password,  // imageId
       entry.atk,  // atk
-      entry.def  // def
+      entry.def,  // def
+      entry.linkarrows?.map((symbol: string) => arrowSymbolToLinkArrow(symbol))  // linkArrows
     )
   }
 
@@ -340,7 +369,8 @@ export class CompressedCardEntry {
       json[9],  // forbidden
       json[10],  // imageId
       json[13],  // atk
-      json[14]  // def
+      json[14],  // def
+      json[15],  // linkArrows
     )
   }
 
@@ -360,6 +390,7 @@ export class CompressedCardEntry {
       12: this.pendulumText,
       13: this.atk,
       14: this.def,
+      15: this.linkArrows,
     }
   }
 

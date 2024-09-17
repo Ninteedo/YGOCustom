@@ -2,6 +2,7 @@ import CardName from "./CardName.tsx";
 import {CardArt} from "../../../CardArt.tsx";
 import {ReactNode} from "react";
 import {AttributeIcon} from "../../../display/AttributeIcon.tsx";
+import {LinkArrow} from "../../../display/link/LinkArrow.ts";
 
 interface CardTemplateProps {
   id: string;
@@ -18,6 +19,7 @@ interface CardTemplateProps {
   isPendulum?: boolean;
   copyTextDiscord?: string;
   attrIcon?: string;
+  linkArrows?: LinkArrow[];
 }
 
 export default function CardTemplate({
@@ -34,6 +36,7 @@ export default function CardTemplate({
   overrideArtSrc,
   isPendulum,
   attrIcon,
+  linkArrows,
 }: CardTemplateProps) {
   const classes = ["card", "card-" + cardKind.toLowerCase(), "card-" + cardSubKind.toLowerCase()];
   if (isPendulum) {
@@ -48,7 +51,7 @@ export default function CardTemplate({
             {attrIcon && <AttributeIcon src={attrIcon}/>}
           </div>
           {infoLine}
-          <CardArt src={artSrc} alt={`Art for ${name}`} overrideLink={overrideArtSrc} canExpand={true}/>
+          <CardArt src={artSrc} alt={`Art for ${name}`} overrideLink={overrideArtSrc} canExpand={true} linkArrows={linkArrows}/>
           {categoryLine}
         </div>
         {effectBlock}

@@ -19,6 +19,7 @@ export default function CardDetailNoFormatting({card, attrIcon}: { card: BaseDbC
         isPendulum={card.isPendulum}
         copyTextDiscord={card.getCopyTextDiscordBasic()}
         attrIcon={attrIcon}
+        linkArrows={card.linkArrows}
       />
     </div>
   )

@@ -12,6 +12,7 @@ import {MonsterType, monsterTypeFromString} from "./monster/MonsterType.ts";
 import {CardAttribute, monsterAttributeFromString, MonsterAttributeImage} from "./monster/CardAttribute.tsx";
 import {readMaterialsText, readNonMaterialsText} from "./parse/parseMaterials.ts";
 import {missingImageIds} from "../../../assets/missingImages.ts";
+import {LinkArrow} from "../display/link/LinkArrow.ts";
 
 export default class BaseDbCard {
   public readonly id: string;
@@ -20,6 +21,7 @@ export default class BaseDbCard {
   public readonly kind: CardKind;
   public readonly subKind: CardSubKind;
   public readonly isPendulum: boolean;
+  public readonly linkArrows?: LinkArrow[];
 
   public readonly text: string;
   public readonly json: CompressedCardEntry;
@@ -39,6 +41,7 @@ export default class BaseDbCard {
     this.json = cardEntry;
 
     [this.limitedTcg, this.limitedOcg] = parseForbiddenValue(cardEntry.forbidden);
+    this.linkArrows = cardEntry.linkArrows;
   }
 
   toText(): string {
@@ -99,6 +102,7 @@ export default class BaseDbCard {
       categoryLine={this.getCategoryLine()}
       isPendulum={this.isPendulum}
       copyTextDiscord={this.getCopyTextDiscordBasic()}
+      linkArrows={this.linkArrows}
     />;
   }
 
