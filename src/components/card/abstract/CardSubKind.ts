@@ -36,7 +36,7 @@ export const cardSubKindOrder = {
   [CardSubKind.COUNTER]: 11,
 };
 
-export function readCardSubKind(kind: CardKind, race: string, frameType: string | undefined, isEffect: boolean): CardSubKind {
+export function readCardSubKind(kind: CardKind, race: string, frameType: string | undefined, isEffect: boolean | undefined): CardSubKind {
   race = race.toLowerCase();
   if (frameType) {
     frameType = frameType.toLowerCase();
