@@ -1210,4 +1210,21 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text, isSpellTrapCard: true, isFastCard: true}, effects);
   });
+
+  test('Coordius the Triphasic Dealmon', () => {
+    const text = "Once while this Fusion Summoned card is face-up on the field: You can pay LP in multiples of 2000 and choose 1 effect for every 2000 LP paid (you can only apply each effect once, and you resolve them in the listed order, skipping any that were not chosen); ● Add 1 Spell/Trap from your GY to your hand. ● Destroy 3 cards your opponent controls. ● This turn, this card gains ATK equal to half of the difference between your LP and your opponent's, also your other monsters cannot attack.\n" +
+      "You can only use this effect of \"Coordius the Triphasic Dealmon\" once per turn.";
+    const effects = [
+      new IgnitionEffect([
+        new EffectConditionClause("Once while this Fusion Summoned card is face-up on the field"),
+        new EffectCostClause("You can pay LP in multiples of 2000 and choose 1 effect for every 2000 LP paid (you can only apply each effect once, and you resolve them in the listed order, skipping any that were not chosen)"),
+        new SubEffectClause([new EffectMainClause("Add 1 Spell/Trap from your GY to your hand.")]),
+        new SubEffectClause([new EffectMainClause("Destroy 3 cards your opponent controls.")]),
+        new SubEffectClause([new EffectMainClause("This turn, this card gains ATK equal to half of the difference between your LP and your opponent's, also your other monsters cannot attack.")]),
+      ]),
+      new EffectRestriction("You can only use this effect of \"Coordius the Triphasic Dealmon\" once per turn.")
+    ];
+
+    testParseEffects({text}, effects);
+  });
 });
