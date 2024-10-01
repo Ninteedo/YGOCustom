@@ -41,6 +41,7 @@ export default function CardDetail({card}: { card: BaseDbCard }): ReactNode {
       isPendulum={card.isPendulum}
       copyTextDiscord={card.getCopyTextDiscordBasic()}
       attrIcon={attrIcon}
+      linkArrows={card.linkArrows}
     />
   </div>
 }

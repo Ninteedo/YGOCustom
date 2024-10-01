@@ -1,15 +1,18 @@
 import {ReactNode, useEffect, useState} from "react";
 import '../../style/Card.scss';
 import {LoadingSpinner} from "./LoadingSpinner.tsx";
+import {LinkArrow} from "./display/link/LinkArrow.ts";
+import {LinkArrows} from "./display/link/LinkArrows.tsx";
 
 interface CardArtProps {
   src: string;
   alt: string;
   canExpand?: boolean;
   overrideLink?: boolean;
+  linkArrows?: LinkArrow[];
 }
 
-export function CardArt({src, alt, canExpand}: CardArtProps): ReactNode {
+export function CardArt({src, alt, canExpand, linkArrows}: CardArtProps): ReactNode {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [imageSrc, setImageSrc] = useState('');
@@ -87,12 +90,18 @@ export function CardArt({src, alt, canExpand}: CardArtProps): ReactNode {
     );
   }
 
-  return (
+  let result = (
     <div className={"card-art-box"}>
       {imgElement}
       {isExpanded && canExpand && <div className={"overlay"} onClick={toggleExpand}>
           <img src={imageSrc} alt={alt}/>
       </div>}
     </div>
-  )
+  );
+
+  if (linkArrows) {
+    result = <LinkArrows arrows={linkArrows} contents={result} />;
+  }
+
+  return result;
 }

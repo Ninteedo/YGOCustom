@@ -62,6 +62,12 @@
       cursor: pointer;
     }
 
+    .link-arrows-container {
+      position: relative;
+      width: fit-content;
+      height: fit-content;
+    }
+
     .effect-block {
       font-size: 0.8em;
       padding: 3px;

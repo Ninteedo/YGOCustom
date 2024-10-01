@@ -1,0 +1,14 @@
+<svg version="1.1"
+     width="32" height="16"
+     viewBox="-4 -4 8 12"
+     xmlns="http://www.w3.org/2000/svg">
+
+    <defs>
+        <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow dx="0" dy="0" stdDeviation="1" flood-color="black" flood-opacity="0.5"/>
+        </filter>
+    </defs>
+
+    <path d="M 0 6 L 6 0 L -6 0 Z" stroke="#555" fill="black"
+          stroke-linejoin="miter" stroke-miterlimit="10" filter="url(#shadow)" />
+</svg>
