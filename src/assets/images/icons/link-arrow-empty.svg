@@ -1,6 +1,6 @@
 <svg version="1.1"
      width="32" height="16"
-     viewBox="-16 -4 32 16"
+     viewBox="-11 -1 22 8"
      xmlns="http://www.w3.org/2000/svg">
 
     <defs>
@@ -9,6 +9,6 @@
         </filter>
     </defs>
 
-    <path d="M 0 5 L 12 0 L -12 0 Z" stroke="#555" fill="black"
+    <path d="M 0 4 L 8 0 L -8 0 Z" stroke="#555" fill="black"
           stroke-linejoin="miter" stroke-miterlimit="10" filter="url(#shadow)" />
 </svg>
