@@ -7,6 +7,7 @@ import {CardKind} from "../abstract/CardKind.ts";
 import {monsterAttributeImagePath} from "../abstract/monster/CardAttribute.tsx";
 import {CardSubKind, getSpellTrapPropertyIconPath} from "../abstract/CardSubKind.ts";
 import {AttributeIcon} from "./AttributeIcon.tsx";
+import {LinkArrow} from "./link/LinkArrow.ts";
 
 interface CardSmallProps {
   card: BaseDbCard;
@@ -66,7 +67,7 @@ export default function CardSmall({card, clickAction}: CardSmallProps) {
             <SmallCardName name={name}/>
             {attrIcon && <AttributeIcon src={attrIcon}/>}
           </div>
-          <SmallCardArt name={name} art={art}/>
+          <SmallCardArt name={name} art={art} linkArrows={card.linkArrows}/>
         </div>
       </div>
       {(isHovering) && (
@@ -84,6 +85,6 @@ function SmallCardName({name}: { name: string }) {
   )
 }
 
-function SmallCardArt({name, art}: { name: string, art: string }) {
-  return <CardArt src={art} alt={`Art for ${name}`}/>
+function SmallCardArt({name, art, linkArrows}: { name: string, art: string, linkArrows?: LinkArrow[] }) {
+  return <CardArt src={art} alt={`Art for ${name}`} linkArrows={linkArrows}/>
 }
