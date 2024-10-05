@@ -1227,4 +1227,26 @@ describe('parseEffects of card', () => {
 
     testParseEffects({text}, effects);
   });
+
+  test('Number C69: Heraldry Crest of Horror', () => {
+    const text = "When an opponent's monster declares an attack: You can destroy all cards your opponent controls. If this card has \"Number 69: Heraldry Crest\" as an Xyz Material, it gains this effect.\n" +
+      "● Once per turn: You can detach 1 Xyz Material from this card, then target 1 face-up Xyz Monster your opponent controls; this card gains ATK equal to that face-up monster's original ATK, and if it gains ATK this way, this card's name becomes that monster's, and it gains that monster's original effect. These effects last until the End Phase.";
+    const effects = [
+      new TriggerEffect([
+        new EffectConditionClause("When an opponent's monster declares an attack"),
+        new EffectMainClause("You can destroy all cards your opponent controls."),
+      ]),
+      new ContinuousEffect(
+        new EffectMainClause("If this card has \"Number 69: Heraldry Crest\" as an Xyz Material, it gains this effect."),
+        new SubEffectClause([
+          new EffectConditionClause("Once per turn"),
+          new EffectCostClause("You can detach 1 Xyz Material from this card, then target 1 face-up Xyz Monster your opponent controls"),
+          new EffectMainClause("this card gains ATK equal to that face-up monster's original ATK, and if it gains ATK this way, this card's name becomes that monster's, and it gains that monster's original effect."),
+          new EffectMainClause("These effects last until the End Phase.")
+        ])
+      )
+    ];
+
+    testParseEffects({text}, effects);
+  });
 });

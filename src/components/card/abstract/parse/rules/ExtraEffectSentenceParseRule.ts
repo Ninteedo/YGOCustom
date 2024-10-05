@@ -5,13 +5,14 @@ import QuickEffect from "../../effect/QuickEffect.tsx";
 import EffectMainClause from "../../effect/clause/EffectMainClause.ts";
 import SummoningCondition from "../../effect/SummoningCondition.tsx";
 import SubEffectClause from "../../effect/clause/SubEffectClause.tsx";
+import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
 
 /**
  * Parses a sentence that is an extension of the previous sentence.
  */
 export default class ExtraEffectSentenceParseRule extends EffectParseRule {
   match({sentence, lastEffect}: EffectParseProps): boolean {
-    if (!(lastEffect instanceof TriggerEffect || lastEffect instanceof IgnitionEffect || lastEffect instanceof QuickEffect || lastEffect instanceof SummoningCondition)) {
+    if (!(lastEffect instanceof TriggerEffect || lastEffect instanceof IgnitionEffect || lastEffect instanceof QuickEffect || lastEffect instanceof SummoningCondition || lastEffect instanceof ContinuousEffect)) {
       return false;
     }
 
@@ -32,6 +33,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
         || sentence.startsWith("Then, ")
         || sentence.startsWith("Their ")
         || sentence.startsWith("They ")
+        || sentence.startsWith("These ")
         || sentence.startsWith("Its ")
         || sentence.startsWith("After choosing ")
         || sentence.startsWith("You can also ")
@@ -59,15 +61,14 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
   }
 
   parse({sentence, lastEffect, hasPrecedingNewLine, isSub}: EffectParseProps): null {
-    if (lastEffect instanceof TriggerEffect || lastEffect instanceof IgnitionEffect || lastEffect instanceof QuickEffect || lastEffect instanceof SummoningCondition) {
-      const lastClause = lastEffect.clauses[lastEffect.clauses.length - 1];
-      if ((!hasPrecedingNewLine || isSub) && lastClause instanceof SubEffectClause) {
-        lastClause.subClauses.push(new EffectMainClause(sentence));
-      } else {
-        lastEffect.clauses.push(new EffectMainClause(sentence));
-      }
-    } else {
+    if (!(lastEffect instanceof TriggerEffect || lastEffect instanceof IgnitionEffect || lastEffect instanceof QuickEffect || lastEffect instanceof SummoningCondition || lastEffect instanceof ContinuousEffect)) {
       throw new Error(`Unexpected last effect: ${lastEffect}`);
+    }
+    const lastClause = lastEffect.clauses[lastEffect.clauses.length - 1];
+    if ((!hasPrecedingNewLine || isSub) && lastClause instanceof SubEffectClause) {
+      lastClause.subClauses.push(new EffectMainClause(sentence));
+    } else {
+      lastEffect.clauses.push(new EffectMainClause(sentence));
     }
     return null;
   }
