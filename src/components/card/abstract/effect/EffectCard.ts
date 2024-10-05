@@ -4,7 +4,7 @@ import QuickEffect from "./QuickEffect.tsx";
 import EffectClause from "./clause/EffectClause.ts";
 import EffectConditionClause from "./clause/EffectConditionClause.ts";
 import EffectCostClause from "./clause/EffectCostClause.ts";
-import EffectMainClause from "./clause/EffectMainClause.ts";
+import EffectMainClause from "./clause/EffectMainClause.tsx";
 import TriggerEffect from "./TriggerEffect.tsx";
 import IgnitionEffect from "./IgnitionEffect.tsx";
 import ContinuousEffect from "./ContinuousEffect.tsx";

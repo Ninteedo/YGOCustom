@@ -1,7 +1,7 @@
 import {EffectParseProps, EffectParseRule} from "./EffectParseRule.ts";
 import Effect from "../../effect/Effect.tsx";
 import SummoningCondition from "../../effect/SummoningCondition.tsx";
-import EffectMainClause from "../../effect/clause/EffectMainClause.ts";
+import EffectMainClause from "../../effect/clause/EffectMainClause.tsx";
 
 /**
  * Parses a summoning condition.

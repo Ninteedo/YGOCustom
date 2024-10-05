@@ -1,6 +1,6 @@
 import {EffectParseProps, EffectParseRule} from "./EffectParseRule.ts";
 import Effect from "../../effect/Effect.tsx";
-import EffectMainClause from "../../effect/clause/EffectMainClause.ts";
+import EffectMainClause from "../../effect/clause/EffectMainClause.tsx";
 import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
 
 export default class ContinuousEffectParseRule extends EffectParseRule {

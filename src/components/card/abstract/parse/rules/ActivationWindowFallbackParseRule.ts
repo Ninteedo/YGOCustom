@@ -3,7 +3,7 @@ import {parseEffectClauses} from "../parseEffects.ts";
 import Effect from "../../effect/Effect.tsx";
 import IgnitionEffect from "../../effect/IgnitionEffect.tsx";
 import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
-import EffectMainClause from "../../effect/clause/EffectMainClause.ts";
+import EffectMainClause from "../../effect/clause/EffectMainClause.tsx";
 import QuickEffect from "../../effect/QuickEffect.tsx";
 
 /**

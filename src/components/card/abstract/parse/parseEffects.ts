@@ -1,5 +1,5 @@
 import Effect from "../effect/Effect.tsx";
-import EffectMainClause from "../effect/clause/EffectMainClause.ts";
+import EffectMainClause from "../effect/clause/EffectMainClause.tsx";
 import EffectClause from "../effect/clause/EffectClause.ts";
 import EffectConditionClause from "../effect/clause/EffectConditionClause.ts";
 import EffectCostClause from "../effect/clause/EffectCostClause.ts";

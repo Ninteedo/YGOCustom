@@ -3,7 +3,7 @@ import {parseEffects, ParseEffectsProps} from "../parseEffects";
 import EffectRestriction from "../../effect/EffectRestriction.tsx";
 import TriggerEffect from "../../effect/TriggerEffect.tsx";
 import EffectConditionClause from "../../effect/clause/EffectConditionClause.ts";
-import EffectMainClause from "../../effect/clause/EffectMainClause.ts";
+import EffectMainClause from "../../effect/clause/EffectMainClause.tsx";
 import IgnitionEffect from "../../effect/IgnitionEffect.tsx";
 import Effect from "../../effect/Effect.tsx";
 import QuickEffect from "../../effect/QuickEffect.tsx";

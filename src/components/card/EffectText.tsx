@@ -20,10 +20,10 @@ export function EffectCost(costText: ReactNode) {
   )
 }
 
-export function EffectMain(effectText: ReactNode) {
+export function EffectMain(effectText: ReactNode, skipWhitespace = false) {
   return (
     <>
-      <span className={"effect-main"}>{effectText}</span>&nbsp;
+      <span className={"effect-main"}>{effectText}</span>{skipWhitespace ? <></> : <>&nbsp;</>}
     </>
   )
 }

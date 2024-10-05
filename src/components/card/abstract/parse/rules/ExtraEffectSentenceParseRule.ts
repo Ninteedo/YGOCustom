@@ -1,5 +1,5 @@
 import {EffectParseProps, EffectParseRule} from "./EffectParseRule.ts";
-import EffectMainClause from "../../effect/clause/EffectMainClause.ts";
+import EffectMainClause from "../../effect/clause/EffectMainClause.tsx";
 import SubEffectClause from "../../effect/clause/SubEffectClause.tsx";
 import ClauseEffect from "../../effect/ClauseEffect.ts";
 
