@@ -22,7 +22,7 @@ export default class ActivationWindowFallbackParseRule extends EffectParseRule {
     } if (this.hasCondition(sentence) || this.hasCost(sentence)) {
       return new IgnitionEffect(parseEffectClauses(sentence))
     } else {
-      return new ContinuousEffect(new EffectMainClause(sentence));
+      return new ContinuousEffect([new EffectMainClause(sentence)]);
     }
   }
 }

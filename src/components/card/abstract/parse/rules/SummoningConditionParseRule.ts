@@ -28,6 +28,6 @@ export default class SummoningConditionParseRule extends EffectParseRule {
   }
 
   parse({sentence}: EffectParseProps): Effect {
-    return new SummoningCondition(new EffectMainClause(sentence));
+    return new SummoningCondition([new EffectMainClause(sentence)]);
   }
 }

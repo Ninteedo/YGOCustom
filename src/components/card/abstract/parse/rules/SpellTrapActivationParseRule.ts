@@ -28,7 +28,7 @@ export default class SpellTrapActivationParseRule extends EffectParseRule {
         return new IgnitionEffect(clauses);
       }
     } else {
-      return new ContinuousEffect(clauses[0]);
+      return new ContinuousEffect([clauses[0]]);
     }
   }
 }

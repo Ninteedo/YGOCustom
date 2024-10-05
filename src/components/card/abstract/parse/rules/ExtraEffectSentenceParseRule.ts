@@ -1,18 +1,14 @@
 import {EffectParseProps, EffectParseRule} from "./EffectParseRule.ts";
-import TriggerEffect from "../../effect/TriggerEffect.tsx";
-import IgnitionEffect from "../../effect/IgnitionEffect.tsx";
-import QuickEffect from "../../effect/QuickEffect.tsx";
 import EffectMainClause from "../../effect/clause/EffectMainClause.ts";
-import SummoningCondition from "../../effect/SummoningCondition.tsx";
 import SubEffectClause from "../../effect/clause/SubEffectClause.tsx";
-import ContinuousEffect from "../../effect/ContinuousEffect.tsx";
+import ClauseEffect from "../../effect/ClauseEffect.ts";
 
 /**
  * Parses a sentence that is an extension of the previous sentence.
  */
 export default class ExtraEffectSentenceParseRule extends EffectParseRule {
   match({sentence, lastEffect}: EffectParseProps): boolean {
-    if (!(lastEffect instanceof TriggerEffect || lastEffect instanceof IgnitionEffect || lastEffect instanceof QuickEffect || lastEffect instanceof SummoningCondition || lastEffect instanceof ContinuousEffect)) {
+    if (!(lastEffect instanceof ClauseEffect)) {
       return false;
     }
 
@@ -61,7 +57,7 @@ export default class ExtraEffectSentenceParseRule extends EffectParseRule {
   }
 
   parse({sentence, lastEffect, hasPrecedingNewLine, isSub}: EffectParseProps): null {
-    if (!(lastEffect instanceof TriggerEffect || lastEffect instanceof IgnitionEffect || lastEffect instanceof QuickEffect || lastEffect instanceof SummoningCondition || lastEffect instanceof ContinuousEffect)) {
+    if (!(lastEffect instanceof ClauseEffect)) {
       throw new Error(`Unexpected last effect: ${lastEffect}`);
     }
     const lastClause = lastEffect.clauses[lastEffect.clauses.length - 1];

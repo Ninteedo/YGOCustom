@@ -9,6 +9,6 @@ export default class ContinuousEffectParseRule extends EffectParseRule {
   }
 
   parse({sentence}: EffectParseProps): Effect {
-    return new ContinuousEffect(new EffectMainClause(sentence));
+    return new ContinuousEffect([new EffectMainClause(sentence)]);
   }
 }
