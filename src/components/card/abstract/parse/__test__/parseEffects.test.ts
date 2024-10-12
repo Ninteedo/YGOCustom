@@ -1249,4 +1249,22 @@ describe('parseEffects of card', () => {
 
     testParseEffects({text}, effects);
   });
+
+  test('Ghost Bird of Bewitchment', () => {
+    const text = "This card gains an effect based on your Main Monster Zone it is in.\n" +
+      "● Leftmost: Gains 1000 ATK/DEF.\n" +
+      "● Rightmost: Can make up to 2 attacks on monsters during each Battle Phase.\n" +
+      "● Center: Your opponent cannot target this card with card effects, also it cannot be destroyed by your opponent's card effects.\n" +
+      "● Others: Monsters in this column cannot activate their effects.";
+    const effects = [
+      new ContinuousEffect([
+        new EffectMainClause("This card gains an effect based on your Main Monster Zone it is in."),
+        new SubEffectClause([new EffectConditionClause("Leftmost"), new EffectMainClause("Gains 1000 ATK/DEF.")]),
+        new SubEffectClause([new EffectConditionClause("Rightmost"), new EffectMainClause("Can make up to 2 attacks on monsters during each Battle Phase.")]),
+        new SubEffectClause([new EffectConditionClause("Center"), new EffectMainClause("Your opponent cannot target this card with card effects, also it cannot be destroyed by your opponent's card effects.")]),
+        new SubEffectClause([new EffectConditionClause("Others"), new EffectMainClause("Monsters in this column cannot activate their effects.")]),
+      ]),
+    ];
+    testParseEffects({text}, effects);
+  });
 });
