@@ -32,7 +32,7 @@ export function parseEffect(effectObject: any): Effect {
     case "ignition":
       return new IgnitionEffect(parseClauses(effectObject));
     case "continuous":
-      return new ContinuousEffect(parseClauses(effectObject)[0]);
+      return new ContinuousEffect(parseClauses(effectObject));
     default:
       throw new Error("Effect type not recognized");
   }
