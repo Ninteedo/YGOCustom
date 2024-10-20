@@ -10,6 +10,11 @@ export interface SearchSort {
 
 export const searchSorts: SearchSort[] = [
   {
+    label: "Card Kind",
+    value: "kind",
+    sort: cardKindSort,
+  },
+  {
     label: "Name A-Z",
     value: "nameasc",
     sort: nameSort,
@@ -18,11 +23,6 @@ export const searchSorts: SearchSort[] = [
     label: "Name Z-A",
     value: "namedesc",
     sort: inverseSort(nameSort),
-  },
-  {
-    label: "Card Kind",
-    value: "kind",
-    sort: cardKindSort,
   },
 ];
 
