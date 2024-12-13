@@ -110,7 +110,12 @@ export default class BaseDbCard {
     try {
       if (this.kind == CardKind.MONSTER && this.isPendulum) {
         const materials = this.getMaterials();
-        const monsterEffects = parseEffects({text: materials ? this.getEffectText() : this.text});
+        let monsterEffects;
+        if (this.subKind === CardSubKind.NORMAL) {
+          monsterEffects = new NormalEffectLore(this.text);
+        } else {
+          monsterEffects = parseEffects({text: materials ? this.getEffectText() : this.text});
+        }
         const pendulumEffects = parseEffects({text: this.json.pendulumText || "", isSpellTrapCard: true, isContinuousSpellTrapCard: true})
         return <PendulumEffectBlock materials={materials} pendulumEffects={pendulumEffects} monsterEffects={monsterEffects} cardId={this.id} />;
       }
