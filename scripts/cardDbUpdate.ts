@@ -19,6 +19,17 @@ async function loadCardDb(): Promise<any> {
     });
 }
 
+function loadOldCardDb(): CompressedCardEntry[] | null {
+  if (fs.existsSync(DB_FILE)) {
+    const res = JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
+    console.log("Old card DB loaded.");
+    return res;
+  } else {
+    console.log(`No old card DB found at ${DB_FILE}`);
+    return null;
+  }
+}
+
 async function loadYgoProDeckCardDb(): Promise<any> {
   return await fetch("https://db.ygoprodeck.com/api/v7/cardinfo.php")
     .then(response => response.json())
@@ -59,11 +70,12 @@ function zipCardDbImages(cardDb: any, ygoProDeckCardDb: any): any {
 }
 
 async function main(): Promise<void> {
+  const oldCardDb = loadOldCardDb();
   const cardDb = await loadCardDb();
   const ygoProDeckCardDb = await loadYgoProDeckCardDb();
   const compressedDb = saveDb(cardDb, ygoProDeckCardDb);
 
-  const failedUploads = await saveNewCardImages(compressedDb);
+  const failedUploads = await saveNewCardImages(oldCardDb, compressedDb);
   writeMissingImagesList(failedUploads);
 }
 
@@ -166,13 +178,22 @@ async function uploadCardImage(croppedUrl: string, imageId: string, s3: S3, buck
  * Downloads and uploads new card images to R2.
  * @return a list of image IDs that failed to upload.
  */
-async function saveNewCardImages(cardDb: CompressedCardEntry[]): Promise<string[]> {
+async function saveNewCardImages(oldCardDb: CompressedCardEntry[] | null, cardDb: CompressedCardEntry[]): Promise<string[]> {
   const r2Images = await listR2Images();
   const s3 = configureR2Client();
   const bucketName = process.env.R2_BUCKET_NAME;
 
   if (!bucketName) {
     throw new Error("R2_BUCKET_NAME environment variable not set.");
+  }
+
+  function hasLimitedStatusChanged(newCard: CompressedCardEntry): boolean {
+    const oldCard = oldCardDb?.find(card => card.id === newCard.id);
+    if (!oldCard) {
+      return false;
+    }
+
+    return oldCard.forbidden !== newCard.forbidden;
   }
 
   const failedUploads: string[] = [];
@@ -186,13 +207,31 @@ async function saveNewCardImages(cardDb: CompressedCardEntry[]): Promise<string[
 
     const croppedUrl = "https://images.ygoprodeck.com/images/cards_cropped/" + imageFile;
 
-    if (!r2Images.has(imageFile)) {
+    if (hasLimitedStatusChanged(card)) {
+      console.log(`Replacing ${croppedUrl} due to limited status change`);
+      if (r2Images.has(imageFile)) {
+        // delete the old image
+        try {
+          await s3.deleteObject({Bucket: bucketName, Key: imageFile});
+        } catch (e) {
+          console.error(`Error deleting ${imageFile}`, e);
+        }
+      }
+
+      // upload the new image
+      if (await uploadCardImage(croppedUrl, imageFile, s3, bucketName)) {
+        failedUploads.push(imageFile);
+      }
+
+      // rate limit
+      await new Promise(resolve => setTimeout(resolve, 200));
+    } else if (!r2Images.has(imageFile)) {
       console.log(`Downloading ${croppedUrl}`);
       const failedUpload = await uploadCardImage(croppedUrl, imageFile, s3, bucketName);
       if (failedUpload) {
         failedUploads.push(imageFile);
       }
-      // Wait to respect rate limiting
+      // rate limit
       await new Promise(resolve => setTimeout(resolve, 200));
     }
   }
