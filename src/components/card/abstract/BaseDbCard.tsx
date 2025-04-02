@@ -137,7 +137,11 @@ export default class BaseDbCard {
 
       return <EffectBlock materials={materials} effects={effects} cardId={this.id}/>;
     } catch (e) {
-      return <EffectBlock effects={this.text} cardId={this.id}/>;
+      if (this.text) {
+        return <EffectBlock effects={this.text} cardId={this.id}/>;
+      } else {
+        return <EffectBlock effects={""} cardId={this.id}/>;
+      }
     }
   }
 

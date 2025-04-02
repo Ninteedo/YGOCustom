@@ -57,10 +57,13 @@ export function useSearchCards(
         })();
         dbResults = fuseResults.map(({item}) => new BaseDbCard(item));
       } else {
-        dbResults = dbResults.filter((card) =>
-          card.name.toLowerCase().includes(searchTerm.toLowerCase())
+        dbResults = dbResults.filter((card) => {
+          if (card.text === undefined || card.text === null) {
+            return card.name.toLowerCase().includes(searchTerm.toLowerCase());
+          }
+          return card.name.toLowerCase().includes(searchTerm.toLowerCase())
             || card.text.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        });
       }
     }
 

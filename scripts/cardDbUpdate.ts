@@ -41,7 +41,9 @@ async function loadYgoProDeckCardDb(): Promise<any> {
 
 function saveDb(cardDb: any, ygoProDeckCardDb: any): CompressedCardEntry[] {
   const zippedCardDb = zipCardDbImages(cardDb, ygoProDeckCardDb);
-  const compressedDb: CompressedCardEntry[] = zippedCardDb.map((card: any) => compressCard(card)).filter((card: any) => card !== null);
+  const compressedDb: CompressedCardEntry[] = zippedCardDb
+    .map((card: any) => compressCard(card))
+    .filter((card: any) => card !== null);
 
   console.log(`Saving card DB.`)
   fs.writeFileSync(DB_FILE, JSON.stringify(compressedDb.map(c => c.toCompressedJson()), null, undefined), "utf8");
