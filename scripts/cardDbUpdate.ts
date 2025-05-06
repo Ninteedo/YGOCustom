@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import fs from "fs";
 import { ListObjectsV2CommandInput, S3 } from "@aws-sdk/client-s3";
-import {compressDbCardJson, CompressedCardEntry} from "../src/dbCompression";
+import {compressDbCardJson, CompressedCardEntry, parseForbiddenValue} from "../src/dbCompression";
 
 import dotenv from "dotenv";
 if (process.env.NODE_ENV !== 'production') {
@@ -21,8 +21,9 @@ async function loadCardDb(): Promise<any> {
 
 function loadOldCardDb(): CompressedCardEntry[] | null {
   if (fs.existsSync(DB_FILE)) {
-    const res = JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
-    console.log("Old card DB loaded.");
+    const json = JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
+    const res: CompressedCardEntry[] = json.map((card: any) => CompressedCardEntry.fromCompressedJson(card));
+    console.log(`Old card DB loaded, containing ${res.length} cards.`);
     return res;
   } else {
     console.log(`No old card DB found at ${DB_FILE}`);
@@ -195,10 +196,20 @@ async function saveNewCardImages(oldCardDb: CompressedCardEntry[] | null, cardDb
       return false;
     }
 
-    return oldCard.forbidden !== newCard.forbidden;
+    if (oldCard.forbidden !== newCard.forbidden) {
+      const oldStatus = parseForbiddenValue(oldCard.forbidden);
+      const newStatus = parseForbiddenValue(newCard.forbidden);
+
+      if (oldStatus !== newStatus && (oldStatus[0] <= 3 || newStatus[0] <= 3)) {
+        console.log(`Limited status changed for ${newCard.name}: ${oldStatus} -> ${newStatus}`);
+        return true;
+      }
+    }
+    return false;
   }
 
   const failedUploads: string[] = [];
+  let anyForbiddenChanges = false;
 
   for (const card of cardDb) {
     const imageFile = `${card.imageId}.jpg`;
@@ -211,6 +222,7 @@ async function saveNewCardImages(oldCardDb: CompressedCardEntry[] | null, cardDb
 
     if (hasLimitedStatusChanged(card)) {
       console.log(`Replacing ${croppedUrl} due to limited status change`);
+      anyForbiddenChanges = true;
       if (r2Images.has(imageFile)) {
         // delete the old image
         try {
@@ -239,6 +251,9 @@ async function saveNewCardImages(oldCardDb: CompressedCardEntry[] | null, cardDb
   }
 
   console.log(`Finished uploading images. Failed: ${failedUploads.length}`);
+  if (!anyForbiddenChanges) {
+    console.log("No forbidden status changes detected.");
+  }
   return failedUploads;
 }
 
