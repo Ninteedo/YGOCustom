@@ -25,6 +25,7 @@ export enum MonsterType {
   WingedBeast = "Winged Beast",
   Wyrm = "Wyrm",
   Zombie = "Zombie",
+  Unknown = "Unknown",
 }
 
 export function monsterTypeFromString(value: string): MonsterType {
@@ -56,7 +57,7 @@ export function monsterTypeFromString(value: string): MonsterType {
     case "Winged Beast": return MonsterType.WingedBeast;
     case "Wyrm": return MonsterType.Wyrm;
     case "Zombie": return MonsterType.Zombie;
-    default: throw new Error(`Unknown MonsterType: ${value}`);
+    default: return MonsterType.Unknown;
   }
 }
 
