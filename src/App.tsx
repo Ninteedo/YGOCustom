@@ -2,7 +2,6 @@ import "./style/App.css"
 import {createBrowserRouter, Outlet, RouterProvider, ScrollRestoration} from "react-router-dom";
 import {CardPage} from "./pages/CardPage.tsx";
 import {CustomCardPage2} from "./pages/CustomCardPage2.tsx";
-import ArchetypePage from "./pages/ArchetypePage.tsx";
 import NavBar from "./components/NavBar.tsx";
 import CardSearchPage from "./pages/CardSearchPage.tsx";
 import {CardDbProvider} from "./components/card/abstract/parse/CardDb.tsx";
@@ -42,10 +41,10 @@ function App() {
           path: "card/custom/:cardName",
           element: <CustomCardPage2/>,
         },
-        {
-          path: "archetypes/:archetype",
-          element: <ArchetypePage/>,
-        },
+        // {
+        //   path: "archetypes/:archetype",
+        //   element: <ArchetypePage/>,
+        // },
         {
           path: "search",
           element: <CardSearchPage/>,
