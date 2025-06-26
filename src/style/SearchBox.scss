@@ -82,7 +82,8 @@
   .results {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-    grid-gap: 0.5%;
+    grid-auto-rows: min-content;
+    grid-gap: 0.5rem;
     justify-items: center;
 
     width: 100%;
