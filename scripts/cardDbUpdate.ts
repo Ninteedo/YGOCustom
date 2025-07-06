@@ -221,7 +221,7 @@ async function saveNewCardImages(oldCardDb: CompressedCardEntry[] | null, cardDb
     const croppedUrl = "https://images.ygoprodeck.com/images/cards_cropped/" + imageFile;
 
     if (hasLimitedStatusChanged(card)) {
-      console.log(`Replacing ${croppedUrl} due to limited status change`);
+      console.log(`Replacing ${croppedUrl} (${card.name}) due to limited status change`);
       anyForbiddenChanges = true;
       if (r2Images.has(imageFile)) {
         // delete the old image
@@ -240,7 +240,7 @@ async function saveNewCardImages(oldCardDb: CompressedCardEntry[] | null, cardDb
       // rate limit
       await new Promise(resolve => setTimeout(resolve, 200));
     } else if (!r2Images.has(imageFile)) {
-      console.log(`Downloading ${croppedUrl}`);
+      console.log(`Downloading ${croppedUrl} (${card.name})`);
       const failedUpload = await uploadCardImage(croppedUrl, imageFile, s3, bucketName);
       if (failedUpload) {
         failedUploads.push(imageFile);
