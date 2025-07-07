@@ -5,7 +5,6 @@ import Fuse, {FuseResult} from "fuse.js";
 import {CompressedCardEntry} from "../../dbCompression.ts";
 import BaseDbCard from "../card/abstract/BaseDbCard.tsx";
 import {SearchOption, SearchOptionCategory} from "./SearchOptions.ts";
-import {MultiValue} from "react-select";
 import {SearchSort} from "./SearchSort.ts";
 
 interface SearchResultsResponse {
@@ -16,7 +15,7 @@ interface SearchResultsResponse {
 
 export function useSearchCards(
   searchTerm: string,
-  filterOptions: MultiValue<SearchOption>,
+  filterOptions: SearchOption[],
   fuzzySearch: boolean,
   searchSort: SearchSort
 ): SearchResultsResponse {
