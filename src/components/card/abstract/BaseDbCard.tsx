@@ -78,12 +78,8 @@ export default class BaseDbCard {
 
   getStatLine(): ReactNode {
     if (this.kind === CardKind.MONSTER) {
-      function parseStat(stat: string | undefined): number {
-        return stat === "?" ? -1 : stat !== undefined ? parseInt(stat) : 0
-      }
-
-      const atk = parseStat(this.json.atk);
-      const def = this.subKind === CardSubKind.LINK ? null : parseStat(this.json.def);
+      const atk = this.getAtk()!;
+      const def = this.getDef() ?? null;
       return <StatLine atk={atk} def={def} />;
     }
   }
@@ -197,6 +193,24 @@ ${this.text}`;
       return CardAttribute.SPELL;
     } else if (this.kind === CardKind.TRAP) {
       return CardAttribute.TRAP;
+    }
+  }
+
+  isMonster(): boolean {
+    return this.kind === CardKind.MONSTER;
+  }
+
+  getAtk(): number | undefined {
+    if (this.kind === CardKind.MONSTER) {
+      const stat = this.json.atk;
+      return stat === "?" ? -1 : stat !== undefined ? parseInt(stat) : 0
+    }
+  }
+
+  getDef(): number | undefined {
+    if (this.kind === CardKind.MONSTER && this.subKind !== CardSubKind.LINK) {
+      const stat = this.json.def;
+      return stat === "?" ? -1 : stat !== undefined ? parseInt(stat) : 0
     }
   }
 }

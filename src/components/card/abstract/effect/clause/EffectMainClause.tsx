@@ -1,6 +1,8 @@
 import EffectClause from "./EffectClause.ts";
 import {EffectMain} from "../../../EffectText.tsx";
 import {ReactNode} from "react";
+import {SearchOption} from "../../../../search/SearchOptions.ts";
+import {SearchLink} from "../../../../search/SearchLink.tsx";
 
 export default class EffectMainClause implements EffectClause {
   public readonly contents: string;
@@ -133,6 +135,30 @@ class MainConjunctionClause implements EffectClause {
 
   public render(): ReactNode {
     return <span className={"effect-conjunction"}>{this.contents}</span>;
+  }
+
+  public toText(): string {
+    return this.contents;
+  }
+}
+
+class MainSearchClause implements EffectClause {
+  public readonly contents: string;
+  public readonly searchTerm: string;
+  public readonly searchOptions: SearchOption[];
+
+  constructor(contents: string, searchTerm: string, searchOptions: SearchOption[]) {
+    this.contents = contents;
+    this.searchTerm = searchTerm;
+    this.searchOptions = searchOptions;
+  }
+
+  public render(): ReactNode {
+    return (
+      <SearchLink searchTerm={this.searchTerm} filterOptions={this.searchOptions}>
+        <span>{this.contents}</span>
+      </SearchLink>
+    );
   }
 
   public toText(): string {

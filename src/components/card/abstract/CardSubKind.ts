@@ -36,6 +36,27 @@ export const cardSubKindOrder = {
   [CardSubKind.COUNTER]: 11,
 };
 
+export const cardSubKindList: CardSubKind[] = [
+  CardSubKind.NORMAL,
+  CardSubKind.EFFECT,
+  CardSubKind.RITUAL,
+  CardSubKind.FUSION,
+  CardSubKind.SYNCHRO,
+  CardSubKind.XYZ,
+  CardSubKind.LINK,
+  CardSubKind.QUICK_PLAY,
+  CardSubKind.CONTINUOUS,
+  CardSubKind.EQUIP,
+  CardSubKind.FIELD,
+  CardSubKind.COUNTER,
+];
+
+export const cardSubKindAliases: Record<string, CardSubKind> = {
+  "qp": CardSubKind.QUICK_PLAY,
+  "quick": CardSubKind.QUICK_PLAY,
+  "cont": CardSubKind.CONTINUOUS,
+}
+
 export function readCardSubKind(kind: CardKind, race: string, frameType: string | undefined, isEffect: boolean | undefined): CardSubKind {
   race = race.toLowerCase();
   if (frameType) {

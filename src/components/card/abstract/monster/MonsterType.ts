@@ -28,6 +28,35 @@ export enum MonsterType {
   Unknown = "Unknown",
 }
 
+export const monsterTypeList: MonsterType[] = [
+  MonsterType.Aqua,
+  MonsterType.Beast,
+  MonsterType.BeastWarrior,
+  MonsterType.CreatorGod,
+  MonsterType.Cyberse,
+  MonsterType.Dinosaur,
+  MonsterType.DivineBeast,
+  MonsterType.Dragon,
+  MonsterType.Fairy,
+  MonsterType.Fiend,
+  MonsterType.Fish,
+  MonsterType.Illusion,
+  MonsterType.Insect,
+  MonsterType.Machine,
+  MonsterType.Plant,
+  MonsterType.Psychic,
+  MonsterType.Pyro,
+  MonsterType.Reptile,
+  MonsterType.Rock,
+  MonsterType.SeaSerpent,
+  MonsterType.Spellcaster,
+  MonsterType.Thunder,
+  MonsterType.Warrior,
+  MonsterType.WingedBeast,
+  MonsterType.Wyrm,
+  MonsterType.Zombie,
+];
+
 export function monsterTypeFromString(value: string): MonsterType {
   switch (value.trim()) {
     case "Aqua": return MonsterType.Aqua;

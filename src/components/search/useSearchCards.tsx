@@ -6,6 +6,7 @@ import {CompressedCardEntry} from "../../dbCompression.ts";
 import BaseDbCard from "../card/abstract/BaseDbCard.tsx";
 import {SearchOption, SearchOptionCategory} from "./SearchOptions.ts";
 import {SearchSort} from "./SearchSort.ts";
+import {queryToFilter} from "./AdvancedFilter.ts";
 
 interface SearchResultsResponse {
   results: BaseDbCard[];
@@ -56,12 +57,31 @@ export function useSearchCards(
         })();
         dbResults = fuseResults.map(({item}) => new BaseDbCard(item));
       } else {
+        const advQueryMatches = searchTerm.matchAll(/\[([^[\]]+)]/g);
+        const advQueries: string[] = [];
+        for (const match of advQueryMatches) {
+          if (match[1]) {
+            advQueries.push(match[1].trim());
+          }
+        }
+        console.log(`Advanced queries found: ${advQueries.join(', ')}`);
+
+        const searchTermNoAdv = searchTerm.replace(/\[([^[\]]+)]/g, '').trim().toLowerCase();
+        const filters = advQueries.map(queryToFilter).filter(filter => filter !== null);
         dbResults = dbResults.filter((card) => {
           if (card.text === undefined || card.text === null) {
             return card.name.toLowerCase().includes(searchTerm.toLowerCase());
           }
-          return card.name.toLowerCase().includes(searchTerm.toLowerCase())
-            || card.text.toLowerCase().includes(searchTerm.toLowerCase())
+
+          // check for advanced queries in the card text
+          for (const filter of filters) {
+            if (filter && !filter.passes(card)) {
+              return false;
+            }
+          }
+
+          return card.name.toLowerCase().includes(searchTermNoAdv)
+            || card.text.toLowerCase().includes(searchTermNoAdv);
         });
       }
     }
