@@ -236,21 +236,29 @@ export class TautologicalFilter implements AdvancedFilter {
 
 function cardFilterParser(): P.Parser<AdvancedFilter> {
   return P.alt(
+    archetypeMentionsExceptParser(),
     namedCardParser(),
-    archetypeMentionsExceptParser()
   );
 }
 
 function archetypeMentionsExceptParser(): P.Parser<AdvancedFilter> {
-  return P.seq(archetypeParser().atMost(1), P.optWhitespace, cardCoreParser(), mentionsCardParser().atMost(1), exceptCardParser().atMost(1))
-    .map(([archetype, , kindAndSubKind, mentions, except]) => {
-        const filters: AdvancedFilter[] = [];
-        if (archetype) {filters.push(archetype[0]);}
-        filters.push(kindAndSubKind);
-        if (mentions) {filters.push(mentions[0]);}
-        if (except) {filters.push(except[0]);}
-        return new ConjunctiveFilter(...filters);
-      });
+  return P.seqMap(
+    archetypeParser().fallback(null),
+    P.optWhitespace,
+    cardCoreParser(),
+    P.optWhitespace,
+    mentionsCardParser().fallback(null),
+    P.optWhitespace,
+    exceptCardParser().fallback(null),
+    (archetype, _, core, __, mentions, ___, except) => {
+      const filters: AdvancedFilter[] = [];
+      if (archetype) filters.push(archetype);
+      if (core) filters.push(core);
+      if (mentions) filters.push(mentions);
+      if (except) filters.push(except);
+      return filters.length === 1 ? filters[0] : new ConjunctiveFilter(...filters);
+    }
+  );
 }
 
 function cardCoreParser(): P.Parser<AdvancedFilter> {
@@ -261,22 +269,23 @@ function cardCoreParser(): P.Parser<AdvancedFilter> {
 }
 
 function monsterCoreParser(): P.Parser<AdvancedFilter> {
-  return P.seq(
-    monsterAttributesParser().atMost(1),
+  return P.seqMap(
+    monsterAttributesParser().fallback(null),
     P.optWhitespace,
-    monsterTypesParser().atMost(1),
+    monsterTypesParser().fallback(null),
     P.optWhitespace,
-    archetypeParser().atMost(1),
+    archetypeParser().fallback(null),
     P.optWhitespace,
     cardKindAndSubKindParser(),
-  ).map(([attributes, , types, , archetype, , kindAndSubKind]) => {
-    const filters: AdvancedFilter[] = [];
-    if (attributes) {filters.push(attributes[0]);}
-    if (types) {filters.push(types[0]);}
-    if (archetype) {filters.push(archetype[0]);}
-    filters.push(kindAndSubKind);
-    return new ConjunctiveFilter(...filters);
-  });
+    (attributes, _, types, __, archetype, ___, kindAndSubKind) => {
+      const filters: AdvancedFilter[] = [];
+      if (attributes) filters.push(attributes);
+      if (types) filters.push(types);
+      if (archetype) filters.push(archetype);
+      if (kindAndSubKind) filters.push(kindAndSubKind);
+      return filters.length === 1 ? filters[0] : new ConjunctiveFilter(...filters);
+    }
+  );
 }
 
 function namedCardParser(): P.Parser<NameMatchFilter> {
@@ -301,10 +310,10 @@ function exceptCardParser(): P.Parser<NegativeFilter> {
 }
 
 function cardKindAndSubKindParser(): P.Parser<AdvancedFilter> {
-  return P.seq(cardSubKindParser().atMost(1), P.optWhitespace, cardKindParser())
+  return P.seq(cardSubKindParser().fallback(null), P.optWhitespace, cardKindParser())
     .map(([subKindFilter, , kindFilter]) => {
       if (subKindFilter) {
-        return new ConjunctiveFilter(subKindFilter[0], kindFilter);
+        return new ConjunctiveFilter(subKindFilter, kindFilter);
       } else {
         return kindFilter;
       }
@@ -323,18 +332,30 @@ function monsterAttributeParser(): P.Parser<MonsterAttributeFilter> {
   );
 }
 
+function anyConjunctionParser(): P.Parser<string> {
+  return P.alt(
+    P.string(" and/or "),
+    P.string(" and "),
+    P.string(" or ")
+  );
+}
+
 function anySeparatorParser(): P.Parser<string> {
   return P.alt(
-    P.string(", "),
-    P.string(" or "),
-    P.string(", or "),
-    P.string(" and "),
-    P.string(", and ")
+    P.regexp(/,?/).chain(_ => anyConjunctionParser()),
+    P.string(", ")
+  );
+}
+
+function countParser(): P.Parser<number> {
+  return P.alt(
+    P.string("a ").result(1),
+    P.regexp(/(\d) /, 1).map(digit => parseInt(digit, 10)),
   );
 }
 
 function monsterAttributesParser(): P.Parser<AdvancedFilter> {
-  return P.sepBy(monsterAttributeParser(), anySeparatorParser())
+  return P.sepBy1(monsterAttributeParser(), anySeparatorParser())
     .map(filters =>
       filters.length === 1 ? filters[0] : new DisjunctiveFilter(...filters)
     );
@@ -342,34 +363,37 @@ function monsterAttributesParser(): P.Parser<AdvancedFilter> {
 
 function monsterTypeParser(): P.Parser<MonsterTypeFilter> {
   return P.alt(
-    P.string("warrior").result(new MonsterTypeFilter(MonsterType.Warrior)),
-    P.string("spellcaster").result(new MonsterTypeFilter(MonsterType.Spellcaster)),
-    P.string("dragon").result(new MonsterTypeFilter(MonsterType.Dragon)),
-    P.string("fiend").result(new MonsterTypeFilter(MonsterType.Fiend)),
-    P.string("fairy").result(new MonsterTypeFilter(MonsterType.Fairy)),
-    P.string("machine").result(new MonsterTypeFilter(MonsterType.Machine)),
     P.string("aqua").result(new MonsterTypeFilter(MonsterType.Aqua)),
-    P.string("beast").result(new MonsterTypeFilter(MonsterType.Beast)),
     P.string("beast-warrior").result(new MonsterTypeFilter(MonsterType.BeastWarrior)),
+    P.string("beast").result(new MonsterTypeFilter(MonsterType.Beast)),
+    P.string("creator god").result(new MonsterTypeFilter(MonsterType.CreatorGod)),
+    P.string("cyberse").result(new MonsterTypeFilter(MonsterType.Cyberse)),
     P.string("dinosaur").result(new MonsterTypeFilter(MonsterType.Dinosaur)),
     P.string("divine-beast").result(new MonsterTypeFilter(MonsterType.DivineBeast)),
+    P.string("dragon").result(new MonsterTypeFilter(MonsterType.Dragon)),
+    P.string("fairy").result(new MonsterTypeFilter(MonsterType.Fairy)),
+    P.string("fiend").result(new MonsterTypeFilter(MonsterType.Fiend)),
     P.string("fish").result(new MonsterTypeFilter(MonsterType.Fish)),
+    P.string("illusion").result(new MonsterTypeFilter(MonsterType.Illusion)),
     P.string("insect").result(new MonsterTypeFilter(MonsterType.Insect)),
+    P.string("machine").result(new MonsterTypeFilter(MonsterType.Machine)),
     P.string("plant").result(new MonsterTypeFilter(MonsterType.Plant)),
     P.string("psychic").result(new MonsterTypeFilter(MonsterType.Psychic)),
     P.string("pyro").result(new MonsterTypeFilter(MonsterType.Pyro)),
     P.string("reptile").result(new MonsterTypeFilter(MonsterType.Reptile)),
     P.string("rock").result(new MonsterTypeFilter(MonsterType.Rock)),
-    P.string("sea-serpent").result(new MonsterTypeFilter(MonsterType.SeaSerpent)),
+    P.string("sea serpent").result(new MonsterTypeFilter(MonsterType.SeaSerpent)),
+    P.string("spellcaster").result(new MonsterTypeFilter(MonsterType.Spellcaster)),
     P.string("thunder").result(new MonsterTypeFilter(MonsterType.Thunder)),
+    P.string("warrior").result(new MonsterTypeFilter(MonsterType.Warrior)),
+    P.string("winged beast").result(new MonsterTypeFilter(MonsterType.WingedBeast)),
     P.string("wyrm").result(new MonsterTypeFilter(MonsterType.Wyrm)),
     P.string("zombie").result(new MonsterTypeFilter(MonsterType.Zombie)),
-    P.string("illusion").result(new MonsterTypeFilter(MonsterType.Illusion)),
   );
 }
 
 function monsterTypesParser(): P.Parser<AdvancedFilter> {
-  return P.sepBy(monsterTypeParser(), anySeparatorParser())
+  return P.sepBy1(monsterTypeParser(), anySeparatorParser())
       .map(filters =>
         filters.length === 1 ? filters[0] : new DisjunctiveFilter(...filters)
       );
@@ -395,11 +419,11 @@ function cardSubKindParser(): P.Parser<CardSubKindFilter> {
 function cardKindParser(): P.Parser<AdvancedFilter> {
   return P.alt(
     P.string("monster").result(new CardKindFilter(CardKind.MONSTER)),
-    P.string("spell").result(new CardKindFilter(CardKind.SPELL)),
-    P.string("trap").result(new CardKindFilter(CardKind.TRAP)),
     P.string("spell/trap").result(new DisjunctiveFilter(new CardKindFilter(CardKind.SPELL), new CardKindFilter(CardKind.TRAP))),
     P.string("spells/traps").result(new DisjunctiveFilter(new CardKindFilter(CardKind.SPELL), new CardKindFilter(CardKind.TRAP))),
     P.string("s/t").result(new DisjunctiveFilter(new CardKindFilter(CardKind.SPELL), new CardKindFilter(CardKind.TRAP))),
+    P.string("spell").result(new CardKindFilter(CardKind.SPELL)),
+    P.string("trap").result(new CardKindFilter(CardKind.TRAP)),
     P.string("card").result(new TautologicalFilter())
   )
 }
@@ -415,10 +439,8 @@ export function queryToFilter(advQuery: string): AdvancedFilter | null {
   // You can add 1 "Purrely" card from your Deck to your hand, except a Quick-Play Spell.
   // You can Special Summon 1 monster with 800 ATK/1000 DEF from your Deck in Defense Position, except "Edea the Heavenly Squire", ...
 
-  const res = cardFilterParser().parse(advQuery);
+  const res = cardFilterParser().parse(advQuery.toLowerCase());
   if (res.status) {
-    console.log(`Parsed advanced query: ${advQuery}`);
-    console.log(res.value);
     return res.value;
   } else {
     console.error(`Failed to parse advanced query: ${advQuery}`);
