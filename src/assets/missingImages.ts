@@ -1,3 +1,4 @@
 export const missingImageIds: number[] = [
-  101302035
+  70576413,
+  32232538
 ];
