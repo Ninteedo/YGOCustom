@@ -49,7 +49,7 @@ export default class BaseDbCard {
   }
 
   getLinkUrl(): string {
-    return `/card/official/${encodeURI(this.name)}`
+    return `/card/official/${encodeURIComponent(this.name)}`
   }
 
   getInfoLine(): ReactElement {
