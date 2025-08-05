@@ -25,6 +25,7 @@ import QuickDuringMainPhase from "./rules/QuickDuringMainPhase.ts";
 import {containsIgnoreQuotes, takeUntilIgnoreQuotes} from "../../../../utils/stringParse.ts";
 import BasicIgnitionParseRuleParseRule from "./rules/BasicIgnitionParseRule.ts";
 import EffectRestriction from "../effect/EffectRestriction.tsx";
+import ExtraClauseParseRule from "./rules/ExtraClauseParseRule.ts";
 
 interface EffectSentence {
   text: string;
@@ -76,6 +77,7 @@ const parsers: EffectParseRule[] = [
   new SpellTrapActivationParseRule(),
   new FlipParseRule(),
   new SubEffectParseRule(),
+  new ExtraClauseParseRule(),
   new ExplicitQuickEffectParseRule(),
   new SummoningConditionParseRule(),
   new ExtraEffectSentenceParseRule(),
@@ -96,15 +98,15 @@ export function parseEffects(props: ParseEffectsProps): Effect[] {
 
   for (let i = 1; i < sentences.length; i++) {
     let {text: sentence} = sentences[i];
-    if (sentence.startsWith("(") && sentence.match(/\)\.?$/)) {
-      // Merge the sentence with the previous one
-      if (sentence.endsWith(".")) {
-        sentence = sentence.slice(0, -1);
-      }
-      sentences[i - 1].text += " " + sentence;
-      sentences.splice(i, 1);
-      i--;
-    }
+    // if (sentence.startsWith("(") && sentence.match(/\)\.?$/)) {
+    //   // Merge the sentence with the previous one
+    //   if (sentence.endsWith(".")) {
+    //     sentence = sentence.slice(0, -1);
+    //   }
+    //   sentences[i - 1].text += " " + sentence;
+    //   sentences.splice(i, 1);
+    //   i--;
+    // }
     if (sentence.endsWith("(min.")) {
       // Merge the sentence with the next one
       sentences[i].text += " " + sentences[i + 1].text;

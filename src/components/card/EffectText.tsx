@@ -28,6 +28,14 @@ export function EffectMain(effectText: ReactNode, skipWhitespace = false) {
   )
 }
 
+export function EffectExtra(extraText: ReactNode) {
+  return (
+    <>
+      <span className={"effect-extra"}>{extraText}</span>&nbsp;
+    </>
+  )
+}
+
 export function ContinuousEffect(effectText: ReactNode) {
   return (
     <>

@@ -15,6 +15,7 @@ import {parsePendulumText} from "../parsePendulum.ts";
 import AlwaysTreatedAs from "../../effect/AlwaysTreatedAs.tsx";
 import FlipEffect from "../../effect/FlipEffect.tsx";
 import SubEffectClause from "../../effect/clause/SubEffectClause.tsx";
+import EffectExtraClause from "../../effect/clause/EffectExtraClause.tsx";
 
 describe('parseEffects of card', () => {
   function testParseEffects(props: ParseEffectsProps, expectedEffects: Effect[]) {
@@ -41,7 +42,8 @@ describe('parseEffects of card', () => {
       ]),
       new IgnitionEffect([
         new EffectConditionClause("Once per turn"),
-        new EffectMainClause("You can reveal 1 \"Purrely\" Quick-Play Spell in your hand, and if you do, Special Summon 1 Xyz Monster that mentions it from your Extra Deck, by using this face-up card you control as material, and if you do, attach the revealed card to the Summoned monster as additional material. (This is treated as an Xyz Summon.)"),
+        new EffectMainClause("You can reveal 1 \"Purrely\" Quick-Play Spell in your hand, and if you do, Special Summon 1 Xyz Monster that mentions it from your Extra Deck, by using this face-up card you control as material, and if you do, attach the revealed card to the Summoned monster as additional material."),
+        new EffectExtraClause("(This is treated as an Xyz Summon.)"),
       ])
     ];
     testParseEffects({text}, effects);
@@ -173,7 +175,8 @@ describe('parseEffects of card', () => {
       ]),
       new IgnitionEffect([
         new EffectCostClause("You can target 1 \"Purrely\" Quick-Play Spell in your GY"),
-        new EffectMainClause("Special Summon 1 Xyz Monster from your Extra Deck that mentions that card, by using this card you control as material, and if you do, attach that Spell to the Summoned monster. (This is treated as an Xyz Summon.)"),
+        new EffectMainClause("Special Summon 1 Xyz Monster from your Extra Deck that mentions that card, by using this card you control as material, and if you do, attach that Spell to the Summoned monster."),
+        new EffectExtraClause("(This is treated as an Xyz Summon.)"),
       ]),
       new EffectRestriction("You can only use each effect of \"Purrelyly\" once per turn.")
     ];
@@ -184,7 +187,8 @@ describe('parseEffects of card', () => {
     const text = "Once per turn, you can also Xyz Summon \"Kashtira Arise-Heart\" by using 1 \"Kashtira\" monster you control, if an effect of \"Kashtira Shangri-Ira\" was successfully activated this turn. (Transfer its materials to this card.) Any card sent to the GY is banished instead. Once per Chain, each time a card(s) is banished: Attach 1 banished card to this card as material. Once per turn (Quick Effect): You can detach 3 materials from this card, then target 1 card on the field; banish it face-down.";
     const effects = [
       new SummoningCondition([
-        new EffectMainClause("Once per turn, you can also Xyz Summon \"Kashtira Arise-Heart\" by using 1 \"Kashtira\" monster you control, if an effect of \"Kashtira Shangri-Ira\" was successfully activated this turn. (Transfer its materials to this card.)")
+        new EffectMainClause("Once per turn, you can also Xyz Summon \"Kashtira Arise-Heart\" by using 1 \"Kashtira\" monster you control, if an effect of \"Kashtira Shangri-Ira\" was successfully activated this turn."),
+        new EffectExtraClause("(Transfer its materials to this card.)")
       ]),
       new ContinuousEffect(
         [new EffectMainClause("Any card sent to the GY is banished instead.")]
@@ -799,7 +803,8 @@ describe('parseEffects of card', () => {
     const effects = [
       new QuickEffect([
         new EffectCostClause("Target 1 \"Purrely\" Xyz Monster you control"),
-        new EffectMainClause("Special Summon from your Extra Deck, 1 \"Purrely\" Xyz Monster with a different Rank, by using that target as material, but return it to the Extra Deck during the End Phase of the next turn. (This is treated as an Xyz Summon. Transfer its materials to the Summoned monster.)"),
+        new EffectMainClause("Special Summon from your Extra Deck, 1 \"Purrely\" Xyz Monster with a different Rank, by using that target as material, but return it to the Extra Deck during the End Phase of the next turn."),
+        new EffectExtraClause("(This is treated as an Xyz Summon. Transfer its materials to the Summoned monster.)"),
       ]),
       new QuickEffect([
         new EffectCostClause("You can banish this card from your GY, then target up to 3 \"Purrely\" monsters in your GY"),
@@ -905,7 +910,10 @@ describe('parseEffects of card', () => {
   test('Gigantic "Champion" Sargas', () => {
     const text = "Once per turn, you can also Xyz Summon \"Gigantic \"Champion\" Sargas\" by using 1 \"Springans\" Xyz Monster you control. (Transfer its materials to this card.) While this card has material: You can add 1 \"Springans\" or \"Therion\" card from your Deck to your hand. If material is detached from a monster(s) on the field (except during the Damage Step): You can target 1 card on the field; either destroy it or return it to the hand. You can only use each effect of \"Gigantic \"Champion\" Sargas\" once per turn."
     const effects = [
-      new SummoningCondition([new EffectMainClause("Once per turn, you can also Xyz Summon \"Gigantic \"Champion\" Sargas\" by using 1 \"Springans\" Xyz Monster you control. (Transfer its materials to this card.)")]),
+      new SummoningCondition([
+        new EffectMainClause("Once per turn, you can also Xyz Summon \"Gigantic \"Champion\" Sargas\" by using 1 \"Springans\" Xyz Monster you control."),
+        new EffectExtraClause("(Transfer its materials to this card.)")
+      ]),
       new IgnitionEffect([
         new EffectConditionClause("While this card has material"),
         new EffectMainClause("You can add 1 \"Springans\" or \"Therion\" card from your Deck to your hand.")
@@ -1029,7 +1037,8 @@ describe('parseEffects of card', () => {
     const text = "During your Main Phase, you can Normal Summon 1 \"Traptrix\" monster, in addition to your Normal Summon/Set. (You can only gain this effect once per turn.) The first time each Insect or Plant monster you control would be destroyed by battle each turn, it is not destroyed. You can banish 1 monster you control; Special Summon 1 \"Traptrix\" monster from your hand or GY. You can only use this effect of \"Traptrip Garden\" once per turn.";
     const effects = [
       new ContinuousEffect([
-        new EffectMainClause("During your Main Phase, you can Normal Summon 1 \"Traptrix\" monster, in addition to your Normal Summon/Set. (You can only gain this effect once per turn.)"),
+        new EffectMainClause("During your Main Phase, you can Normal Summon 1 \"Traptrix\" monster, in addition to your Normal Summon/Set."),
+        new EffectExtraClause("(You can only gain this effect once per turn.)"),
       ]),
       new ContinuousEffect([new EffectMainClause("The first time each Insect or Plant monster you control would be destroyed by battle each turn, it is not destroyed.")]),
       new IgnitionEffect([
@@ -1264,6 +1273,54 @@ describe('parseEffects of card', () => {
         new SubEffectClause([new EffectConditionClause("Center"), new EffectMainClause("Your opponent cannot target this card with card effects, also it cannot be destroyed by your opponent's card effects.")]),
         new SubEffectClause([new EffectConditionClause("Others"), new EffectMainClause("Monsters in this column cannot activate their effects.")]),
       ]),
+    ];
+    testParseEffects({text}, effects);
+  });
+
+  test('Mausoleum of the Emperor', () => {
+    const text = "During the Main Phase: The turn player can activate these effect(s).\n" +
+      "● Pay 1000 LP; immediately after this effect resolves, Normal Summon 1 monster from your hand that requires 1 Tribute, without Tributing.\n" +
+      "● Pay 2000 LP; immediately after this effect resolves, Normal Summon 1 monster from your hand that requires 2 Tributes, without Tributing.\n" +
+      "(This is their one Normal Summon/Set for that turn.)";
+    const effects = [
+      new IgnitionEffect([
+        new EffectConditionClause("During the Main Phase"),
+        new EffectMainClause("The turn player can activate these effect(s)."),
+        new SubEffectClause([
+          new EffectCostClause("Pay 1000 LP"),
+          new EffectMainClause("immediately after this effect resolves, Normal Summon 1 monster from your hand that requires 1 Tribute, without Tributing.")
+        ]),
+        new SubEffectClause([
+          new EffectCostClause("Pay 2000 LP"),
+          new EffectMainClause("immediately after this effect resolves, Normal Summon 1 monster from your hand that requires 2 Tributes, without Tributing.")
+        ]),
+        new EffectExtraClause("(This is their one Normal Summon/Set for that turn.)")
+      ])
+    ];
+    testParseEffects({text, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, effects);
+  });
+
+  test('Number 85: Crazy Box', () => {
+    const text = "This card cannot attack. Once per turn: You can detach 1 Xyz Material from this card; roll a six-sided die and apply the result.\n" +
+      "1: Halve your Life Points. 2: Draw 1 card.\n" +
+      "3: Your opponent discards 1 card.\n" +
+      "4: Negate the effects of 1 face-up card on the field until the end of this turn.\n" +
+      "5: Destroy 1 card on the field. 6: Destroy this card.";
+    const effects = [
+      new ContinuousEffect([
+        new EffectMainClause("This card cannot attack."),
+      ]),
+      new IgnitionEffect([
+        new EffectConditionClause("Once per turn"),
+        new EffectCostClause("You can detach 1 Xyz Material from this card"),
+        new EffectMainClause("roll a six-sided die and apply the result."),
+        new SubEffectClause([new EffectConditionClause("1"), new EffectMainClause("Halve your Life Points.")]),
+        new SubEffectClause([new EffectConditionClause("2"), new EffectMainClause("Draw 1 card.")]),
+        new SubEffectClause([new EffectConditionClause("3"), new EffectMainClause("Your opponent discards 1 card.")]),
+        new SubEffectClause([new EffectConditionClause("4"), new EffectMainClause("Negate the effects of 1 face-up card on the field until the end of this turn.")]),
+        new SubEffectClause([new EffectConditionClause("5"), new EffectMainClause("Destroy 1 card on the field.")]),
+        new SubEffectClause([new EffectConditionClause("6"), new EffectMainClause("Destroy this card.")]),
+      ])
     ];
     testParseEffects({text}, effects);
   });

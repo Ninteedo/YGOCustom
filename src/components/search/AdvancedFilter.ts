@@ -347,12 +347,12 @@ function anySeparatorParser(): P.Parser<string> {
   );
 }
 
-function countParser(): P.Parser<number> {
-  return P.alt(
-    P.string("a ").result(1),
-    P.regexp(/(\d) /, 1).map(digit => parseInt(digit, 10)),
-  );
-}
+// function countParser(): P.Parser<number> {
+//   return P.alt(
+//     P.string("a ").result(1),
+//     P.regexp(/(\d) /, 1).map(digit => parseInt(digit, 10)),
+//   );
+// }
 
 function monsterAttributesParser(): P.Parser<AdvancedFilter> {
   return P.sepBy1(monsterAttributeParser(), anySeparatorParser())

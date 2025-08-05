@@ -142,7 +142,7 @@ class MainConjunctionClause implements EffectClause {
   }
 }
 
-class MainSearchClause implements EffectClause {
+export class MainSearchClause implements EffectClause {
   public readonly contents: string;
   public readonly searchTerm: string;
   public readonly searchOptions: SearchOption[];
