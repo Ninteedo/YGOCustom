@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.859.0",
-    "@react-buddy/ide-toolbox": "^2.4.0",
     "@types/parsimmon": "^1.10.9",
     "fuse.js": "^7.1.0",
     "parsimmon": "^1.18.1",
