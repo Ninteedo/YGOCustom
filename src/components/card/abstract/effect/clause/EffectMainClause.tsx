@@ -76,7 +76,7 @@ function splitMainByConjunctions(mainText: string): EffectClause[] {
       let remainingText = part.text;
 
       conjunctions.forEach((conjunction) => {
-        const regex = new RegExp(`(\\s*)( ${conjunction.text})(\\s*)`, 'i'); // Capture spaces around conjunctions
+        const regex = new RegExp(`(\\s*)( ${conjunction.text})((?:,|\\s)\\s*)`, 'i'); // Capture spaces around conjunctions
         let match = remainingText.match(regex);
 
         while (match) {

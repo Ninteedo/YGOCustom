@@ -54,9 +54,10 @@ export default class BaseDbCard {
 
   getInfoLine(): ReactElement {
     switch (this.kind) {
-      case CardKind.MONSTER:
+      case CardKind.MONSTER: {
         const attribute = this.getAttribute();
         return <p>{getLevelName(this.subKind, this.json)} {this.json.attribute} {attribute && <MonsterAttributeImage attribute={attribute}/>} Monster</p>
+      }
       case CardKind.SPELL:
         return <p>{this.subKind} Spell</p>
       case CardKind.TRAP:
