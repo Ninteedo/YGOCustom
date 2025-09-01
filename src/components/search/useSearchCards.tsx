@@ -66,7 +66,7 @@ export function useSearchCards(
         }
         console.log(`Advanced queries found: ${advQueries.join(', ')}`);
 
-        const searchTermNoAdv = searchTerm.replace(/\[([^[\]]+)]/g, '').trim().toLowerCase();
+        const searchTermNoAdv = searchTerm.replace(/\[([^[\]]+)]/g, '').toLowerCase();
         const filters = advQueries.map(queryToFilter).filter(filter => filter !== null);
         dbResults = dbResults.filter((card) => {
           if (card.text === undefined || card.text === null) {
