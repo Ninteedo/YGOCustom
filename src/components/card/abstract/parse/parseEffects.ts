@@ -97,7 +97,7 @@ export function parseEffects(props: ParseEffectsProps): Effect[] {
   const sentences: EffectSentence[] = splitSentences(text);
 
   for (let i = 1; i < sentences.length; i++) {
-    let {text: sentence} = sentences[i];
+    const {text: sentence} = sentences[i];
     // if (sentence.startsWith("(") && sentence.match(/\)\.?$/)) {
     //   // Merge the sentence with the previous one
     //   if (sentence.endsWith(".")) {
@@ -107,15 +107,15 @@ export function parseEffects(props: ParseEffectsProps): Effect[] {
     //   sentences.splice(i, 1);
     //   i--;
     // }
-    if (sentence.endsWith("(min.")) {
+    if (sentence.endsWith("(min.") || hasIncompleteDoubleQuotes(sentence)) {
       // Merge the sentence with the next one
       sentences[i].text += " " + sentences[i + 1].text;
       sentences.splice(i + 1, 1);
     }
-    if (hasIncompleteDoubleQuotes(sentence)) {
+    if (sentence.startsWith("Counter")) {
       // Merge the sentence with the previous one
-      sentences[i].text += " " + sentences[i + 1].text;
-      sentences.splice(i + 1, 1);
+      sentences[i - 1].text += " " + sentences[i].text;
+      sentences.splice(i, 1);
     }
     if (sentence.startsWith("●")) {
       sentences[i] = {text: sentence.substring(1).trimStart(), isSub: true, precedingNewLine: sentences[i].precedingNewLine};
@@ -192,12 +192,13 @@ function splitSentences(text: string): EffectSentence[] {
     endsInNewLine = false;
   }
 
-  function isSentenceTerminator(char: string): boolean {
-    return char === "." || char === "\n";
+  function isSentenceTerminator(char: string, nextChar: string): boolean {
+    return (char === "." && !nextChar.match(/\w/)) || char === "\n";
   }
 
   for (i = 0; i < text.length; i++) {
     const char = text[i];
+    const nextChar = i < text.length - 1 ? text[i + 1] : "";
     if (char === '"') {
       inQuotes = !inQuotes;
     } else if (char === "(") {
@@ -207,7 +208,7 @@ function splitSentences(text: string): EffectSentence[] {
       if (i > 0 && text[i - 1] === ".") {
         endSentence();
       }
-    } else if (isSentenceTerminator(char) && !inQuotes && !inBrackets) {
+    } else if (isSentenceTerminator(char, nextChar) && !inQuotes && !inBrackets) {
       endSentence();
     } else if (char === "●" && i > 0) {
       i -= 1;

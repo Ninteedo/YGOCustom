@@ -1324,4 +1324,19 @@ describe('parseEffects of card', () => {
     ];
     testParseEffects({text}, effects);
   });
+
+  test('Enneacraft - Atori.MAR', () => {
+    const pendText = "Each time a monster(s) is flipped face-up, place 1 E.C. Counter on this card. At the end of the Battle Phase, if you have an \"Enneacraft\" card in your other Pendulum Zone: You can target 1 monster your opponent controls with less ATK than this card; destroy it.";
+    const pendEffects = [
+      new ContinuousEffect([
+        new EffectMainClause("Each time a monster(s) is flipped face-up, place 1 E.C. Counter on this card."),
+      ]),
+      new TriggerEffect([
+        new EffectConditionClause("At the end of the Battle Phase, if you have an \"Enneacraft\" card in your other Pendulum Zone"),
+        new EffectCostClause("You can target 1 monster your opponent controls with less ATK than this card"),
+        new EffectMainClause("destroy it."),
+      ]),
+    ];
+    testParseEffects({text: pendText, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, pendEffects);
+  })
 });
