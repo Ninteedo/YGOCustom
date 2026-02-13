@@ -1338,5 +1338,22 @@ describe('parseEffects of card', () => {
       ]),
     ];
     testParseEffects({text: pendText, isSpellTrapCard: true, isContinuousSpellTrapCard: true}, pendEffects);
-  })
+  });
+
+  test('GMX - VELOX', () => {
+    const text = "Each time your opponent Normal or Special Summons a monster(s), gain 200 LP. During your opponent's turn (Quick Effect): You can target 1 card your opponent controls; excavate the top cards of your Deck until you excavate a \"GMX\" monster or a Dinosaur monster, lose 400 LP for each excavated card, add that \"GMX\" or Dinosaur monster to your hand or Special Summon it, and shuffle the rest into the Deck. Also, after that, destroy the targeted card. You can only use this effect of \"GMX - VELOX\" once per turn."
+    const effects = [
+      new ContinuousEffect([
+        new EffectMainClause("Each time your opponent Normal or Special Summons a monster(s), gain 200 LP."),
+      ]),
+      new QuickEffect([
+        new EffectConditionClause("During your opponent's turn (Quick Effect)"),
+        new EffectCostClause("You can target 1 card your opponent controls"),
+        new EffectMainClause("excavate the top cards of your Deck until you excavate a \"GMX\" monster or a Dinosaur monster, lose 400 LP for each excavated card, add that \"GMX\" or Dinosaur monster to your hand or Special Summon it, and shuffle the rest into the Deck."),
+        new EffectMainClause("Also, after that, destroy the targeted card."),
+      ]),
+      new EffectRestriction("You can only use this effect of \"GMX - VELOX\" once per turn."),
+    ];
+    testParseEffects({text}, effects);
+  });
 });
