@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="64" height="64">
+    <path d="M32 10 L54 32 L32 54 L10 32 Z" />
+    <path d="M32 10 L32 32 L10 32Z" fill="#0540ff" />
+    <path d="M32 10 L32 32 L54 32Z" fill="#ff1529" />
+    <path d="M32 54 L32 32 L54 32Z" fill="#ff1529"/>
+    <path d="M32 54 L32 32 L10 32Z" fill="#0540ff"/>
+    <path d="M32 12 L52 32 L32 52 L12 32 Z" opacity="0.5" fill="none" stroke="black" stroke-width="3" />
+    <path d="M10 32 H54 L32 54" opacity="0.3"/>
+</svg>

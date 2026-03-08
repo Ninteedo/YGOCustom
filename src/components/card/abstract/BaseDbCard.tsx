@@ -13,6 +13,7 @@ import {CardAttribute, monsterAttributeFromString, MonsterAttributeImage} from "
 import {readMaterialsText, readNonMaterialsText} from "./parse/parseMaterials.ts";
 import {missingImageIds} from "../../../assets/missingImages.ts";
 import {LinkArrow} from "../display/link/LinkArrow.ts";
+import {PendulumRating} from "../display/PendulumRating.tsx";
 
 export default class BaseDbCard {
   public readonly id: string;
@@ -56,7 +57,9 @@ export default class BaseDbCard {
     switch (this.kind) {
       case CardKind.MONSTER: {
         const attribute = this.getAttribute();
-        return <p>{getLevelName(this.subKind, this.json)} {this.json.attribute} {attribute && <MonsterAttributeImage attribute={attribute}/>} Monster</p>
+        const pendulumRating = this.isPendulum ? this.json.pendulumScale : undefined;
+        const pendulumPart = <PendulumRating rating={pendulumRating}/>;
+        return <p>{getLevelName(this.subKind, this.json)} {this.json.attribute} {attribute && <MonsterAttributeImage attribute={attribute}/>} Monster{pendulumPart}</p>
       }
       case CardKind.SPELL:
         return <p>{this.subKind} Spell</p>
