@@ -6,7 +6,7 @@ import {MultiValue} from "react-select";
 import {SearchOption, searchOptions} from "./SearchOptions.ts";
 import {useNavigate} from "react-router-dom";
 import SearchProps from "./SearchProps.ts";
-import {searchSorts} from "./SearchSort.ts";
+import {SearchSort, searchSorts} from "./SearchSort.ts";
 import {SearchSortSelect} from "./SearchSortSelect.tsx";
 
 interface SearchBoxProps {
@@ -31,7 +31,7 @@ export default function SearchBox({toggleSearch, isSearchBoxOpen, isModal, initi
   const [searchTerm, setSearchTerm] = useState(initialQuery);
   const [selectedOptions, setSelectedOptions] = useState<MultiValue<SearchOption>>(initialOptions);
   const [enableFuzzySearch, setEnableFuzzySearch] = useState(initialFuzzy);
-  const [sort, setSort] = useState(initialSort);
+  const [sort, setSort] = useState<SearchSort>(initialSort);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -41,10 +41,8 @@ export default function SearchBox({toggleSearch, isSearchBoxOpen, isModal, initi
     }
   }, [isSearchBoxOpen]);
 
-  useEffect(() => {
-    if (isModal) {
-      return;
-    }
+  const handleBlur = () => {
+    if (isModal) return;
 
     const params = new URLSearchParams();
     if (searchTerm) {
@@ -57,7 +55,7 @@ export default function SearchBox({toggleSearch, isSearchBoxOpen, isModal, initi
       params.append("fuzzy", "true");
     }
     navigate({search: params.toString()});
-  }, [searchTerm, selectedOptions, enableFuzzySearch, navigate, isModal]);
+  };
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -79,6 +77,7 @@ export default function SearchBox({toggleSearch, isSearchBoxOpen, isModal, initi
           className={"search-term"}
           placeholder={"Search..."}
           onInput={handleInput}
+          onBlur={handleBlur}
           ref={inputRef}
           tabIndex={1}
           value={searchTerm}
@@ -105,7 +104,7 @@ export default function SearchBox({toggleSearch, isSearchBoxOpen, isModal, initi
         <SearchSortSelect
           sorts={searchSorts}
           selectedSort={sort}
-          setSelectedSort={(selected) => setSort(selected as any)}
+          setSelectedSort={(selected) => setSort(selected as SearchSort)}
           tabIndex={4}
         />
       </div>
